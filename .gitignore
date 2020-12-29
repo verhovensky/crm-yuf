@@ -1,0 +1,12 @@
+/static/bootstrap-4.5.3
+/static/fontawesome
+*.pyc
+*~
+__pycache__
+venv
+.idea
+db.sqlite3
+.DS_Store
+shitcode
+test.py
+PLAN.txt

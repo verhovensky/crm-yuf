@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<title>
+  {{ page_title }}
+</title>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static "/meetings.css" %}" />
+    <link rel="stylesheet" href="{% static "/bootstrap-4.5.3/css/bootstrap.min.css" %}" />
+    <link rel="stylesheet" href="{% static "/fontawesome/css/all.css" %}" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script type="text/javascript" src="{% static "/bootstrap-4.5.3/js/bootstrap.bundle.js" %}"></script>
+</head>
+
+
+<!-- Navigation -->
+<nav id="slide-menu">
+	<ul>
+		<p class="text-white"><strong> Привет, {{ user.get_username }} ! </strong></p>
+		<a href="/home"><li class="">Главная</li></a>
+        <a href="/client"><li class="">Клиенты</li></a>
+        <a href="/product"><li class="">Товары</li>
+		<a href="/order"><li class="">Заказы</li>
+		<a href="/call"><li class="">Звонки</li>
+		<a href="/profile"><li class="sep">Профиль</li></a>
+		<a href="/logout"><li class="">Выйти</li>
+		<li class="hr"></li>
+		<a href="{% url 'add' %}" class="top-menu"><li class="">Добавить клиента</li></a>
+	</ul>
+</nav>
+
+
+<div id="content">
+
+	<div class="menu-trigger"></div>
+        <body class="menu-active">
+        {% block content%}
+            <h1>{% block header %}{% endblock header %}</h1>
+        {% endblock content %}
+    </body>
+</div>
+
+<script type="text/javascript" src="{% static "/nav.js" %}"></script>
+
+</html>

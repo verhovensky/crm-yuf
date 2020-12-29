@@ -1,0 +1,16 @@
+{% extends 'navstruct.html' %}
+
+{% block content %}
+    <p class="display-4 pb-5">{{ client.name }}</p>
+    <div>
+        <p><strong>Номер телефона:</strong> {{ client.phone_number }}</p>
+        <p><strong>Тип клиента:</strong> {{ client.type | linebreaksbr}}</p>
+        <p><strong>Откуда пришел:</strong> {{ client.origin }}</p>
+        <p><strong>Email:</strong> {{ client.email }}</p>
+        <p><strong>Создан:</strong> {{ client.created }}</p>
+    </div>
+    <a href="/client/edit/{{ client.id }}"><button class="btn btn-warning" onlick="return false;">Изменить</button></a>
+    <a href="/client/delete/{{ client.id }}"><button class="btn btn-danger" onlick="return false;">Удалить</button></a>
+    <a href="/client/"><button class="btn btn-primary" onlick="return false;">Все клиенты</button></a>
+{% endblock %}
+</html>

@@ -1,0 +1,40 @@
+{% extends "navstruct.html" %}
+
+    {% block content %}
+    <p class="display-4 pb-5">{{ header_page }}</p>
+
+        <!-- Tooltip init -->
+        <script>
+            //A custom script is used to activate tooltips:
+            $(document).ready(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        </script>
+
+        {% if сlientsall.count > 0 %}
+
+        <div class="section">
+                    <table class="table table-responsive table-hover">
+                        <thead class="thead-light"><tr><th>ФИО</th><th>Телефон</th><th>Тип</th><th>E-mail</th><th>Источник</th><th>Действия</th></tr></thead>
+                        {% for unit in сlientsall %}
+                        <tr><td>{{ unit.name }}</td>
+                            <td>{{ unit.phone_number }}</td>
+                            <td>{{ unit.type }}</td>
+                            <td>{{ unit.email }}</td>
+                            <td>{{ unit.origin }}</td>
+                            <td>
+                            <a href="detail/{{ unit.id }}" data-toggle="tooltip" data-placement="top" title="Детали"><i class="fas fa-info-circle" style="color:#4169E1; margin: 1vh;"></i></a>
+                            <a href="edit/{{ unit.id }}" data-toggle="tooltip" data-placement="top" title="Изменить"><i class="fas fa-edit" style="color:#1c7430; margin: 1vh;"></i></a>
+                            <a href="delete/{{ unit.id }}" data-toggle="tooltip" data-placement="top" title="Удалить"><i class="fas fa-user-times" style="margin: 1vh;"></i></a>
+                            </td></tr>
+                        {% endfor %}
+                    </table>
+        </div>
+        {% else %}
+        <h3>Нет записей :( </h3>
+        {% endif %}
+
+    {% endblock content %}
+
+    </body>
+</html>
