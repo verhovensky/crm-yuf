@@ -23,7 +23,7 @@ python3 -m venv /path/to/new/virtual/environment
 ### Then install requirements:
 pip install -r requirements.txt
 
-### Then apply migrations:
+### Then create DB and apply migrations:
 python manage.py makemigrations
 python manage.py migrate
 
