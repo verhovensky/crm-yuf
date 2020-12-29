@@ -1,14 +1,20 @@
-## YUF CRM (Customer Relationship Management) - is a web application for sale managers, directors and administrators of small-medium businesses.
+### YUF CRM (Customer Relationship Management) - is a web application for sale managers, directors and administrators of small-medium businesses.
 
 ### Installation:
 
 ### (Optionally)
-For front-end part fully working and responsive download and unpack the following libraries in /static directory (or connect them through CDN or other source of your choice):
-bootstrap-4.5.3 (https://getbootstrap.com/docs/4.5/getting-started/download/)
-fontawesome 4.0 (https://fontawesome.com/v4.7.0/get-started/)
+For front-end part fully working and responsive download and unpack the following libraries in /static directory:
+
+Library | Link
+------------ | -------------
+bootstrap-4.5.3 | https://getbootstrap.com/docs/4.5/getting-started/download/
+fontawesome 4.0 | https://fontawesome.com/v4.7.0/get-started/
+
 To avoid problems with paths the /static directory will look like:
 /static/bootstrap-4.5.3
 /static/fontawesome
+
+.. or connect them through CDN or other source of your choice
 
 ### Make venv either in your IDE or by executing command:
 python3 -m venv /path/to/new/virtual/environment
