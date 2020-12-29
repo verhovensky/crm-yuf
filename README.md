@@ -15,7 +15,7 @@ To avoid problems with paths the /static directory will look like:
 /static/bootstrap-4.5.3
 /static/fontawesome
 
-.. or connect them through CDN or other source of your choice
+... or connect them through CDN or other source of your choice
 
 ### Make venv either in your IDE or by executing command:
 python3 -m venv /path/to/new/virtual/environment
