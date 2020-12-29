@@ -34,11 +34,11 @@ python manage.py createsuperuser
 python manage.py runserver
 
 ### All done!
-The application homepage is located at http://127.0.0.1/client
-(Optionally)
+The application homepage is located at http://127.0.0.1/client  
+(Optionally)  
 You can use pure Django's backend at http://127.0.0.1/admin
 
-The application "client" is made for customer records tracking and marketing strategy tracking (client origin, type).
+The application "client" is made for customer records tracking and marketing strategy tracking (client origin, type).  
 It will be further extended by Order, Product, Cart and other applications. 
 
 
