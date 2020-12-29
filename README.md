@@ -1,4 +1,5 @@
-### YUF CRM (Customer Relationship Management) - is a web application for sale managers, directors and administrators of small-medium businesses.
+### YUF CRM (Customer Relationship Management)   
+- is a web application for sale managers, directors and administrators of small-medium businesses.
 
 ### Installation:
 
@@ -43,10 +44,10 @@ It will be further extended by Order, Product, Cart and other applications.
 
 ### Requirements:
 
-asgiref==3.3.1
-Django==2.2.15
-Pillow==8.0.1
-pytz==2020.4
+asgiref==3.3.1  
+Django==2.2.15  
+Pillow==8.0.1  
+pytz==2020.4  
 sqlparse==0.4.1
 
 ### To Do:
