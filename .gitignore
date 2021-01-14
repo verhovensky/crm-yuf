@@ -1,5 +1,12 @@
+!media/**/
 /static/bootstrap-4.5.3
 /static/fontawesome
+/account/migrations
+/client/migrations
+/cart/migrations
+/home/migrations
+/order/migrations
+/crmdev/migrations
 *.pyc
 *~
 __pycache__
