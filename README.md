@@ -11,7 +11,7 @@ Library | Link
 bootstrap-4.5.3 | https://getbootstrap.com/docs/4.5/getting-started/download/
 fontawesome 4.0 | https://fontawesome.com/v4.7.0/get-started/
 
-To avoid problems with paths the /static directory will look like:
+To avoid problems with paths the /static directory should look like:
 /static/bootstrap-4.5.3
 /static/fontawesome
 
@@ -24,7 +24,7 @@ python3 -m venv /path/to/new/virtual/environment
 pip install -r requirements.txt
 
 ### Then create DB and apply migrations:
-python manage.py makemigrations
+python manage.py makemigrations  
 python manage.py migrate
 
 ### (Optionally)

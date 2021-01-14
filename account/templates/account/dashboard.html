@@ -1,0 +1,19 @@
+{% extends 'navstruct.html' %}
+
+{% block content %}
+    <div>
+        <p>{{ user.userprofile }}</p>
+        <img src="{{ MEDIA_URL }}{{ user.userprofile.photo.url }}" height="220">
+        <p><strong>Имя:</strong> {{ user.first_name }}</p>
+        <p><strong>Фамилия:</strong> {{ user.last_name }}</p>
+        <p><strong>Дата роджения:</strong> {{ user.userprofile.date_of_birth | linebreaksbr }}</p>
+        <p><strong>Роль:</strong> {{ user.userprofile.role }}</p>
+        <p><strong>Закрыто сделок:</strong> {{ user.userprofile.closed_sales }}</p>
+        <p><strong>На сумму:</strong> {{ user.userprofile.sales_amount }}</p>
+        <p><strong>Телефон:</strong> {{ user.userprofile.phone_number | linebreaksbr }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Создан:</strong> {{ user.userprofile.created }}</p>
+    </div>
+    <a href="/account/edit"><button class="btn btn-success" onlick="return false;">Изменить</button></a>
+    <!-- <a href="/account"><button class="btn btn-secondary" onlick="return false;">Назад</button></a> -->
+{% endblock %}
