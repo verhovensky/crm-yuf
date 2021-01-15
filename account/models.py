@@ -6,13 +6,14 @@ from django.core.validators import RegexValidator, MinValueValidator
 from decimal import Decimal
 
 
-SELLER = 'Продавец'
-MANAGER = 'Менеджер'
-GUEST = 'Гость'
+S = 'Продавец'
+M = 'Менеджер'
+G = 'Гость'
+
 ROLE_CHOICES = (
-    (SELLER, 'Продавец'),
-    (MANAGER, 'Менеджер'),
-    (GUEST, 'Гость')
+    (S, 'Продавец'),
+    (M, 'Менеджер'),
+    (G, 'Гость')
     )
 
 
@@ -29,7 +30,7 @@ class UserProfile(models.Model):
     created = models.DateTimeField(auto_now_add=True, blank=True, verbose_name="Создан")
     date_of_birth = models.DateField(blank=True, null=True, verbose_name="Дата рождения")
     role = models.CharField(choices=ROLE_CHOICES, default=ROLE_CHOICES[0], max_length=12, blank=True, verbose_name="Роль")
-    photo = models.ImageField(upload_to='users/%Y/%m/%d', blank=True, verbose_name="Фото")
+    photo = models.ImageField(upload_to='users/%Y/%m/%d', default='users/no-user-photo.jpg', blank=True, verbose_name="Фото")
     # for closed sales and amount records
     closed_sales = models.PositiveIntegerField(default=0, verbose_name="Закрыто сделок")
     sales_amount = models.DecimalField(default=0.0, max_digits=20, decimal_places=1, validators=[MinValueValidator(Decimal('1.0'))], verbose_name='Продано на сумму')
@@ -46,3 +47,6 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return 'Профиль пользователя {}'.format(self.user)
+
+    def display_role_template(self):
+        return self.role

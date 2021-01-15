@@ -1,0 +1,30 @@
+{% extends "navstruct.html" %}
+{% load staticfiles %}
+{% block title %}
+{% endblock %}
+{% block content %}
+    <div id="sidebar">
+        <p class="display-4">{{ header_page }}</p>
+        <ul>
+            <li {% if not category %}class="selected"{% endif %}>
+                <a href="{% url "inventory:product_list" %}">Все категории</a>
+            </li>
+            {% for c in categories %}
+                <li {% if category.slug == c.slug %}class="selected"{% endif %}>
+                    <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div id="main" class="product-list">
+        {% for product in products %}
+            <div class="item">
+                <a href="{{ product.get_absolute_url }}">
+                    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no-img.jpg" %}{% endif %}">
+                </a>
+                <a href="{{ product.get_absolute_url }}">{{ product.name }}</a><br>
+                {{ product.price }} СОМОВ
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

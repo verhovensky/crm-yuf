@@ -9,5 +9,7 @@ from django.urls import path, include
 urlpatterns = [
     path('client/', include('client.urls')),
     path('account/', include('account.urls')),
-    path('admin/', admin.site.urls)
+    path('admin/', admin.site.urls),
+    # namespace = inventory
+    path('product/', include(('product.urls', 'product'), namespace='inventory'))
 ]

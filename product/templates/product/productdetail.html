@@ -1,0 +1,14 @@
+{% extends "navstruct.html" %}
+{% load staticfiles %}
+{% block title %}
+{% endblock %}
+{% block content %}
+    <p class="display-4">{{ header_page }}</p>
+    <div class="product-detail">
+        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no-img.jpg" %}{% endif %}">
+        <h1>{{ product.name }}</h1>
+        <h2><a href="{{ product.category.get_absolute_url }}">{{ product.category }}</a></h2>
+        <p class="price">{{ product.price }} СОМОВ</p>
+        {{ product.description|linebreaks }}
+    </div>
+{% endblock %}

@@ -2,18 +2,20 @@ from .models import UserProfile
 from .forms import UserEditForm, ProfileEditForm
 # login required mixin
 from django.contrib.auth.decorators import login_required
-
-#from django.shortcuts import redirect, get_object_or_404
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse
 from django.template import loader
+from django.http import request
 
 # Profile display page
 @login_required
 def profile(request):
     title = 'Мой профиль'
     header = 'Мой профиль'
+    # get current user and display FIELD property
+    # UserProfile.role displays Choices options which are doubled = ('Продавец', 'Продавец')
+    userrole = request.user.userprofile.role
     template = loader.get_template('account/dashboard.html')
-    context = {'userprofile': UserProfile, 'page_title': title, 'header_page': header}
+    context = {'myrole': userrole, 'userprofile': UserProfile, 'page_title': title, 'header_page': header}
     return HttpResponse(template.render(context, request))
 
 
