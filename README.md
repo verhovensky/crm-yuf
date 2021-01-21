@@ -1,36 +1,18 @@
 ### YUF CRM (Customer Relationship Management)   
-- is a web application for sale managers, directors and administrators of small-medium businesses.
+YUF (Your Ultimate Friend) - is a responsive web application (operational CRM) for managing all your company's relationships and interactions with customers and potential customers.
+Suitable for sale managers, directors and administrators of small-medium businesses.
 
-### Installation:
-
-### (Optionally)
-For front-end part fully working and responsive download and unpack the following libraries in /static directory:
-
-Library | Link
------------- | -------------
-bootstrap-4.5.3 | https://getbootstrap.com/docs/4.5/getting-started/download/
-fontawesome 4.0 | https://fontawesome.com/v4.7.0/get-started/
-
-To avoid problems with paths the /static directory should look like:
-/static/bootstrap-4.5.3
-/static/fontawesome
-
-... or connect them through CDN or other source of your choice
+### Installation
 
 ### Make venv either in your IDE or by executing command:
 python3 -m venv /path/to/new/virtual/environment
 
-### Then install requirements:
+### Then install requirements
 pip install -r requirements.txt
 
-### Then create DB and apply migrations:
-python manage.py makemigrations  
-python manage.py migrate
+### Then create DB and apply migrations
 
-### (Optionally)
-python manage.py createsuperuser
-
-### Then runserver:
+### Then runserver
 python manage.py runserver
 
 ### All done!
@@ -38,9 +20,8 @@ The application homepage is located at http://127.0.0.1/client
 (Optionally)  
 You can use pure Django's backend at http://127.0.0.1/admin
 
-The application "client" is made for customer records tracking and marketing strategy tracking (client origin, type).  
-It will be further extended by Order, Product, Cart and other applications. 
-
+The Client app is made for customer analytics and tracking.
+The Product app is made for stock arrival and sales calculation.
 
 ### Requirements:
 
@@ -52,11 +33,12 @@ sqlparse==0.4.1
 
 ### To Do:
 
-- Login form on first page (Google OAuth)
-- Registration via Gmail
-- Profile, roles and groups for User
+- Order model
+- User groups and permissions
 - Landing page with main activity routes (app home)
-- Cart
-- Order
-- Product
+- Google OAuth Login and registration
+- Django REST API
+- IP based calls app based on Asterisk
+
+
 

@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 # class based VIEW
 # from core.views import index
 # path('core/', index.as_view(), name='Core Page'),
@@ -12,4 +14,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # namespace = inventory
     path('product/', include(('product.urls', 'product'), namespace='inventory'))
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

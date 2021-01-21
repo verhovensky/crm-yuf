@@ -1,8 +1,10 @@
 {% extends "navstruct.html" %}
-{% load staticfiles %}
+{% load static %}
 {% block title %}
 {% endblock %}
+
 {% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'productstyle.css' %}">
     <div id="sidebar">
         <p class="display-4">{{ header_page }}</p>
         <ul>
@@ -16,15 +18,46 @@
             {% endfor %}
         </ul>
     </div>
-    <div id="main" class="product-list">
-        {% for product in products %}
-            <div class="item">
-                <a href="{{ product.get_absolute_url }}">
-                    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no-img.jpg" %}{% endif %}">
-                </a>
-                <a href="{{ product.get_absolute_url }}">{{ product.name }}</a><br>
-                {{ product.price }} СОМОВ
+
+    <div class="container m-0">
+        <div class="row">
+                {% for product in products %}
+                <div class="col-sm-4">
+                        <figure class="card card-product">
+                            <div class="img-wrap">
+                                <a href="{{ product.get_absolute_url }}">
+                                    <img src="{% if product.image %}{{ MEDIA_URL }}{{ product.image.url }}{% else %}{% static "img/no-img.jpg" %}{% endif %}">
+                                </a>
+                            </div>
+                            <figcaption class="info-wrap">
+                                    <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                                    <br>
+                                    <a href="{{ product.category.get_absolute_url }}">Категория: {{ product.category }}</a>
+                            </figcaption>
+                            <div class="bottom-wrap">
+                                <!-- Можно использовать под поля
+                                Продано товара/ Продано товара на сумму
+                                Для авторизованного пользователя!
+                                Поля модели User: closed_sales, sales_amount
+                                <div class="rating-wrap">
+                                    <div class="label-rating">132 reviews</div>
+                                    <div class="label-rating">154 orders </div>
+                                </div>
+                                -->
+                                <div class="price-and-quantity font-weight-bold">
+                                    <span>Цена: {{ product.price }} </span>
+                                    <br>
+                                    <span>Кол-во: {{ product.stock }}</span>
+                                </div> <!-- price-wrap.// -->
+                                <div class="text-center">
+                                    <a href="edit/{{ product.id }}" class="btn btn-warning text-center">Изменить</a>
+                                    <a href="delete/{{ product.id }}" class="btn btn-danger text-center">Удалить</a>
+                                </div>
+                            </div> <!-- bottom-wrap.// -->
+                        </figure>
+                </div>
+                {% endfor %}
             </div>
-        {% endfor %}
+        </div>
     </div>
 {% endblock %}
