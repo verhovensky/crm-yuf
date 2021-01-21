@@ -7,19 +7,15 @@ Suitable for sale managers, directors and administrators of small-medium busines
 ### Make venv either in your IDE or by executing command:
 python3 -m venv /path/to/new/virtual/environment
 
-### Then install requirements
+### Install requirements
 pip install -r requirements.txt
 
-### Then create DB and apply migrations
+### Create DB and apply migrations
 
 ### Then runserver
 python manage.py runserver
 
-### All done!
-The application homepage is located at http://127.0.0.1/client  
-(Optionally)  
-You can use pure Django's backend at http://127.0.0.1/admin
-
+### All done
 The Client app is made for customer analytics and tracking.
 The Product app is made for stock arrival and sales calculation.
 
