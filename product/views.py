@@ -55,11 +55,9 @@ def addproduct(request):
     if request.method == "POST":
         form = ProductAddForm(request.POST)
         if form.is_valid():
-            # https://tutorial.djangogirls.org/ru/django_forms/
-            # при наличии поля created_by:
             product = form.save(commit=False)
             product.slug = slugify(s=request.POST.get("name"))
-            # product.created_by = request.user
+            product.created_by = request.user
             product.save()
             return redirect(to='/product')
     else:

@@ -34,11 +34,10 @@ def addclient(request):
     if request.method == "POST":
         form = ClientAddForm(request.POST)
         if form.is_valid():
-            # https://tutorial.djangogirls.org/ru/django_forms/
-            # при наличии поля created_by:
             client = form.save(commit=False)
             client.slug = slugify(s=request.POST.get("name"))
-            # client.created_by = request.user
+            # Cannot assign "<SimpleLazyObject: <User: Bulat>>": "Client.created_by" must be a "UserProfile" instance.
+            client.created_by = request.user
             client.save()
             return redirect('detail', id=client.id)
     else:

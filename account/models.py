@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
-from django.dispatch import receiver
+#from django.dispatch import receiver
 from django.core.validators import RegexValidator, MinValueValidator
 from decimal import Decimal
 
@@ -29,7 +29,7 @@ class UserProfile(models.Model):
     phone_number = models.CharField(max_length=16, validators=[phone_regex], blank=True, verbose_name="Телефон")
     created = models.DateTimeField(auto_now_add=True, blank=True, verbose_name="Создан")
     date_of_birth = models.DateField(blank=True, null=True, verbose_name="Дата рождения")
-    role = models.CharField(choices=ROLE_CHOICES, default=ROLE_CHOICES[0], max_length=12, blank=True, verbose_name="Роль")
+    role = models.CharField(choices=ROLE_CHOICES, default=S, max_length=12, blank=True, verbose_name="Роль")
     photo = models.ImageField(upload_to='users/%Y/%m/%d', default='users/no-user-photo.jpg', blank=True, verbose_name="Фото")
     # for closed sales and amount records
     closed_sales = models.PositiveIntegerField(default=0, verbose_name="Закрыто сделок")
@@ -46,7 +46,8 @@ class UserProfile(models.Model):
 
 
     def __str__(self):
-        return 'Профиль пользователя {}'.format(self.user)
+        # return 'Профиль пользователя {}'.format(self.user)
+        return '{} {}'.format(self.get_role_display(), self.user)
 
     def display_role_template(self):
         return self.role

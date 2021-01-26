@@ -19,10 +19,10 @@
         </ul>
     </div>
 
-    <div class="container m-0">
+    <div class="container">
         <div class="row">
                 {% for product in products %}
-                <div class="col-sm-4">
+                <div class="col-sm-4 col-lg-3 m-2">
                         <figure class="card card-product">
                             <div class="img-wrap">
                                 <a href="{{ product.get_absolute_url }}">
@@ -49,9 +49,9 @@
                                     <br>
                                     <span>Кол-во: {{ product.stock }}</span>
                                 </div> <!-- price-wrap.// -->
-                                <div class="text-center">
-                                    <a href="edit/{{ product.id }}" class="btn btn-warning text-center">Изменить</a>
-                                    <a href="delete/{{ product.id }}" class="btn btn-danger text-center">Удалить</a>
+                                <div class="text-center" style="display: grid;">
+                                    <a href="edit/{{ product.id }}" class="btn btn-warning text-center m-2">Изменить</a>
+                                    <a href="delete/{{ product.id }}" class="btn btn-danger text-center m-2">Удалить</a>
                                 </div>
                             </div> <!-- bottom-wrap.// -->
                         </figure>

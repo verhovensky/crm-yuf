@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import RegexValidator
-
+from account.models import UserProfile
 
 # Клиенты
 # откуда клиент пришел, choices
@@ -77,8 +77,7 @@ class Client(models.Model):
     email = models.EmailField(blank=True, verbose_name="Email")
     created = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name="Создан")
     # когда будет создан app USERS - надо будет СВЯЗАТЬ с каждым товар\заказу\клиент создавшего USER
-    # created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    # created_date = models.DateTimeField(default=timezone.now) TZ ??????
+    created_by = models.ForeignKey(UserProfile, on_delete=models.PROTECT, blank=True, default=1, verbose_name='Создавший')
     updated = models.DateTimeField(auto_now=True, verbose_name='Обновлен')
 
 
