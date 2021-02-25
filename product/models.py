@@ -17,7 +17,7 @@ class Category(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('inventory:product_list_by_category',
+        return reverse('inventory:product_list',
                         args=[self.slug])
 
 class Product(models.Model):
@@ -33,7 +33,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products/%Y/%m/%d', blank=True, verbose_name='Фото')
     price = models.DecimalField(max_digits=10, decimal_places=1, validators=[MinValueValidator(Decimal('1.0'))], verbose_name='Цена')
     stock = models.PositiveIntegerField(verbose_name='Кол-во')
-    available = models.BooleanField(default=True, verbose_name='Создавший')
+    available = models.BooleanField(default=True, verbose_name='На складе')
     created = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(UserProfile, on_delete=models.PROTECT, blank=True, default=1,
                                    verbose_name='Создавший')
@@ -51,6 +51,6 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-    def get_absolute_url(self):
-        return reverse('inventory:product_detail',
-                        args=[self.pk, self.slug])
+    # def get_absolute_url(self):
+    #     return reverse('inventory:product_detail',
+    #                     args=[self.pk, self.slug])

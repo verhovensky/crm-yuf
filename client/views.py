@@ -1,76 +1,71 @@
-from django.shortcuts import redirect, get_object_or_404
-from django.http import HttpResponse, HttpResponseNotFound
-from django.template import loader
-
+from django.http import HttpResponse
+# decorators
+from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
+# CBV
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic.detail import SingleObjectMixin
+from django.urls import reverse_lazy, reverse
+# Client model import
 from .models import Client
 from .forms import ClientAddForm
 # import slugify function to transliterate slug
 from .apps import slugify
 
+# if many decorators
+# decorators = [permission_required, login_required]
 
-# Clients Table
-def index(request):
-    title = 'Клиенты'
-    header = 'Клиенты'
-    template = loader.get_template('client/clients.html')
-    сlientsall = Client.objects.order_by('name')
-    context = {'сlientsall': сlientsall, 'page_title': title, 'header_page': header}
-    return HttpResponse(template.render(context, request))
+@method_decorator(login_required, name='dispatch')
+class ClientTableView(ListView):
+    template_name = "client/clients.html"
+    # name for client list in HTML template
+    context_object_name = 'client_list'
 
-# Client Details
-def clientdetail(request, id):
-    title = 'Информация о клиенте'
-    #header = client.name
-    client = get_object_or_404(Client, id=id)
-    template = loader.get_template('client/clientdetail.html')
-    context = {'client': client, 'page_title': title}
-    return HttpResponse(template.render(context, request))
+    def get_queryset(self):
+        return Client.objects.filter(created_by=
+                                     self.request.user.userprofile)
 
+@method_decorator(login_required, name='dispatch')
+class ClientDetailView(DetailView):
+    template_name = "client/clientdetail.html"
+    model = Client
+    context_object_name = 'client'
 
-# Add Client
-def addclient(request):
-    title = 'Добавить клиента'
-    header = 'Добавить клиента'
-    if request.method == "POST":
-        form = ClientAddForm(request.POST)
-        if form.is_valid():
-            client = form.save(commit=False)
-            client.slug = slugify(s=request.POST.get("name"))
-            # Cannot assign "<SimpleLazyObject: <User: Bulat>>": "Client.created_by" must be a "UserProfile" instance.
-            client.created_by = request.user
-            client.save()
-            return redirect('detail', id=client.id)
-    else:
-        form = ClientAddForm()
-        template = loader.get_template('client/addclient.html')
-        context = {'form': form, 'page_title': title, 'header_page': header}
-        return HttpResponse(template.render(context, request))
+    def get_object(self):
+        object = super(ClientDetailView, self).get_object()
+        # more methods in template ?
+        # object.last_accessed = timezone.now()
+        return object
 
-# Edit Client
-def editclient(request, id):
-    title = 'Изменить клиента'
-    header = 'Изменить клиента'
-    client = get_object_or_404(Client, id=id)
-    if request.method == "POST":
-        form = ClientAddForm(request.POST, instance=client)
-        if form.is_valid():
-            client = form.save(commit=False)
-            client.slug = slugify(s=request.POST.get("name"))
-            #post.author = request.user
-            #post.published_date = timezone.now()
-            client.save()
-            return redirect('detail', id=client.id)
-    else:
-        form = ClientAddForm(instance=client)
-    template = loader.get_template('client/addclient.html')
-    context = {'form': form, 'page_title': title, 'header_page': header}
-    return HttpResponse(template.render(context, request))
+@method_decorator(login_required, name='dispatch')
+class ClientCreate(CreateView):
+    template_name = "client/addclient.html"
+    form_class = ClientAddForm
+    success_url = '/client'
 
-# DeleteClient
-def deletecl(request, id):
-    try:
-        client = Client.objects.get(id=id)
-        client.delete()
-        return redirect('index')
-    except Client.DoesNotExist:
-        return HttpResponseNotFound("<h2>Клиент с таким ID не существует!</h2>")
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user.userprofile
+        form.instance.slug = slugify(form.instance.name)
+        return super(ClientCreate, self).form_valid(form)
+
+    def form_invalid(self, form):
+        response = super(ClientCreate, self).form_invalid(form)
+        return response
+
+@method_decorator(login_required, name='dispatch')
+class ClientUpdate(UpdateView):
+    model = Client
+    template_name = "client/addclient.html"
+    fields = ('name', 'type', 'phone_number', 'origin', 'email')
+    success_url = 'client/clients.html'
+
+@method_decorator(login_required, name='dispatch')
+class ClientDelete(DeleteView):
+    model = Client
+    context_object_name = 'unit'
+    success_url = reverse_lazy('client')
+    def post(self, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        # no need for redirect, thanks to jQuery
+        return HttpResponse(status=200)

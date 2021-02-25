@@ -1,19 +1,20 @@
 {% extends "navstruct.html" %}
 {% load static %}
+
 {% block title %}
 {% endblock %}
 
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static 'productstyle.css' %}">
     <div id="sidebar">
-        <p class="display-4">{{ header_page }}</p>
+        <p class="display-4">{{ page_header }}</p>
         <ul>
             <li {% if not category %}class="selected"{% endif %}>
-                <a href="{% url "inventory:product_list" %}">Все категории</a>
+                <a href="/product/query">Все категории</a>
             </li>
             {% for c in categories %}
                 <li {% if category.slug == c.slug %}class="selected"{% endif %}>
-                    <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+                    <a href="{{ c.slug }}">{{ c.name }}</a>
                 </li>
             {% endfor %}
         </ul>
@@ -30,9 +31,9 @@
                                 </a>
                             </div>
                             <figcaption class="info-wrap">
-                                    <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                                    <a href="{{ product.slug }}/{{ product.pk }}">{{ product.name }}</a>
                                     <br>
-                                    <a href="{{ product.category.get_absolute_url }}">Категория: {{ product.category }}</a>
+                                    <a href="{{ product.category.slug }}">Категория: {{ product.category }}</a>
                             </figcaption>
                             <div class="bottom-wrap">
                                 <!-- Можно использовать под поля
@@ -51,13 +52,89 @@
                                 </div> <!-- price-wrap.// -->
                                 <div class="text-center" style="display: grid;">
                                     <a href="edit/{{ product.id }}" class="btn btn-warning text-center m-2">Изменить</a>
-                                    <a href="delete/{{ product.id }}" class="btn btn-danger text-center m-2">Удалить</a>
+                                    <button data-id="{{ product.id }}" class="btn btn-danger text-center m-2 get_delete_id" role="button" data-toggle="modal" data-target="#exampleModalCenter">Удалить</button>
                                 </div>
                             </div> <!-- bottom-wrap.// -->
                         </figure>
                 </div>
                 {% endfor %}
             </div>
-        </div>
     </div>
-{% endblock %}
+
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <span class="current">
+                    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+            </span>
+        </div>
+
+        <nav aria-label="Navigation">
+            <ul class="pagination justify-content-center">
+
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}"> &laquo; Прев</a>
+                </li>
+                {% endif %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">След &raquo;</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+        <!-- exampleModalCenter -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="false">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Подтвердите</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                Вы действительно хотите удалить эту запись?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary clearLocalStorage" data-dismiss="modal">Отмена</button>
+                  <script>
+                      $( ".clearLocalStorage" ).on( "click", function() {
+                        window.localStorage.removeItem('item');
+                      });
+                  </script>
+                <button type="button" class="btn btn-primary delete_button_id">Удалить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- deleteSuccessModal -->
+        <div class="modal fade" id="deleteSuccessModal" tabindex="-1" role="dialog" aria-labelledby="deleteSuccessModalTitle" aria-hidden="true" data-backdrop="false">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteSuccessModalLongTitle">Успешно</h5>
+                <button class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p class="text-center">Запись успешно удалена!</p>
+                  <div class="container text-center">
+                    <button class="btn btn-success" data-dismiss="modal" aria-label="Close">OK</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+{% endblock content %}
+
+{% block additionaljs %}
+    <script type="text/javascript" src="{% static "product_tasks.js" %}"></script>
+{% endblock additionaljs %}

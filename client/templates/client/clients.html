@@ -1,31 +1,73 @@
 {% extends "navstruct.html" %}
+{% load static %}
 
-    {% block content %}
-    <p class="display-4 pb-5">{{ header_page }}</p>
+    <body>
+        {% block content %}
+        <p class="display-4 p-2">{{ header }}</p>
 
-        <!-- Tooltip init -->
+        <!-- JS Tooltip init, Delete func -->
+        {% csrf_token %}
         <script>
-            //A custom script is used to activate tooltips:
+            //Activate CSRF Token Validation:
             $(document).ready(function () {
-                $('[data-toggle="tooltip"]').tooltip();
+
+                var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+                function csrfSafeMethod(method) {
+                    // these HTTP methods do not require CSRF protection
+                    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                }
+                $.ajaxSetup({
+                    beforeSend: function(xhr, settings) {
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        }
+                    }
+                });
+
+                //Get userID and store in localStorage
+                $( ".get_delete_id" ).on( "click", function() {
+                var userID = $(this).attr("data-id");
+                console.log(userID);
+                window.localStorage.setItem('item', userID);
+                });
+
+                $( ".delete_button_id" ).on( "click", function() {
+                var userID = window.localStorage.getItem('item');
+                // Check if (userID) exists
+                $.ajax({
+                  url: "delete/" + userID + "/",
+                  type: 'POST',
+                   data: { csrfmiddlewaretoken: "{{ csrf_token }}",
+                           state:"active" },
+                  success: function(data) {
+                    console.log("Successfully deleted! )))");
+                    $("#exampleModalCenter").modal("hide");
+                    $("#deleteSuccessModal").modal("show");
+                    // Get the element by which we find nearest "tr"
+                    x = $("[data-id='" + userID + "']");
+                    DeleteRowAnim(x);
+                    window.localStorage.removeItem("item");
+                  }
+                });
+              });
             });
         </script>
 
-        {% if сlientsall.count > 0 %}
-
+        {% if client_list.count > 0 %}
         <div class="section">
-                    <table class="table table-responsive table-hover">
+                    <table class="client-table table table-responsive table-hover">
                         <thead class="thead-light"><tr><th>ФИО</th><th>Телефон</th><th>Тип</th><th>E-mail</th><th>Источник</th><th>Действия</th></tr></thead>
-                        {% for unit in сlientsall %}
-                        <tr><td>{{ unit.name }}</td>
+                        {% for unit in client_list %}
+                        <tr class="ClientTableRow"><td>{{ unit.name }}</td>
                             <td>{{ unit.phone_number }}</td>
                             <td>{{ unit.type }}</td>
                             <td>{{ unit.email }}</td>
                             <td>{{ unit.origin }}</td>
                             <td>
-                            <a href="detail/{{ unit.id }}" data-toggle="tooltip" data-placement="top" title="Детали"><i class="fas fa-info-circle" style="color:#4169E1; margin: 1vh;"></i></a>
-                            <a href="edit/{{ unit.id }}" data-toggle="tooltip" data-placement="top" title="Изменить"><i class="fas fa-edit" style="color:#1c7430; margin: 1vh;"></i></a>
-                            <a href="delete/{{ unit.id }}" data-toggle="tooltip" data-placement="top" title="Удалить"><i class="fas fa-user-times" style="margin: 1vh;"></i></a>
+                            <a href="detail/{{ unit.pk }}/{{ unit.slug }}" title="Детали"><ion-icon name="information-circle-outline" style="color:#4169E1;"></ion-icon></a>
+                            <a href="edit/{{ unit.pk }}/{{ unit.slug }}" title="Изменить"><ion-icon name="create-outline" style="color:#4169E1;"></ion-icon></a>
+                            <button data-id="{{ unit.pk }}" class="btn btn-default btn-lg active p-0 get_delete_id" role="button"><ion-icon name="trash-outline" data-toggle="modal" data-target="#exampleModalCenter" title="Удалить" style="margin: 2px;"></ion-icon></button>
                             </td></tr>
                         {% endfor %}
                     </table>
@@ -34,7 +76,58 @@
         <h3>Нет записей :( </h3>
         {% endif %}
 
-    {% endblock content %}
+        <!-- exampleModalCenter -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="false">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Подтвердите</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                Вы действительно хотите удалить эту запись?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary clearLocalStorage" data-dismiss="modal">Отмена</button>
+                  <script>
+                      $( ".clearLocalStorage" ).on( "click", function() {
+                        window.localStorage.removeItem('item');
+                      });
+                  </script>
+                <button type="button" class="btn btn-primary delete_button_id">Удалить</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
+        <!-- deleteSuccessModal -->
+        <div class="modal fade" id="deleteSuccessModal" tabindex="-1" role="dialog" aria-labelledby="deleteSuccessModalTitle" aria-hidden="true" data-backdrop="false">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteSuccessModalLongTitle">Успешно</h5>
+                <button class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p class="text-center">Запись успешно удалена!</p>
+                  <div class="container text-center">
+                    <button class="btn btn-success" data-dismiss="modal" aria-label="Close">OK</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        {% endblock content %}
+
+        {% block additionaljs %}
+            <script type="text/javascript" src="{% static "client_tasks.js" %}"></script>
+        {% endblock additionaljs %}
     </body>
+
 </html>
