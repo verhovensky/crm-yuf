@@ -16,7 +16,6 @@ $.ajaxSetup({
 //Get productID and store in localStorage
 $( ".get_delete_id" ).on( "click", function() {
 var productID = $(this).attr("data-id");
-console.log(productID);
 window.localStorage.setItem('item', productID);
 });
 
@@ -31,11 +30,10 @@ $.ajax({
     $("#deleteSuccessModal").modal("show");
     // Get the element by which we find nearest
     x = $("[data-id='" + productID + "']");
+    console.log(x);
     x.closest("figure").addClass("bg-danger");
     x.closest("figure").hide(2000);
-    console.log("Successfully deleted! )))");
     window.localStorage.removeItem("item");
     }
-  }
-});
+  });
 });

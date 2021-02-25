@@ -5,55 +5,7 @@
         {% block content %}
         <p class="display-4 p-2">{{ header }}</p>
 
-        <!-- JS Tooltip init, Delete func -->
         {% csrf_token %}
-        <script>
-            //Activate CSRF Token Validation:
-            $(document).ready(function () {
-
-                var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
-
-                function csrfSafeMethod(method) {
-                    // these HTTP methods do not require CSRF protection
-                    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-                }
-                $.ajaxSetup({
-                    beforeSend: function(xhr, settings) {
-                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                        }
-                    }
-                });
-
-                //Get userID and store in localStorage
-                $( ".get_delete_id" ).on( "click", function() {
-                var userID = $(this).attr("data-id");
-                console.log(userID);
-                window.localStorage.setItem('item', userID);
-                });
-
-                $( ".delete_button_id" ).on( "click", function() {
-                var userID = window.localStorage.getItem('item');
-                // Check if (userID) exists
-                $.ajax({
-                  url: "delete/" + userID + "/",
-                  type: 'POST',
-                   data: { csrfmiddlewaretoken: "{{ csrf_token }}",
-                           state:"active" },
-                  success: function(data) {
-                    console.log("Successfully deleted! )))");
-                    $("#exampleModalCenter").modal("hide");
-                    $("#deleteSuccessModal").modal("show");
-                    // Get the element by which we find nearest "tr"
-                    x = $("[data-id='" + userID + "']");
-                    DeleteRowAnim(x);
-                    window.localStorage.removeItem("item");
-                  }
-                });
-              });
-            });
-        </script>
-
         {% if client_list.count > 0 %}
         <div class="section">
                     <table class="client-table table table-responsive table-hover">
