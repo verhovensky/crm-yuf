@@ -12,6 +12,6 @@ urlpatterns = [
     path('client/', include('client.urls', namespace='client_ns')),
     path('account/', include('account.urls')),
     path('admin/', admin.site.urls),
-    # namespace = inventory
+    path('cart/', include('cart.urls', namespace='cart')),
     path('product/', include(('product.urls', 'product'), namespace='inventory'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

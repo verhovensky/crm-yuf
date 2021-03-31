@@ -6,6 +6,8 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.urls import reverse_lazy, reverse
 # slugify func
 from client.apps import slugify
+# Add to Cart form
+from cart.forms import CartAddProductForm
 
 class ProductListView(ListView):
     paginate_by = 3
@@ -34,13 +36,31 @@ class CategoryListView(ListView):
         context['categories'] = Category.objects.all()
         return context
 
+# Single Product page
+class SingleProductView(DetailView):
+    model = Product
+    cart_product_form = CartAddProductForm()
+    extra_context = {'page_title': 'Товар',
+                     'categories': Category.objects.all(),
+                     'cart_product_form': cart_product_form}
+    template_name = 'product/productdetail.html'
+    context_object_name = 'product'
+
+    # def get_context(self, queryset=None):
+    #     context['categories'] = Category.objects.all()
+    #     object = super(SingleProductView, self).get_object()
+    #     return object
+
+    def get_object(self, queryset=None):
+        return Product.objects.get(pk=self.kwargs.get('pk'))
 
 class ProductCreateView(CreateView):
     template_name = 'product/addproduct.html'
-    extra_context = {'page_title': 'Добавить товар', 'header_page': 'Добавить товар'}
+    extra_context = {'page_title': 'Добавить товар',
+                     'header_page': 'Добавить товар',
+                     'categories': Category.objects.all()}
     form_class = ProductAddForm
     success_url = 'query'
-
 
 class ProductDeleteView(DeleteView):
     model = Product

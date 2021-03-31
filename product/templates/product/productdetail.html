@@ -1,12 +1,41 @@
 {% extends "navstruct.html" %}
 {% load static %}
-{% block title %}
-{% endblock %}
 {% block content %}
-    <p class="display-4">{{ header_page }}</p>
-    <div class="product-detail">
-        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no-img.jpg" %}{% endif %}">
-        <h2><a href="{{ product.category.get_absolute_url }}">Категория: {{ product.category }}</a></h2>
-        <p class="price">{{ product.price }} сомов</p>
+
+    <div id="sidebar">
+        <ul>
+            <li class="selected">
+                <a href="/product/query">Все категории</a>
+            </li>
+            {% for c in categories %}
+                <li class="selected">
+                    <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
+
+    <p class="display-4">{{ product.name }}</p>
+    <div class="product-detail">
+        <img src="{% if product.image %}{{ MEDIA_URL }}{{ product.image.url }}{% else %}{% static "img/no-img.jpg" %}{% endif %}">
+
+        <h2><a href="{{ product.category.get_absolute_url }}">Категория: {{ product.category }}</a></h2>
+        <p class="lead"><b>Цена:</b> {{ product.price }} сомов</p>
+        <p class="lead"><b>Кол-во:</b> {{ product.stock }}</p>
+        <p class="lead"><b>Сумма:</b> {{ product.calc_total_product }}</p>
+        <p class="lead"><b>Создавший:</b> {{ product.created_by }}</p>
+        <p class="lead"><b>Дата создания:</b> {{ product.created }}</p>
+    </div>
+
+    <form action="{% url "cart:cart_add" product.id %}" method="post">
+        {{ cart_product_form }}
+        {% csrf_token %}
+        <input type="submit" value="Добавить в заказ">
+    </form>
+
+    <div class="float-left">
+        <a href=" {% url 'product:edit_product' pk=product.pk %} " class="btn btn-warning text-center m-2">Изменить</a>
+    </div>
+
 {% endblock %}
+

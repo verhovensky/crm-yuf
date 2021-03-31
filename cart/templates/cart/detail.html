@@ -1,0 +1,69 @@
+{% extends "navstruct.html" %}
+{% load static %}
+
+{% block content %}
+    <p class="display-4 p-2">{{ header }}</p>
+    {% if message %}
+        <div class="alert alert-danger" role="alert">
+            {{ message }}
+        </div>
+    {% elif no_notify == 1 %}
+        <div></div>
+    {% elif no_notify == 0 %}
+        <div class="alert alert-secondary" role="alert">
+            Добавьте товар в заказ из карточки товара
+        </div>
+    {% endif %}
+    <table class="client-table table table-responsive table-hover">
+        <thead class="thead-light">
+        <tr>
+            <th>Фото</th>
+            <th>Товар</th>
+            <th>Количество</th>
+            <th>Действие</th>
+            <th>Цена за шт</th>
+            <th>Сумма</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in cart %}
+            {% with product=item.product %}
+                <tr>
+                    <td>
+                        <a href="{{ product.get_absolute_url }}">
+                            <img src="
+                                {% if product.image %}
+                                    {{ product.image.url }}
+                                {% else %}
+                                    {% static "img/no_image.png" %}
+                                {% endif %}">
+                        </a>
+                    </td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td><a href="{% url "cart:cart_remove" product.id%}">Удалить</a></td>
+                    <td class="num">${{ item.price }}</td>
+                    <td class="num">${{ item.total_price }}</td>
+                </tr>
+            {% endwith %}
+        {% endfor %}
+        <tr class="total">
+            <td><b>Итого</b></td>
+            <td colspan="3"></td>
+            <td class="num"><b>Товаров: {{ cart|length }}</b></td>
+            <td class="num"><b>${{ cart.get_total_price }}</b></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="container float-left">
+        <div class="row">
+            <div class="col">
+                <a class="btn btn-warning" role="button">Оформить заказ</a>
+                <a class="btn btn-primary" role="button" href="{% url "inventory:product_list" %}">Добавить товары</a>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

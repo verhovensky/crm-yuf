@@ -2,7 +2,7 @@ from django.conf.urls import url
 # move to path func
 from django.urls import path
 from . import views
-from .views import ProductListView, CategoryListView, ProductCreateView, ProductDeleteView, ProductUpdateView
+from .views import ProductListView, CategoryListView, ProductCreateView, ProductDeleteView, ProductUpdateView, SingleProductView
 #for static files
 from django.conf import settings
 from django.conf.urls.static import static
@@ -14,6 +14,7 @@ urlpatterns = [
     #path('add/', views.addproduct, name="addproduct"),
     #path('edit/<int:id>', views.editproduct, name="editproduct"),
     #path('delete/<int:id>', views.deleteproduct, name='deleteproduct'),
+    path('<str:slug>/pk=<int:pk>', SingleProductView.as_view(), name='single_product'),
     path('add', ProductCreateView.as_view(), name='add_product'),
     path('edit/<int:pk>', ProductUpdateView.as_view(), name='edit_product'),
     path('query', ProductListView.as_view(), name='product_list'),

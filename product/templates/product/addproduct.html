@@ -1,13 +1,34 @@
 {% extends "navstruct.html" %}
 
 {% block content %}
-    <p class="display-4 pb-5">{{ header_page }}</p>
+    <div class="row">
+        <div class="col-sm-4">
+            <p class="display-4 pb-5">{{ header_page }}</p>
 
-    <form method="POST" class="post-form">{% csrf_token %}
-        {{ form.as_p }}
-        <div class="buttons" style="display: flex">
-            <button type="submit" style="margin-right: 5px;" class="btn btn-success">Сохранить</button>
-            <a href="/product/query" class="btn btn-warning">Отмена</a>
+            <form method="POST" class="post-form">{% csrf_token %}
+                {{ form.as_p }}
+                <div class="buttons" style="display: flex">
+                    <button type="submit" style="margin-right: 5px;" class="btn btn-success">Сохранить</button>
+                    <a href="/product/query" class="btn btn-warning">Отмена</a>
+                </div>
+            </form>
         </div>
-    </form>
+
+        <div class="row align-items-center">
+            <div class="container">
+                <p class="lead">Быстрый переход</p>
+                <ul>
+                    <li class="selected">
+                        <a href="/product/query">Все категории</a>
+                    </li>
+                    {% for c in categories %}
+                        <li class="selected">
+                            <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

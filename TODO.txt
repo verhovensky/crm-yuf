@@ -1,8 +1,13 @@
 + Refactor views into CBV
-- Main navigation Menu fix
-[Uncaught TypeError: Cannot read property 'getElementsByClassName' of null]
++ Main navigation Menu fix
 + All JS in separate files (eg. client_tasks.js, product_tasks.js)
 + JavaScript part should be in single place for all templates
 
 Fixes:
 + Animation and hide of product card (product_tasks.js)
++ Links to categories in product_detail.html
++ Edit in product_detail.html
+- Delete in product_detail.html
+Path for delete formed by product_tasks.js, so it's needed to make some workaround.
+Till now I decline this function in product_detail.html
+
