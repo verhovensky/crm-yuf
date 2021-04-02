@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from decimal import Decimal
-from product.models import Product
+from crmdev.product.models import Product
 from .cart import Cart
 from .forms import CartAddProductForm
 
@@ -16,7 +16,7 @@ def cart_add(request, product_id):
     quantity_added_by_user = Decimal(request.POST.get('quantity'))
     # print("Add by user: ", type(quantity_added_by_user), quantity_added_by_user)
     # print("Product stock: ", type(product.stock), product.stock)
-    if quantity_added_by_user >= product.stock:
+    if quantity_added_by_user >= product.stock or quantity_added_by_user <= 0:
         message = "{stock} на складе {name}, но {ordered} заказанно!".format(stock=product.stock,
                                                                              ordered=quantity_added_by_user,
                                                                              name=product.name)
