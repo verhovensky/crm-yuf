@@ -80,7 +80,12 @@ class Cart(object):
     def get_total_price(self):
         summa = sum(Decimal(item['price']) * Decimal(item['quantity']) for item in
                    self.cart.values())
-        return summa.quantize(Decimal('.01'), rounding=decimal.ROUND_DOWN)
+        # Ugly check for digits types
+        if type(summa) == int:
+            summa = Decimal(summa)
+            return summa.quantize(Decimal('.01'), rounding=decimal.ROUND_DOWN)
+        elif type(summa) == Decimal:
+            return summa.quantize(Decimal('.01'), rounding=decimal.ROUND_DOWN)
 
     def clear(self):
         # удаление корзины из сессии

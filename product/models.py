@@ -31,7 +31,7 @@ class Product(models.Model):
 
     category = models.ForeignKey(Category, related_name='products', verbose_name='Категория', on_delete=models.PROTECT)
     name = models.CharField(max_length=20, verbose_name="Название")
-    slug = models.SlugField(max_length=200, db_index=True)
+    slug = models.SlugField(max_length=45, db_index=True)
     image = models.ImageField(upload_to='products/%Y/%m/%d', blank=True, verbose_name='Фото')
     price = models.DecimalField(max_digits=10, decimal_places=1, validators=[MinValueValidator(Decimal('1.0'))], verbose_name='Цена')
     # Stock - make it also decimal, to be able to purchase 0.5 / 1.5  of product

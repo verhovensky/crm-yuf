@@ -46,11 +46,6 @@ class SingleProductView(DetailView):
     template_name = 'product/productdetail.html'
     context_object_name = 'product'
 
-    # def get_context(self, queryset=None):
-    #     context['categories'] = Category.objects.all()
-    #     object = super(SingleProductView, self).get_object()
-    #     return object
-
     def get_object(self, queryset=None):
         return Product.objects.get(pk=self.kwargs.get('pk'))
 
