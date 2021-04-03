@@ -11,9 +11,3 @@ class ClientAddForm(forms.ModelForm):
         origin = forms.ChoiceField()
         email = forms.EmailField()
         exclude = ('created_by', 'slug',)
-
-# class ClientAddForm(forms.ModelForm):
-#
-#     class Meta:
-#         model = Client
-#         fields = ('name', 'type', 'phone_number', 'origin', 'email')

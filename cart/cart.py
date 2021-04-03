@@ -1,7 +1,10 @@
 from decimal import Decimal
 import decimal
+import json
+from django.core.serializers.json import DjangoJSONEncoder
 from django.conf import settings
 from product.models import Product
+
 
 class Cart(object):
 
@@ -35,14 +38,11 @@ class Cart(object):
         else:
             # implement correct quantity addition
             in_cart_quantity = self.cart[product_id]['quantity']
-            self.cart[product_id]['quantity'] = Decimal(in_cart_quantity) + Decimal(quantity)
+            self.cart[product_id]['quantity'] = decimal.Decimal(in_cart_quantity) + decimal.Decimal(quantity)
             # TODO : implement in Order model: self.cart[product_id]['quantity'] - Product.stock
-            # ordered = self.cart[product_id]['quantity']
-            # actual_product = Product.objects.get(pk=int(product_id))
-            # actual_product.stock = actual_product.stock - ordered
-            # for serialization through JSON
             to_be_serialized = self.cart[product_id]['quantity']
-            self.cart[product_id]['quantity'] = to_be_serialized.quantize(Decimal('.01'), rounding=decimal.ROUND_DOWN)
+            ready_dec_q = to_be_serialized.quantize(Decimal('.01'), rounding=decimal.ROUND_DOWN)
+            self.cart[product_id]['quantity'] = json.dumps(ready_dec_q, cls=DjangoJSONEncoder)
         self.save()
 
     def remove(self, product):
@@ -62,9 +62,12 @@ class Cart(object):
             self.cart[str(product.id)]['product'] = product
 
         for item in self.cart.values():
-            item['price'] = Decimal(item['price'])
-            item_total_price = item['total_price'] = Decimal(item['price']) * Decimal(item['quantity'])
-            item['total_price'] = item_total_price.quantize(Decimal('.01'), rounding=decimal.ROUND_DOWN)
+            item['price'] = decimal.Decimal(item['price'])
+            correct_str = item['quantity'].replace('"', '')
+            rd_q = decimal.Decimal(correct_str)
+            item_total_price = item['price'] * rd_q
+            ready_dec = item_total_price.quantize(Decimal('.01'), rounding=decimal.ROUND_DOWN)
+            item['total_price'] = json.dumps(ready_dec, cls=DjangoJSONEncoder)
             yield item
 
     def __len__(self):
@@ -78,14 +81,14 @@ class Cart(object):
         return total
 
     def get_total_price(self):
-        summa = sum(Decimal(item['price']) * Decimal(item['quantity']) for item in
-                   self.cart.values())
-        # Ugly check for digits types
-        if type(summa) == int:
-            summa = Decimal(summa)
-            return summa.quantize(Decimal('.01'), rounding=decimal.ROUND_DOWN)
-        elif type(summa) == Decimal:
-            return summa.quantize(Decimal('.01'), rounding=decimal.ROUND_DOWN)
+        print(self.cart)
+        all_totals = []
+        for item in self.cart.values():
+            correct_str = item['total_price'].replace('"', '')
+            rd_q = decimal.Decimal(correct_str)
+            all_totals.append(rd_q)
+        print(all_totals, type(all_totals[0]))
+        return rd_q
 
     def clear(self):
         # удаление корзины из сессии

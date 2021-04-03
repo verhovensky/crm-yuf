@@ -17,7 +17,6 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-    # ??? get_absolute_url
     def get_absolute_url(self):
         return reverse('inventory:category_list',
                         args=[self.slug])
