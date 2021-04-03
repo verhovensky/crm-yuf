@@ -20,9 +20,8 @@ class Cart(object):
         self.cart = cart
 
     def save(self):
-        # Обновление сессии cart
+        # Session refresh cart
         self.session[settings.CART_SESSION_ID] = self.cart
-        # modified, чтобы убедиться, что он сохранен
         self.session.modified = True
 
     def add(self, product, quantity=1, update_quantity=False):
@@ -42,7 +41,7 @@ class Cart(object):
             # TODO : implement in Order model: self.cart[product_id]['quantity'] - Product.stock
             to_be_serialized = self.cart[product_id]['quantity']
             ready_dec_q = to_be_serialized.quantize(Decimal('.01'), rounding=decimal.ROUND_DOWN)
-            self.cart[product_id]['quantity'] = json.dumps(ready_dec_q, cls=DjangoJSONEncoder)
+            self.cart[product_id]['quantity'] = json.dumps(ready_dec_q, cls=DjangoJSONEncoder).replace('"', '')
         self.save()
 
     def remove(self, product):
@@ -67,7 +66,7 @@ class Cart(object):
             rd_q = decimal.Decimal(correct_str)
             item_total_price = item['price'] * rd_q
             ready_dec = item_total_price.quantize(Decimal('.01'), rounding=decimal.ROUND_DOWN)
-            item['total_price'] = json.dumps(ready_dec, cls=DjangoJSONEncoder)
+            item['total_price'] = json.dumps(ready_dec, cls=DjangoJSONEncoder).replace('"', '')
             yield item
 
     def __len__(self):
@@ -81,17 +80,14 @@ class Cart(object):
         return total
 
     def get_total_price(self):
-        print(self.cart)
         all_totals = []
         for item in self.cart.values():
-            correct_str = item['total_price'].replace('"', '')
-            rd_q = decimal.Decimal(correct_str)
-            all_totals.append(rd_q)
-        print(all_totals, type(all_totals[0]))
-        return rd_q
+            ready_from_str = decimal.Decimal(item['total_price'])
+            all_totals.append(ready_from_str)
+        total_totals = sum(all_totals)
+        return total_totals
 
     def clear(self):
         # удаление корзины из сессии
         del self.session[settings.CART_SESSION_ID]
         self.session.modified = True
-
