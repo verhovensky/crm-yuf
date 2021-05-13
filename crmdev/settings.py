@@ -136,5 +136,5 @@ STATICFILES_DIRS = [
 
 #MEDIA Folder (dev only)
 
-MEDIA_URL = 'WebApps/PY/media/'
+MEDIA_URL = '/mediafiles/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
