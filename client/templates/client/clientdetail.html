@@ -1,16 +1,69 @@
 {% extends 'navstruct.html' %}
+{% load staticfiles %}
 
 {% block content %}
-    <p class="display-4 pb-5">{{ client.name }}</p>
+    <p class="display-4 pb-5">{{ unit.name }}</p>
     <div>
-        <p><strong>Номер телефона:</strong> {{ client.phone_number }}</p>
-        <p><strong>Тип клиента:</strong> {{ client.type | linebreaksbr}}</p>
-        <p><strong>Откуда пришел:</strong> {{ client.origin }}</p>
-        <p><strong>Email:</strong> {{ client.email }}</p>
-        <p><strong>Создан:</strong> {{ client.created }}</p>
+        <p><strong>Номер телефона:</strong> {{ unit.phone_number }}</p>
+        <p><strong>Тип клиента:</strong> {{ unit.type | linebreaksbr}}</p>
+        <p><strong>Откуда пришел:</strong> {{ unit.origin }}</p>
+        <p><strong>Email:</strong> {{ unit.email }}</p>
+        <p><strong>Создан:</strong> {{ unit.created }}</p>
     </div>
-    <a href="/client/edit/{{ client.id }}"><button class="btn btn-warning" onlick="return false;">Изменить</button></a>
-    <a href="/client/delete/{{ client.id }}"><button class="btn btn-danger" onlick="return false;">Удалить</button></a>
-    <a href="/client/"><button class="btn btn-primary" onlick="return false;">Все клиенты</button></a>
+    <a href="{% url 'client:client_edit' unit.pk unit.slug %}"><button class="btn btn-warning" onlick="return false;">Изменить</button></a>
+    <button data-id="{{ unit.pk }}" class="btn btn-danger get_delete_id" role="button" data-toggle="modal" data-target="#ClientModalCenter">Удалить</button>
+    <a href="{% url 'client:client_main' %}"><button class="btn btn-primary" onlick="return false;">Все клиенты</button></a>
+
+     <!-- ClientModalCenter -->
+        <div class="modal fade" id="ClientModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="false">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Подтвердите</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                Вы действительно хотите удалить эту запись?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary clearLocalStorage" data-dismiss="modal">Отмена</button>
+                  <script>
+                      $( ".clearLocalStorage" ).on( "click", function() {
+                        window.localStorage.removeItem('item');
+                      });
+                  </script>
+                <button type="button" class="btn btn-primary delete_button_id">Удалить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- deleteSuccessModal -->
+        <div class="modal fade" id="deleteSuccessModal" tabindex="-1" role="dialog" aria-labelledby="deleteSuccessModalTitle" aria-hidden="true" data-backdrop="false">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteSuccessModalLongTitle">Успешно</h5>
+                <button class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p class="text-center">Запись успешно удалена!</p>
+                  <div class="container text-center">
+                    <button class="btn btn-success" data-dismiss="modal" aria-label="Close" onclick="pageRedirect()">OK</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
 {% endblock %}
+
+{% block additionaljs %}
+    <script type="text/javascript" src="{% static "client_detail_tasks.js" %}"></script>
+{% endblock additionaljs %}
+
 </html>

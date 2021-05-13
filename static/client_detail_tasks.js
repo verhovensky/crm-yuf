@@ -12,6 +12,10 @@ $.ajaxSetup({
     }
 });
 
+// Redirect back to clients page
+function pageRedirect() {
+      window.location.href = window.location.origin + "/client/";
+    }
 
 //Get client pk and store in localStorage
 $( ".get_delete_id" ).on( "click", function() {
@@ -21,9 +25,11 @@ window.localStorage.setItem('item', userID);
 
 $( ".delete_button_id" ).on( "click", function() {
 var userID = window.localStorage.getItem('item');
-// Check if client exists
+delUrl = window.location.origin + "/client/delete/";
+console.log(delUrl);
+// Check if (productID) exists
 $.ajax({
-  url: "delete/" + userID,
+  url: delUrl + userID,
   type: 'POST',
   success: function(data) {
     $("#ClientModalCenter").modal("hide");
@@ -37,6 +43,7 @@ $.ajax({
             this.remove();
         });
     window.localStorage.removeItem("item");
+
     }
   });
 });

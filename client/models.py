@@ -80,6 +80,5 @@ class Client(models.Model):
     created_by = models.ForeignKey(UserProfile, on_delete=models.PROTECT, blank=True, default=1, verbose_name='Создавший')
     updated = models.DateTimeField(auto_now=True, verbose_name='Обновлен')
 
-
     def __str__(self):
         return self.name

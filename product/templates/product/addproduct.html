@@ -5,7 +5,7 @@
         <div class="col-sm-4">
             <p class="display-4 pb-5">{{ header_page }}</p>
 
-            <form method="POST" class="post-form">{% csrf_token %}
+            <form method="POST" enctype="multipart/form-data" class="post-form">{% csrf_token %}
                 {{ form.as_p }}
                 <div class="buttons" style="display: flex">
                     <button type="submit" style="margin-right: 5px;" class="btn btn-success">Сохранить</button>

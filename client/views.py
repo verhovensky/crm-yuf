@@ -15,6 +15,7 @@ from .apps import slugify
 # if many decorators
 # decorators = [permission_required, login_required]
 
+
 @method_decorator(login_required, name='dispatch')
 class ClientTableView(ListView):
     template_name = "client/clients.html"
@@ -25,17 +26,19 @@ class ClientTableView(ListView):
         return Client.objects.filter(created_by=
                                      self.request.user.userprofile)
 
+
 @method_decorator(login_required, name='dispatch')
 class ClientDetailView(DetailView):
     template_name = "client/clientdetail.html"
     model = Client
-    context_object_name = 'client'
+    context_object_name = 'unit'
 
     def get_object(self):
         object = super(ClientDetailView, self).get_object()
         # more methods in template ?
         # object.last_accessed = timezone.now()
         return object
+
 
 @method_decorator(login_required, name='dispatch')
 class ClientCreate(CreateView):
@@ -52,18 +55,21 @@ class ClientCreate(CreateView):
         response = super(ClientCreate, self).form_invalid(form)
         return response
 
+
 @method_decorator(login_required, name='dispatch')
 class ClientUpdate(UpdateView):
     model = Client
     template_name = "client/addclient.html"
     fields = ('name', 'type', 'phone_number', 'origin', 'email')
-    success_url = 'client/clients.html'
+    success_url = '/client'
+
 
 @method_decorator(login_required, name='dispatch')
 class ClientDelete(DeleteView):
     model = Client
     context_object_name = 'unit'
-    success_url = reverse_lazy('client')
+    #success_url = reverse_lazy('client')
+
     def post(self, *args, **kwargs):
         self.object = self.get_object()
         self.object.delete()
