@@ -30,9 +30,9 @@ class Order(models.Model):
         ordering = ['-created']
 
     full_name = models.CharField(max_length=50, null=True, blank=True, verbose_name="ФИО заказчика")
-    email = models.EmailField(null=True, blank=True)
+    phone = models.CharField(max_length=22, null=True, blank=True)
     address = models.CharField(max_length=250, verbose_name="Адрес доставки")
-    postal_code = models.CharField(max_length=20, null=True, blank=True)
+    postal_code = models.CharField(max_length=20, null=True, blank=True, verbose_name="Почтовый индекс")
     # Client.client_orders.all()
     # Client associated with the Order, can be null and blank for comfort
     this_order_client = models.ForeignKey(Client, related_name='client_orders', null=True, blank=True,

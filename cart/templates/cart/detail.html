@@ -59,11 +59,40 @@
     <div class="container float-left">
         <div class="row">
             <div class="col">
-                <a class="btn btn-warning" role="button">Оформить заказ</a>
+                <a class="btn btn-success" role="button" data-toggle="modal" data-target="#OrderModalCenter">Оформить заказ</a>
                 <a class="btn btn-primary" role="button" href="{% url "inventory:product_list" %}">Добавить товары</a>
             </div>
         </div>
     </div>
 
+    <!-- Create Order choice modal (new customer / existing customer) -->
+        <div class="modal fade" id="OrderModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="false">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Подтвердите</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                Выбрать клиента или внести данные вручную?
+              </div>
+              <div class="modal-footer justify-content-center">
+                <form action="/order/create" method="GET">
+                    <button type="submit" class="btn btn-success new_client_order">Новый клиент</button>
+                </form>
+                <form action="/order/create_client" method="GET">
+                    <button type="submit" class="btn btn-primary client_order">Выбрать клиента</button>
+                </form>
+                <button type="button" class="btn btn-danger clearLocalStorage" data-dismiss="modal">Отмена</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+{% block additionaljs %}
+    <script type="text/javascript" src="{% static "create_order.js" %}"></script>
+{% endblock additionaljs %}
 
 {% endblock %}
