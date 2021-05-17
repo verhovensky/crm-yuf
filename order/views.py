@@ -17,7 +17,9 @@ class CreateForNew(CreateView):
         return render(request,
                       'create_new.html',
                       {'cart': cart,
-                       'form': form})
+                       'form': form,
+                       'page_title': 'Создание заказа',
+                       'page_header': 'Новый заказ'})
 
     def post(self, request, *args, **kwargs):
         cart = Cart(request)
@@ -38,4 +40,7 @@ class CreateForNew(CreateView):
             return render(request,
                           'create_new.html',
                           {'cart': cart,
-                           'form': form})
+                           'form': form,
+                           'page_title': 'Создание заказа',
+                           'page_header': 'Новый заказ'
+                           })
