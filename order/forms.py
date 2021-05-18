@@ -5,6 +5,7 @@ from typing import Union, Any
 import pytz
 import datetime
 from django.utils.timezone import make_aware
+from bootstrap_datepicker_plus import DateTimePickerInput
 
 
 def blank_strings(v: Union[str, Any]) -> Union[str, Any, None]:
@@ -31,9 +32,12 @@ class OrderCreateFormForNewCustomer(forms.ModelForm):
                                       'placeholder': 'Адрес доставки'}))
     delivery_time = forms.DateTimeField(label="",
                                     help_text="",
-                                    widget=forms.DateTimeInput
-                                    (attrs={'class': 'form-control',
-                                            'placeholder': 'Дата / время доставки'}))
+                                    widget=DateTimePickerInput(attrs=
+                                         {'class': 'form-control datetimepicker-input',
+                                          'data-target': '#datetimepicker1',
+                                          'placeholder': 'Время доставки',
+                                          'format': '%m/%d/%Y'}))
+
     description = forms.CharField(label="",
                                   help_text="",
                                   widget=forms.Textarea
@@ -57,10 +61,11 @@ class OrderCreateFormForNewCustomer(forms.ModelForm):
         description = cleaned_data.get('description')
 
         # Values may be None if the fields did not pass previous validations.
-        if full_name is not None and phone is not None and address is not None and delivery_time is not None and self_pick is not None and cash_on_delivery is not None and description is not None:
+        if full_name is not None and phone is not None and address is not None and delivery_time is not None \
+                and self_pick is not None and cash_on_delivery is not None and description is not None:
             if (type(delivery_time)) is datetime:
                 delivery_time = make_aware(delivery_time, timezone=pytz.timezone("Asia/Bishkek"))
-                print(delivery_time)
+                # print(delivery_time)
         else:
             self.add_error(None, ValidationError('Убедитесь что все поля заполнены верно'))
         return cleaned_data
