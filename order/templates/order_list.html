@@ -1,0 +1,42 @@
+{% extends 'navstruct.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+        <p class="display-4 p-2">{{ page_header }}</p>
+
+        {% csrf_token %}
+        {% if orders.count > 0 %}
+        <div class="section">
+                    <table class="order-table table table-responsive table-hover">
+                        <thead class="thead-light"><tr><th>ФИО</th><th>Телефон</th><th>Адрес</th><th>Дата доставки</th><th>Самовывоз</th><th>Наличные</th><th>Поступил</th><th>Статус</th><th>Действия</th></tr></thead>
+                        {% for order in orders %}
+                        <tr class="ClientTableRow"><td>{{ order.full_name }}</td>
+                            <td>{{ order.phone }}</td>
+                            <td>{{ order.address }}</td>
+                            <td>{{ order.delivery_time }}</td>
+                            {% if order.self_pick is True %}
+                               <td><ion-icon name="radio-button-on-sharp" style="color:#28a745;"></ion-icon></td>
+                            {% else %}
+                                <td><ion-icon name="radio-button-off-sharp"></ion-icon></td>
+                            {% endif %}
+                            {% if order.cash_on_delivery is True %}
+                               <td><ion-icon name="radio-button-on-sharp" style="color:#28a745;"></ion-icon></td>
+                            {% else %}
+                                <td><ion-icon name="radio-button-off-sharp"></ion-icon></td>
+                            {% endif %}
+                            <td>{{ order.get_total_cost }}</td>
+                            <td>{{ order.status }}</td>
+                            <td>
+                            <a href="" title="Детали"><ion-icon name="information-circle-outline" style="color:#4169E1;"></ion-icon></a>
+                            <a href="" title="Изменить"><ion-icon name="create-outline" style="color:#4169E1;"></ion-icon></a>
+                            <button data-id="" class="btn btn-default btn-lg active p-0 get_delete_id" role="button"><ion-icon name="trash-outline" data-toggle="modal" data-target="#ClientModalCenter" title="Удалить"></ion-icon></button>
+                            </td></tr>
+                        {% endfor %}
+                    </table>
+        </div>
+        {% else %}
+        <h3>Нет записей :( </h3>
+        {% endif %}
+
+{% endblock %}

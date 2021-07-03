@@ -33,7 +33,7 @@ class ClientDetailView(DetailView):
     model = Client
     context_object_name = 'unit'
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         object = super(ClientDetailView, self).get_object()
         # more methods in template ?
         # object.last_accessed = timezone.now()
@@ -68,7 +68,7 @@ class ClientUpdate(UpdateView):
 class ClientDelete(DeleteView):
     model = Client
     context_object_name = 'unit'
-    #success_url = reverse_lazy('client')
+    # success_url = reverse_lazy('client')
 
     def post(self, *args, **kwargs):
         self.object = self.get_object()

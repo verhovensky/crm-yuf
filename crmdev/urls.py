@@ -16,3 +16,9 @@ urlpatterns = [
     path('product/', include(('product.urls', 'product'), namespace='inventory')),
     path('order/', include(('order.urls', 'order'), namespace='order'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Login from Django urls
+# make template
+# urlpatterns += [
+#     path('accounts/', include('django.contrib.auth.urls')),
+# ]

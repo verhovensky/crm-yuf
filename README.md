@@ -4,34 +4,36 @@ Suitable for sale managers, directors and administrators of small-medium busines
 
 ### Installation
 
-### Make venv either in your IDE or by executing command:
-python3 -m venv /path/to/new/virtual/environment
+python3 -m venv /path/to/venv <br>
+source /path/to/venv/bin/activate <br>
+pip install -r requirements.txt <br>
+Create / connect db backend <br>
+python manage.py makemigrations <br>
+python manage.py migrate <br>
 
-### Install requirements
-pip install -r requirements.txt
-
-### Create DB and apply migrations
-
-### Then runserver
+Then runserver <br>
 python manage.py runserver
 
-### All done
-The Client app is made for customer analytics and tracking.
-The Product app is made for stock arrival and sales calculation.
+
 
 ### Requirements:
 
-asgiref==3.3.1  
-Django==2.2.15  
-Pillow==8.0.1  
-pytz==2020.4  
-sqlparse==0.4.1
+beautifulsoup4==4.9.3 <br>
+Django==2.2.15 <br>
+django-bootstrap-datepicker-plus==3.0.5 <br>
+django-bootstrap4==3.0.1 <br>
+Pillow==8.0.1 <br>
+pytz==2021.1 <br>
+soupsieve==2.2.1 <br>
+sqlparse==0.4.1 <br>
 
 ### To Do:
 
-- Order model
+- Dockerize
 - User groups and permissions
 - Landing page with main activity routes (app home)
+
+### Improvements
 - Google OAuth Login and registration
 - Django REST API
 - IP based calls app based on Asterisk

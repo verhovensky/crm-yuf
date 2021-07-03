@@ -7,22 +7,22 @@ import decimal
 from django.core.validators import MinValueValidator
 from django.utils import timezone
 
-# Order Status choices
-PENDING = 'Обработка'
-DONE = 'Оплачено'
-RET = 'Возврат'
-BRAK = 'Брак'
-
-
-STATUSORD = (
-    (PENDING, 'Обработка'),
-    (DONE, 'Оплачено'),
-    (RET, 'Возврат'),
-	(BRAK, 'Брак')
-)
-
 
 class Order(models.Model):
+
+    # Order Status choices
+    PENDING = 'Обработка'
+    DONE = 'Оплачено'
+    RET = 'Возврат'
+    BRAK = 'Брак'
+
+    STATUSORD = (
+        (PENDING, 'Обработка'),
+        (DONE, 'Оплачено'),
+        (RET, 'Возврат'),
+        (BRAK, 'Брак')
+    )
+
     class Meta:
         verbose_name = "заказ"
         verbose_name_plural = "заказы"
@@ -40,10 +40,10 @@ class Order(models.Model):
     # Account associated with this order, who created order
     this_order_account = models.ForeignKey(UserProfile, related_name='user_orders', null=True,
                                            verbose_name="Создавший", on_delete=models.SET_NULL)
-    status = models.CharField(choices=STATUSORD, default=STATUSORD[0], max_length=16, blank=False,
+    status = models.CharField(choices=STATUSORD, default=PENDING, max_length=16, blank=False,
                               verbose_name="Статус")
     delivery_time = models.DateTimeField(validators=[MinValueValidator(limit_value=timezone.now())],
-                                         verbose_name="Доставка на")
+                                         verbose_name="Время доставки")
     self_pick = models.BooleanField(null=False, default=False, verbose_name="Самовывоз")
     cash_on_delivery = models.BooleanField(null=False, default=False, verbose_name="Оплата при получении")
     created = models.DateTimeField(auto_now_add=True, verbose_name="Дата оформления")
@@ -53,8 +53,12 @@ class Order(models.Model):
     def __str__(self):
         return 'Заказ {}'.format(self.pk)
 
-    def get_total_cost(self):
-        return sum(item.get_cost() for item in self.items.all())
+    # TypeError 'decimal.Decimal' object is not iterable
+    # def get_total_cost(self):
+    #     return sum(item.get_cost() for item in self.items.all())
+
+    # def is_closed(self):
+    #     return self.STATUSORD in (self.DONE, self.RET, self.BRAK)
 
 
 class OrderItem(models.Model):
