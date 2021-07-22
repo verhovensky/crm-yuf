@@ -3,3 +3,5 @@ Django==2.2.15
 Pillow==8.0.1
 pytz==2020.4
 sqlparse==0.4.1
+bootstrap_datepicker_plus
+bootstrap4
