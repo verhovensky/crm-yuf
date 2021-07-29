@@ -42,7 +42,8 @@ class OrderCreateFormForNewCustomer(forms.ModelForm):
                                   help_text="",
                                   widget=forms.Textarea
                                   (attrs={'class': 'form-control',
-                                          'placeholder': 'Другие примечания / пожелания'}))
+                                          'placeholder': 'Другие примечания / пожелания',
+                                          'width': "50%", 'cols': "60", 'rows': "10", }))
 
     class Meta:
         model = Order
@@ -62,7 +63,7 @@ class OrderCreateFormForNewCustomer(forms.ModelForm):
 
         # Values may be None if the fields did not pass previous validations.
         if full_name is not None and phone is not None and address is not None and delivery_time is not None \
-                and self_pick is not None and cash_on_delivery is not None and description is not None:
+                and self_pick is not None and cash_on_delivery is not None:
             if (type(delivery_time)) is datetime:
                 delivery_time = make_aware(delivery_time, timezone=pytz.timezone("Asia/Bishkek"))
                 # print(delivery_time)
