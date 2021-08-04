@@ -2,21 +2,24 @@
 YUF (Your Ultimate Friend) - is a responsive web application (operational CRM) for managing all your company's relationships and interactions with customers and potential customers.
 Suitable for sale managers, directors and administrators of small-medium businesses.
 
-### Installation
+# Installation
 
-python3 -m venv /path/to/venv <br>
-source /path/to/venv/bin/activate <br>
-pip install -r requirements.txt <br>
-Create / connect db backend <br>
-python manage.py makemigrations <br>
-python manage.py migrate <br>
+python3 -m venv /path/to/venv 
 
-Then runserver <br>
+source /path/to/venv/bin/activate
+
+pip install -r requirements.txt
+
+#### Create & connect db backend
+
+python manage.py makemigrations
+python manage.py migrate
+
+#### Then runserver
 python manage.py runserver
 
 
-
-### Requirements:
+# Requirements:
 
 beautifulsoup4==4.9.3 <br>
 Django==2.2.15 <br>

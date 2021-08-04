@@ -31,15 +31,16 @@ class OrderCreateFormForNewCustomer(forms.ModelForm):
                               (attrs={'class': 'form-control',
                                       'placeholder': 'Адрес доставки'}))
     delivery_time = forms.DateTimeField(label="",
-                                    help_text="",
-                                    widget=DateTimePickerInput(attrs=
-                                         {'class': 'form-control datetimepicker-input',
-                                          'data-target': '#datetimepicker1',
-                                          'placeholder': 'Время доставки',
-                                          'format': '%m/%d/%Y'}))
+                              help_text="",
+                              widget=DateTimePickerInput
+                              (attrs={'class': 'form-control datetimepicker-input',
+                                      'data-target': '#datetimepicker1',
+                                      'placeholder': 'Время доставки',
+                                      'format': '%m/%d/%Y'}))
 
     description = forms.CharField(label="",
                                   help_text="",
+                                  required=False,
                                   widget=forms.Textarea
                                   (attrs={'class': 'form-control',
                                           'placeholder': 'Другие примечания / пожелания',
