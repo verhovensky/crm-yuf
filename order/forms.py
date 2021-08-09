@@ -1,6 +1,7 @@
 from django import forms
 from .models import Order
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from typing import Union, Any
 import pytz
 import datetime
@@ -14,19 +15,28 @@ def blank_strings(v: Union[str, Any]) -> Union[str, Any, None]:
     return v
 
 
+phone_regex = RegexValidator(regex=r'^\+?1?\d{9,16}$',
+                             message="Введите номер телефона, макс. длинна = 16 знаков")
+
+
 class OrderCreateFormForNewCustomer(forms.ModelForm):
     full_name = forms.CharField(label="",
                                 help_text="",
+                                min_length=3,
+                                max_length=22,
                                 widget=forms.TextInput
                                 (attrs={'class': 'form-control',
                                         'placeholder': 'ФИО заказчика'}))
     phone = forms.CharField(label="",
                             help_text="",
+                            validators=[phone_regex],
                             widget=forms.NumberInput
                             (attrs={'class': 'form-control',
                                     'placeholder': 'Моб. телефон'}))
     address = forms.CharField(label="",
                               help_text="",
+                              min_length=3,
+                              max_length=250,
                               widget=forms.TextInput
                               (attrs={'class': 'form-control',
                                       'placeholder': 'Адрес доставки'}))
@@ -40,6 +50,7 @@ class OrderCreateFormForNewCustomer(forms.ModelForm):
 
     description = forms.CharField(label="",
                                   help_text="",
+                                  max_length=500,
                                   required=False,
                                   widget=forms.Textarea
                                   (attrs={'class': 'form-control',

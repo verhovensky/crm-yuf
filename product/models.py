@@ -35,7 +35,6 @@ class Product(models.Model):
     slug = models.SlugField(max_length=45, db_index=True)
     image = models.ImageField(upload_to='products/%Y/%m/%d', blank=True, verbose_name='Фото')
     price = models.DecimalField(max_digits=10, decimal_places=1, validators=[MinValueValidator(Decimal('1.0'))], verbose_name='Цена')
-    # Stock - make it also decimal, to be able to purchase 0.5 / 1.5  of product
     stock = models.DecimalField(max_digits=10, decimal_places=1, validators=[MinValueValidator(Decimal('1.0'))], verbose_name='Кол-во')
     available = models.BooleanField(default=True, verbose_name='На складе')
     created = models.DateTimeField(auto_now_add=True)
