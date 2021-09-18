@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrap_datepicker_plus',
-    'bootstrap4',
     'client',
     'account',
     'product',
@@ -130,13 +129,13 @@ CART_SESSION_ID = 'cart'
 
 STATIC_URL = '/static/'
 
-#STATIC FILES DIRS for better integrity
+# STATIC FILES DIRS for better integrity
 STATICFILES_DIRS = [
     BASE_DIR, "static",
     '/var/www/static/',
 ]
 
-#MEDIA Folder (dev only)
+# MEDIA Folder (dev only)
 
 MEDIA_URL = '/mediafiles/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')

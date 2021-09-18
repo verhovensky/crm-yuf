@@ -13,6 +13,7 @@ pip install -r requirements.txt
 #### Create & connect db backend
 
 python manage.py makemigrations
+
 python manage.py migrate
 
 #### Then runserver

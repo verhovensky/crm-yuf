@@ -21,7 +21,7 @@ class UserProfile(models.Model):
     class Meta:
         verbose_name = "профиль"
         verbose_name_plural = "профили"
-        db_table = "profile"
+        db_table = "account"
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,16}$',
@@ -33,8 +33,8 @@ class UserProfile(models.Model):
     photo = models.ImageField(upload_to='users/%Y/%m/%d', default='users/no-user-photo.jpg', blank=True, verbose_name="Фото")
     # for closed sales and amount records
     closed_sales = models.PositiveIntegerField(default=0, verbose_name="Закрыто сделок")
-    sales_amount = models.DecimalField(default=0.0, max_digits=20, decimal_places=1, validators=[MinValueValidator(Decimal('1.0'))], verbose_name='Продано на сумму')
-
+    sales_amount = models.DecimalField(default=0.0, max_digits=20, decimal_places=1,
+                                       validators=[MinValueValidator(Decimal('1.0'))], verbose_name='Продано на сумму')
 
     def create_profile(sender, **kwargs):
         user = kwargs["instance"]
@@ -43,7 +43,6 @@ class UserProfile(models.Model):
             user_profile.save()
 
     post_save.connect(create_profile, sender=User)
-
 
     def __str__(self):
         # return 'Профиль пользователя {}'.format(self.user)
