@@ -6,10 +6,12 @@
     <p class="display-4 p-2">{{ page_header }}</p>
 
     {% if order %}
-    <div class="alert alert-success">Заказ успешно создан!</div>
-            <br>
-    <p class="display-4 p-2">Номер заказа:</p>
-    <p>{{ order }}</p>
+    <div class="col-4 p-0 m-0">
+        <div class="alert alert-success">Заказ успешно создан!</div>
+                <br>
+        <p class="display-4 p-2">Номер заказа:</p>
+        <p>{{ order }}</p>
+    </div>
     {% else %}
     <div class="d-flex">
         <div class="col-sm-auto">

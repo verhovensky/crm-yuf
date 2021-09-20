@@ -10,8 +10,10 @@
     {% elif no_notify == 1 %}
         <div></div>
     {% elif no_notify == 0 %}
-        <div class="alert alert-secondary" role="alert">
-            Добавьте товар в заказ из карточки товара
+        <div class="col-4 p-0 m-0">
+            <div class="alert alert-warning" role="alert">
+                Добавьте товар в заказ из карточки товара
+            </div>
         </div>
     {% endif %}
     <table class="client-table table table-responsive table-hover">
