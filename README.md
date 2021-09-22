@@ -25,7 +25,6 @@ python manage.py runserver
 beautifulsoup4==4.9.3 <br>
 Django==2.2.15 <br>
 django-bootstrap-datepicker-plus==3.0.5 <br>
-django-bootstrap4==3.0.1 <br>
 Pillow==8.0.1 <br>
 pytz==2021.1 <br>
 soupsieve==2.2.1 <br>
