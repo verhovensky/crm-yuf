@@ -14,4 +14,5 @@ in this way one of orders product quantity will be insufficient)
 - Calls app (?)
 - Client and Orders action permissions
 - Email / Telegram order notification
+- Tests
 - Docker
