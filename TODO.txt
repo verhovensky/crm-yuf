@@ -1,6 +1,17 @@
-Fixes:
-- Fix links in templates (by app_name)
 - Delete in product_detail.html
 Path for delete formed by product_tasks.js, so it's needed to make some workaround.
 Till now I decline this function in product_detail.html
-
+- Delete/Edit/Info functionality and buttons in orders
+- Add category functionality
+- Unique for product and client (error handling on front and back)
+- Category model extension (subcategory)
+- Fix: new order with no products (in cart)
+- Increase/Decrease product count buttons in cart
+- Add product from product page (query)
+- Warning when creating order with out of stock product (example: two sellers create order with the same product,
+in this way one of orders product quantity will be insufficient)
+- Home app (main activity routes)
+- Calls app (?)
+- Client and Orders action permissions
+- Email / Telegram order notification
+- Docker
