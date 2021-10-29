@@ -12,7 +12,8 @@ from cart.forms import CartAddProductForm
 
 class ProductListView(ListView):
     paginate_by = 3
-    extra_context = {'page_title': 'Товары', 'page_header': 'Все товары'}
+    extra_context = {'page_title': 'Товары',
+                     'page_header': 'Все товары'}
     template_name = 'product/products.html'
     context_object_name = 'products'
     queryset = Product.objects.filter(available=True).order_by('-created')
@@ -64,7 +65,7 @@ class ProductCreateView(CreateView):
 
 class ProductDeleteView(DeleteView):
     model = Product
-    #success_url = reverse_lazy('product')
+    # success_url = reverse_lazy('product')
 
     def post(self, *args, **kwargs):
         self.object = self.get_object()

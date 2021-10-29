@@ -2,7 +2,8 @@ from django.conf.urls import url
 # path func
 from django.urls import path
 from . import views
-from .views import ProductListView, CategoryListView, ProductCreateView, ProductDeleteView, ProductUpdateView, SingleProductView
+from .views import ProductListView, CategoryListView, ProductCreateView, \
+    ProductDeleteView, ProductUpdateView, SingleProductView
 # static files
 from django.conf import settings
 from django.conf.urls.static import static

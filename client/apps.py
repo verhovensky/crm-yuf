@@ -1,6 +1,7 @@
 from django.apps import AppConfig
 from django.template.defaultfilters import slugify as django_slugify
 
+
 class ClientConfig(AppConfig):
     name = 'client'
 

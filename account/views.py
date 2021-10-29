@@ -7,6 +7,8 @@ from django.template import loader
 from django.http import request
 
 # Profile display page
+
+
 @login_required
 def profile(request):
     title = 'Мой профиль'

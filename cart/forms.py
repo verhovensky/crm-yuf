@@ -8,7 +8,7 @@ import json
 from django.core.validators import MinValueValidator
 
 
-#decimal decode
+# decimal decode
 
 # import json
 # from django.core.serializers.json import DjangoJSONEncoder
@@ -34,7 +34,9 @@ class CustomJSONEncoder(json.JSONEncoder):
         # Any other serializer if needed
         return super(CustomJSONEncoder, self).default(o)
 
+
 class CartAddProductForm(forms.Form):
-    quantity = forms.DecimalField(min_value=1.0, max_digits=10, validators=[MinValueValidator(Decimal('1.0'))], label='Количество')
+    quantity = forms.DecimalField(min_value=1.0, max_digits=10,
+                                  validators=[MinValueValidator(Decimal('1.0'))], label='Количество')
     update = forms.BooleanField(required=False, initial=False, widget=forms.HiddenInput)
 

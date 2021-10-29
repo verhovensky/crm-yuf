@@ -72,7 +72,7 @@ class Client(models.Model):
                             verbose_name="ФИО")
     slug = models.SlugField(max_length=200, default='', db_index=True)
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,16}$',
-                                 message="Номер телефона должен быть в формате: '+700112299'. Макс. длинна = 16 знаков")
+                                 message="Телефон должен быть в формате: '+700112299'. Макс. длинна = 16 знаков")
     phone_number = models.CharField(max_length=16, validators=[phone_regex], blank=True,
                                     verbose_name="Телефон")
     type = models.CharField(choices=CLIENTTYPE, default=CLIENTTYPE[12], max_length=16, blank=True,
@@ -82,7 +82,7 @@ class Client(models.Model):
     email = models.EmailField(blank=True, verbose_name="Email")
     created = models.DateTimeField(auto_now_add=True, db_index=True,
                                    verbose_name="Создан")
-    # когда будет создан app USERS - надо будет СВЯЗАТЬ с каждым товар\заказу\клиент создавшего USER
+    # когда будет создан app USERS - надо будет СВЯЗАТЬ с каждым товар\заказ\клиент создавшего USER
     created_by = models.ForeignKey(UserProfile, on_delete=models.PROTECT, blank=True, default=1,
                                    verbose_name='Создавший')
     updated = models.DateTimeField(auto_now=True,
