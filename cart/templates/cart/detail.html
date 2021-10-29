@@ -61,8 +61,12 @@
     <div class="container float-left">
         <div class="row">
             <div class="col">
-                <a class="btn btn-success" role="button" data-toggle="modal" data-target="#OrderModalCenter">Оформить заказ</a>
-                <a class="btn btn-primary" role="button" href="{% url "inventory:product_list" %}">Добавить товары</a>
+                {% if no_notify == 0 %}
+                    <a class="btn btn-primary" role="button" href="{% url "inventory:product_list" %}">Добавить товары</a>
+                {% else %}
+                    <a class="btn btn-primary" role="button" href="{% url "inventory:product_list" %}">Добавить товары</a>
+                    <a class="btn btn-success" role="button" data-toggle="modal" data-target="#OrderModalCenter">Оформить заказ</a>
+                {% endif %}
             </div>
         </div>
     </div>
