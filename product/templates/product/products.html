@@ -51,6 +51,11 @@
                                     <span>Кол-во: {{ product.stock }}</span>
                                 </div> <!-- price-wrap.// -->
                                 <div class="text-center" style="display: grid;">
+                                    <form action="{% url "cart:cart_add" product.id %}" method="post">
+                                        {{ cart_product_form }}
+                                        {% csrf_token %}
+                                        <input type="submit" value="Добавить в заказ">
+                                    </form>
                                     <a href="edit/{{ product.id }}" class="btn btn-warning text-center m-2">Изменить</a>
                                     <button data-id="{{ product.id }}" class="btn btn-danger text-center m-2 get_delete_id" role="button" data-toggle="modal" data-target="#exampleModalCenter">Удалить</button>
                                 </div>

@@ -3,6 +3,7 @@ Path for delete formed by product_tasks.js, so it's needed to make some workarou
 Till now I decline this function in product_detail.html
 - Delete/Edit/Info functionality and buttons in orders
 + Fix: new order with no products (in cart)
+- Decrease product from stock
 - Add product from product page (query)
 - Increase/Decrease product count buttons in cart
 - Warning when creating order with out of stock product (example: two sellers create order with the same product,

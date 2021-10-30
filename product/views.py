@@ -12,8 +12,10 @@ from cart.forms import CartAddProductForm
 
 class ProductListView(ListView):
     paginate_by = 3
+    cart_product_form = CartAddProductForm()
     extra_context = {'page_title': 'Товары',
-                     'page_header': 'Все товары'}
+                     'page_header': 'Все товары',
+                     'cart_product_form': cart_product_form}
     template_name = 'product/products.html'
     context_object_name = 'products'
     queryset = Product.objects.filter(available=True).order_by('-created')

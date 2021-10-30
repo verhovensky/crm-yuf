@@ -28,15 +28,16 @@
         </div>
     </div>
 
-    <div class="pb-5 pt-1">
-        <a href=" {% url 'product:edit_product' pk=product.pk %} " class="btn btn-warning text-center">Изменить</a>
-    </div>
-
     <form action="{% url "cart:cart_add" product.id %}" method="post">
         {{ cart_product_form }}
         {% csrf_token %}
         <input type="submit" value="Добавить в заказ">
     </form>
+
+    <div class="pb-5 pt-1">
+        <a href=" {% url 'product:edit_product' pk=product.pk %} " class="btn btn-warning text-center">Изменить</a>
+        <a href=" {% url 'product:delete_product' pk=product.pk %} " class="btn btn-danger text-center">Удалить</a>
+    </div>
 
 {% endblock %}
 
