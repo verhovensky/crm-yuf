@@ -2,6 +2,7 @@ from .forms import OrderCreateFormForNewCustomer
 from django.views.generic import CreateView, ListView
 from django.shortcuts import render
 from .models import Order, OrderItem
+from decimal import Decimal
 from client.models import Client
 from cart.cart import Cart
 
@@ -38,14 +39,16 @@ class CreateForNew(CreateView):
     def post(self, request, *args, **kwargs):
         cart = Cart(request)
         form = OrderCreateFormForNewCustomer(request.POST)
-        if form.is_valid():
+        if form.is_valid() and len(cart) > 0:
             this_order = form.save()
             for item in cart:
                 OrderItem.objects.create(order=this_order,
                                          product=item['product'],
                                          price=item['price'],
                                          quantity=item['quantity'])
-
+                # reduce from stock
+                item['product'].stock = item['product'].stock - Decimal(item['quantity'])
+                item['product'].save()
             # очистка корзины
             cart.clear()
             return render(request, 'create_new.html',
