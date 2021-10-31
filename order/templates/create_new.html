@@ -2,74 +2,99 @@
 {% load staticfiles %}
 
 {% block content %}
-    {{ form.media }}
     <p class="display-4 p-2">{{ page_header }}</p>
-
     {% if order %}
-    <div class="col-4 p-0 m-0">
-        <div class="alert alert-success">Заказ успешно создан!</div>
-                <br>
-        <p class="display-4 p-2">Номер заказа:</p>
-        <p>{{ order }}</p>
-    </div>
+        <div class="col-4 p-0 m-0">
+            <div class="alert alert-success font-weight-bold">Данные заказа:
+            <hr>
+            <p>Номер заказа: {{ order.pk }}</p>
+            <p>Имя клиента: {{ order.full_name }}</p>
+            <p>Телефон: {{ order.phone }}</p>
+            <p>Адрес: {{ order.address }}</p>
+            <p>Время доставки: {{ order.delivery_time|date:'Y-m-d H:i' }}</p>
+            <p>Самовывоз:
+            {% if order.self_pick is True %}
+               Да
+            {% else %}
+               Нет
+            {% endif %}
+            </p>
+            <p>Оплата при получении:
+            {% if order.cash_on_delivery is True %}
+               Да
+            {% else %}
+               Нет
+            {% endif %}
+            </p>
+            <p>Приечание: {{ order.description }}</p>
+            <p>Статус: {{ order.status }}</p>
+            <hr>
+            </div>
+        </div>
+    {% elif out_products %}
+        <div class="col-4 p-0 m-0">
+            <div class="alert alert-danger">Следующих товаров уже нет в наличии!
+                <p>{{ out_products.keys }}</p>
+            </div>
+        </div>
     {% else %}
-    <div class="d-flex">
-        <div class="col-sm-auto">
-            <div class="container">
-                <form method="POST" class="post-form">{% csrf_token %}
-                        {{ form.as_p }}
-                        <div class="buttons" style="display: flex">
-                            <button type="submit" style="margin-right: 5px;" class="btn btn-success">Оформить</button>
-                            <a href="/cart/" class="btn btn-danger">Отмена</a>
-                        </div>
-                </form>
+        {{ form.media }}
+        <div class="d-flex">
+            <div class="col-sm-auto">
+                <div class="container">
+                    <form method="POST" class="post-form">{% csrf_token %}
+                            {{ form.as_p }}
+                            <div class="buttons" style="display: flex">
+                                <button type="submit" style="margin-right: 5px;" class="btn btn-success">Оформить</button>
+                                <a href="/cart/" class="btn btn-danger">Отмена</a>
+                            </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-sm-auto">
+                <div class="container">
+                        <table class="client-table table table-responsive table-hover">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>Фото</th>
+                            <th>Товар</th>
+                            <th>Количество</th>
+                            <th>Цена за шт</th>
+                            <th>Сумма</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in cart %}
+                            {% with product=item.product %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ product.get_absolute_url }}">
+                                            <img style="max-width: 100px;" src="
+                                                {% if product.image %}
+                                                    {{ product.image.url }}
+                                                {% else %}
+                                                    {% static "img/no_image.png" %}
+                                                {% endif %}">
+                                        </a>
+                                    </td>
+                                    <td>{{ product.name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td class="num">{{ item.price }}</td>
+                                    <td class="num">{{ item.total_price }}</td>
+                                </tr>
+                            {% endwith %}
+                        {% endfor %}
+                        <tr class="total">
+                            <td><b>Итого</b></td>
+                            <td colspan="2"></td>
+                            <td class="num">Товаров: {{ cart|length }}</td>
+                            <td class="num"><b>{{ cart.get_total_price }}</b></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-
-        <div class="col-sm-auto">
-            <div class="container">
-                    <table class="client-table table table-responsive table-hover">
-                    <thead class="thead-light">
-                    <tr>
-                        <th>Фото</th>
-                        <th>Товар</th>
-                        <th>Количество</th>
-                        <th>Цена за шт</th>
-                        <th>Сумма</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for item in cart %}
-                        {% with product=item.product %}
-                            <tr>
-                                <td>
-                                    <a href="{{ product.get_absolute_url }}">
-                                        <img style="max-width: 100px;" src="
-                                            {% if product.image %}
-                                                {{ product.image.url }}
-                                            {% else %}
-                                                {% static "img/no_image.png" %}
-                                            {% endif %}">
-                                    </a>
-                                </td>
-                                <td>{{ product.name }}</td>
-                                <td>{{ item.quantity }}</td>
-                                <td class="num">{{ item.price }}</td>
-                                <td class="num">{{ item.total_price }}</td>
-                            </tr>
-                        {% endwith %}
-                    {% endfor %}
-                    <tr class="total">
-                        <td><b>Итого</b></td>
-                        <td colspan="2"></td>
-                        <td class="num">Товаров: {{ cart|length }}</td>
-                        <td class="num"><b>{{ cart.get_total_price }}</b></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
     {% endif %}
 {% endblock %}
 
