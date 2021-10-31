@@ -1,15 +1,25 @@
-- Delete in product_detail.html
-Path for delete formed by product_tasks.js, so it's needed to make some workaround.
-Till now I decline this function in product_detail.html
+- Delete in product_detail.html (JavaScript)
+- Increase/Decrease product count buttons in cart (JavaScript)
+Till now I decline these functions
+
 - Delete/Edit/Info functionality and buttons in orders
 + Fix: new order with no products (in cart)
 + Decrease product from stock
 + Add product from product page (query)
-- Increase/Decrease product count buttons in cart
-- Warning when creating order with out of stock product (example: two sellers create order with the same product,
-in this way one of orders product quantity will be insufficient)
+- Account edit DOB bug (if form is valid)
+- CBV everywhere (account, cart left)
+- Order and client pagination
 - Home app (main activity routes)
-- Client and Orders action permissions
 - Email / Telegram order notification
+- Groups and permissions:
+  Client
+  a) delete client
+  b) select client for order
+  Orders
+  a) change order status
+  b) cancel order
++ Warning when creating order with out of stock product
+(example: two sellers create order with the same product,
+in this way one of orders product quantity will be insufficient)
 - Tests
 - Docker
