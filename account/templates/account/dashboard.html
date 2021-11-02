@@ -7,7 +7,7 @@
         <p><strong>Имя:</strong> {{ user.first_name }}</p>
         <p><strong>Фамилия:</strong> {{ user.last_name }}</p>
         <p><strong>Дата роджения:</strong> {{ user.userprofile.date_of_birth }}</p>
-        <p><strong>Роль:</strong> {{ myrole }}</p>
+        <p><strong>Роль:</strong> {{ user.userprofile.role }}</p>
         <p><strong>Закрыто сделок:</strong> {{ user.userprofile.closed_sales }}</p>
         <p><strong>На сумму:</strong> {{ user.userprofile.sales_amount }}</p>
         <p><strong>Телефон:</strong> {{ user.userprofile.phone_number }}</p>

@@ -3,7 +3,12 @@ from .models import UserProfile
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'date_of_birth', 'photo']
+    list_display = ('user',
+                    'date_of_birth',
+                    'phone_number',
+                    'closed_sales',
+                    'role',
+                    'sales_amount')
 
 
 admin.site.register(UserProfile, ProfileAdmin)

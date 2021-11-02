@@ -1,11 +1,23 @@
 {% extends "navstruct.html" %}
 
 {% block content %}
-    <p class="display-4 pb-5">{{ header_page }}</p>
-    <form action="" method="post" enctype="multipart/form-data">
-        {{ user_form.as_p }}
-        {{ profile_form.as_p }}
-        {% csrf_token %}
-        <p><input type="submit" value="Сохранить"></p>
-    </form>
+    <p class="display-4 pb-5">{{ page_title }}</p>
+        <div class="d-flex">
+          <div class="col-sm-auto p-0">
+              <div class="container">
+                {{ profile_form.media }}
+                <form action="" method="post" enctype="multipart/form-data">
+                    {{ user_form.as_p }}
+                    {{ profile_form.as_p }}
+                    {% csrf_token %}
+                    <div class="row pt-2">
+                        <div class="col-sm">
+                          <button type="submit" class="btn btn-success">Сохранить</button>
+                          <a href="/account/" class="btn btn-warning">Назад</a>
+                        </div>
+                    </div>
+                </form>
+              </div>
+          </div>
+        </div>
 {% endblock %}
