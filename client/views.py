@@ -4,8 +4,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 # CBV
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.views.generic.detail import SingleObjectMixin
-from django.urls import reverse_lazy, reverse
+# from django.views.generic.detail import SingleObjectMixin
+# from django.urls import reverse_lazy, reverse
 # Client model import
 from .models import Client
 from .forms import ClientAddForm
