@@ -5,9 +5,11 @@
 
     <form method="POST" class="post-form">{% csrf_token %}
         {{ form.as_p }}
-        <div class="buttons" style="display: flex">
-            <button type="submit" style="margin-right: 5px;" class="btn btn-success">Сохранить</button>
-            <a href="/client/" class="btn btn-warning">Отмена</a>
+        <div class="row pt-2">
+            <div class="col-sm">
+              <button type="submit" class="btn btn-success">Сохранить</button>
+              <a href="/client/" class="btn btn-warning">Назад</a>
+            </div>
         </div>
     </form>
 {% endblock %}
