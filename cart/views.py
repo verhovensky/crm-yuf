@@ -43,8 +43,7 @@ def cart_detail(request):
     if len(cart) > 0:
         no_notify += 1
     page_title = 'Предпросмотр заказа'
-    header = 'Предпросмотр заказа'
     return render(request, 'cart/detail.html', {'cart': cart,
                                                 'page_title': page_title,
-                                                'header': header,
+                                                'header': page_title,
                                                 'no_notify': no_notify})
