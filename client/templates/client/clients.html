@@ -6,11 +6,11 @@
         <p class="display-4 p-2">{{ header }}</p>
 
         {% csrf_token %}
-        {% if client_list.count > 0 %}
+        {% if clients.count > 0 %}
         <div class="section">
                     <table class="client-table table table-responsive table-hover">
                         <thead class="thead-light"><tr><th>ФИО</th><th>Телефон</th><th>Тип</th><th>E-mail</th><th>Источник</th><th>Действия</th></tr></thead>
-                        {% for unit in client_list %}
+                        {% for unit in clients %}
                         <tr class="ClientTableRow"><td>{{ unit.name }}</td>
                             <td>{{ unit.phone_number }}</td>
                             <td>{{ unit.type }}</td>
@@ -23,6 +23,31 @@
                             </td></tr>
                         {% endfor %}
                     </table>
+        </div>
+        <div class="container">
+              <div class="row justify-content-center">
+                  <div class="col">
+                      <span class="current">
+                                Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+                        </span>
+
+                    <nav aria-label="Navigation">
+                        <ul class="pagination">
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}"> &laquo; Прев</a>
+                            </li>
+                            {% endif %}
+
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">След &raquo;</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                  </div>
+             </div>
         </div>
         {% else %}
         <h3>Нет записей :( </h3>

@@ -19,8 +19,8 @@ from .apps import slugify
 @method_decorator(login_required, name='dispatch')
 class ClientTableView(ListView):
     template_name = "client/clients.html"
-    # name for client list in HTML template
-    context_object_name = 'client_list'
+    paginate_by = 10
+    context_object_name = 'clients'
 
     def get_queryset(self):
         return Client.objects.filter(created_by=
