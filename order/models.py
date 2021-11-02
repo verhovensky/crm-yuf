@@ -53,12 +53,8 @@ class Order(models.Model):
     def __str__(self):
         return 'Заказ {}'.format(self.pk)
 
-    # TypeError 'decimal.Decimal' object is not iterable
-    # def get_total_cost(self):
-    #     return sum(item.get_cost() for item in self.items.all())
-
-    # def is_closed(self):
-    #     return self.STATUSORD in (self.DONE, self.RET, self.BRAK)
+    def get_total_cost(self):
+        return sum([item.get_cost() for item in self.items.all()])
 
 
 class OrderItem(models.Model):
@@ -71,5 +67,5 @@ class OrderItem(models.Model):
         return '{}'.format(self.pk)
 
     def get_cost(self):
-        summa = sum(decimal.Decimal(self.price) * decimal.Decimal(self.quantity))
-        return summa.quantize(decimal.Decimal('.01'), rounding=decimal.ROUND_DOWN)
+        return decimal.Decimal(self.price) * decimal.Decimal(self.quantity).\
+            quantize(decimal.Decimal('.01'), rounding=decimal.ROUND_DOWN)
