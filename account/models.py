@@ -52,6 +52,3 @@ class UserProfile(models.Model):
     def __str__(self):
         # return 'Профиль пользователя {}'.format(self.user)
         return '{} {}'.format(self.get_role_display(), self.user)
-
-    def display_role_template(self):
-        return self.role

@@ -4,7 +4,6 @@ from .models import Order, OrderItem
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
-    #raw_pk_fields = ['product']
 
 
 class OrderAdmin(admin.ModelAdmin):
