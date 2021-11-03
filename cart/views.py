@@ -12,7 +12,7 @@ def cart_add(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     form = CartAddProductForm(request.POST)
     quantity_added_by_user = Decimal(request.POST.get('quantity'))
-    if quantity_added_by_user >= product.stock or quantity_added_by_user <= 0:
+    if quantity_added_by_user > product.stock or quantity_added_by_user <= 0:
         message = f"{product.stock} на складе товара {product.name}, " \
                   f"но {quantity_added_by_user} заказанно!"
         page_title = 'Ошибка заказа'

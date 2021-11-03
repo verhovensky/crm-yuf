@@ -32,13 +32,17 @@ class Cart(object):
         if product_id not in self.cart:
             self.cart[product_id] = {'quantity': 0,
                                      'price': str(product.price)}
+            # reduce from stock
+            product.stock = product.stock - quantity
+            product.save()
         if update_quantity:
             self.cart[product_id]['quantity'] = quantity
+            product.stock = product.stock - quantity
+            product.save()
         else:
             # implement correct quantity addition
             in_cart_quantity = self.cart[product_id]['quantity']
             self.cart[product_id]['quantity'] = decimal.Decimal(in_cart_quantity) + decimal.Decimal(quantity)
-            # TODO : implement in Order model: self.cart[product_id]['quantity'] - Product.stock
             to_be_serialized = self.cart[product_id]['quantity']
             ready_dec_q = to_be_serialized.quantize(Decimal('.01'), rounding=decimal.ROUND_DOWN)
             self.cart[product_id]['quantity'] = json.dumps(ready_dec_q, cls=DjangoJSONEncoder).replace('"', '')
@@ -50,6 +54,9 @@ class Cart(object):
         """
         product_id = str(product.id)
         if product_id in self.cart:
+            # add quantity back to stock
+            product.stock = product.stock + Decimal(self.cart[product_id]['quantity'])
+            product.save()
             del self.cart[product_id]
             self.save()
 
