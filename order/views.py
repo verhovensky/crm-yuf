@@ -37,38 +37,21 @@ class CreateForNew(CreateView):
                        'page_header': 'Новый заказ'})
 
     def post(self, request, *args, **kwargs):
-        out_products = {}
         cart = Cart(request)
         form = OrderCreateFormForNewCustomer(request.POST)
-        out_products.update((k, v) for k, v in check_out_of_stock(
-                    ql=[Decimal(x['quantity']) for x in cart.cart.values()],
-                    pl=[x['product'] for x in cart]).items() if v == 'out')
         if form.is_valid() and len(cart) > 0:
-            if len(out_products) == 0:
-                this_order = form.save()
-                for item in cart:
-                    OrderItem.objects.create(order=this_order,
-                                             product=item['product'],
-                                             price=item['price'],
-                                             quantity=item['quantity'])
-                    # reduce from stock
-                    item['product'].stock = item['product'].stock - Decimal(item['quantity'])
-                    item['product'].save()
-                # очистка корзины
-                cart.clear()
-                return render(request, 'create_new.html',
-                              {'page_title': f'Заказ #{this_order.pk}',
-                               'page_header': 'Заказ создан',
-                               'order': this_order})
-            else:
-                return render(request,
-                              'create_new.html',
-                              {'cart': cart,
-                               'form': form,
-                               'page_title': 'Нет в наличии',
-                               'page_header': 'Нет в наличии',
-                               'out_products': out_products
-                               })
+            this_order = form.save()
+            for item in cart:
+                OrderItem.objects.create(order=this_order,
+                                         product=item['product'],
+                                         price=item['price'],
+                                         quantity=item['quantity'])
+            # очистка корзины
+            cart.clear()
+            return render(request, 'create_new.html',
+                          {'page_title': f'Заказ #{this_order.pk}',
+                           'page_header': 'Заказ создан',
+                           'order': this_order})
         else:
             return render(request,
                           'create_new.html',

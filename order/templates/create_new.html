@@ -31,12 +31,6 @@
             <hr>
             </div>
         </div>
-    {% elif out_products %}
-        <div class="col-4 p-0 m-0">
-            <div class="alert alert-danger">Следующих товаров уже нет в наличии!
-                <p>{{ out_products.keys }}</p>
-            </div>
-        </div>
     {% else %}
         {{ form.media }}
         <div class="d-flex">
