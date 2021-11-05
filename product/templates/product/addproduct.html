@@ -3,8 +3,8 @@
 {% block content %}
     <div class="row">
         <div class="col-sm-4">
-            <p class="display-4 pb-5">{{ header_page }}</p>
-
+            <p class="display-4 p-2">{{ header_page }}</p>
+            <hr class="p-2">
             <form method="POST" enctype="multipart/form-data" class="post-form">{% csrf_token %}
                 {{ form.as_p }}
                 <div class="buttons" style="display: flex">

@@ -2,16 +2,16 @@
 {% load staticfiles %}
 
 {% block content %}
-    <p class="display-4 pb-5">{{ unit.name }}</p>
+    <p class="display-4 pb-2">{{ client.name }}</p>
     <div>
-        <p><strong>Номер телефона:</strong> {{ unit.phone_number }}</p>
-        <p><strong>Тип клиента:</strong> {{ unit.type | linebreaksbr}}</p>
-        <p><strong>Откуда пришел:</strong> {{ unit.origin }}</p>
-        <p><strong>Email:</strong> {{ unit.email }}</p>
-        <p><strong>Создан:</strong> {{ unit.created }}</p>
+        <p><strong>Номер телефона:</strong> {{ client.phone_number }}</p>
+        <p><strong>Тип клиента:</strong> {{ client.type | linebreaksbr}}</p>
+        <p><strong>Откуда пришел:</strong> {{ client.origin }}</p>
+        <p><strong>Email:</strong> {{ client.email }}</p>
+        <p><strong>Создан:</strong> {{ client.created }}</p>
     </div>
-    <a href="{% url 'client:client_edit' unit.pk unit.slug %}"><button class="btn btn-warning" onlick="return false;">Изменить</button></a>
-    <button data-id="{{ unit.pk }}" class="btn btn-danger get_delete_id" role="button" data-toggle="modal" data-target="#ClientModalCenter">Удалить</button>
+    <a href="{% url 'client:client_edit' client.pk client.slug %}"><button class="btn btn-warning" onlick="return false;">Изменить</button></a>
+    <button data-id="{{ client.pk }}" class="btn btn-danger get_delete_id" role="button" data-toggle="modal" data-target="#ClientModalCenter">Удалить</button>
     <a href="{% url 'client:client_main' %}"><button class="btn btn-primary" onlick="return false;">Все клиенты</button></a>
 
      <!-- ClientModalCenter -->

@@ -10,16 +10,16 @@
         <div class="section">
                     <table class="client-table table table-responsive table-hover">
                         <thead class="thead-light"><tr><th>ФИО</th><th>Телефон</th><th>Тип</th><th>E-mail</th><th>Источник</th><th>Действия</th></tr></thead>
-                        {% for unit in clients %}
-                        <tr class="ClientTableRow"><td>{{ unit.name }}</td>
-                            <td>{{ unit.phone_number }}</td>
-                            <td>{{ unit.type }}</td>
-                            <td>{{ unit.email }}</td>
-                            <td>{{ unit.origin }}</td>
+                        {% for client in clients %}
+                        <tr class="ClientTableRow"><td>{{ client.name }}</td>
+                            <td>{{ client.phone_number }}</td>
+                            <td>{{ client.type }}</td>
+                            <td>{{ client.email }}</td>
+                            <td>{{ client.origin }}</td>
                             <td>
-                            <a href="{% url 'client:client_detail' unit.pk unit.slug %}" title="Детали"><ion-icon name="information-circle-outline" style="color:#4169E1;"></ion-icon></a>
-                            <a href="{% url 'client:client_edit' unit.pk unit.slug %}" title="Изменить"><ion-icon name="create-outline" style="color:#4169E1;"></ion-icon></a>
-                            <button data-id="{{ unit.pk }}" class="btn btn-default btn-lg active p-0 get_delete_id" role="button"><ion-icon name="trash-outline" data-toggle="modal" data-target="#ClientModalCenter" title="Удалить"></ion-icon></button>
+                            <a href="{% url 'client:client_detail' client.pk client.slug %}" title="Детали"><ion-icon name="information-circle-outline" style="color:#4169E1;"></ion-icon></a>
+                            <a href="{% url 'client:client_edit' client.pk client.slug %}" title="Изменить"><ion-icon name="create-outline" style="color:#4169E1;"></ion-icon></a>
+                            <button data-id="{{ client.pk }}" class="btn btn-default btn-lg active p-0 get_delete_id" role="button"><ion-icon name="trash-outline" data-toggle="modal" data-target="#ClientModalCenter" title="Удалить"></ion-icon></button>
                             </td></tr>
                         {% endfor %}
                     </table>

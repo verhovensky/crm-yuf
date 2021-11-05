@@ -1,16 +1,12 @@
-from django.shortcuts import get_object_or_404, HttpResponse, redirect
+from django.shortcuts import HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import Category, Product
 from .forms import ProductAddForm
-# CBV
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy, reverse
-# slugify func
-from client.apps import slugify
-# Add to Cart form
 from cart.forms import CartAddProductForm
 
 
-class ProductListView(ListView):
+class ProductListView(LoginRequiredMixin, ListView):
     paginate_by = 3
     cart_product_form = CartAddProductForm()
     extra_context = {'page_title': 'Товары',
@@ -26,7 +22,7 @@ class ProductListView(ListView):
         return context
 
 
-class CategoryListView(ListView):
+class CategoryListView(LoginRequiredMixin, ListView):
     paginate_by = 3
     extra_context = {'page_title': 'Товары', 'page_header': 'Все товары'}
     template_name = 'product/products.html'
@@ -43,7 +39,7 @@ class CategoryListView(ListView):
 
 
 # Single Product page
-class SingleProductView(DetailView):
+class SingleProductView(LoginRequiredMixin, DetailView):
     model = Product
     cart_product_form = CartAddProductForm()
     extra_context = {'page_title': 'Товар',
@@ -56,7 +52,8 @@ class SingleProductView(DetailView):
         return Product.objects.get(pk=self.kwargs.get('pk'))
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = 'product.add_product'
     template_name = 'product/addproduct.html'
     extra_context = {'page_title': 'Добавить товар',
                      'header_page': 'Добавить товар',
@@ -65,8 +62,9 @@ class ProductCreateView(CreateView):
     success_url = 'query'
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(PermissionRequiredMixin, DeleteView):
     model = Product
+    permission_required = 'product.delete_product'
     # success_url = reverse_lazy('product')
 
     def post(self, *args, **kwargs):
@@ -76,8 +74,9 @@ class ProductDeleteView(DeleteView):
         return HttpResponse(status=200)
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(PermissionRequiredMixin, UpdateView):
     model = Product
+    permission_required = 'product.change_product'
     template_name = 'product/addproduct.html'
     fields = ('name', 'image', 'price', 'stock', 'available')
     success_url = '/product/query'

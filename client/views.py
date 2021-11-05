@@ -1,37 +1,28 @@
 from django.http import HttpResponse
-# decorators
-from django.contrib.auth.decorators import login_required, permission_required
-from django.utils.decorators import method_decorator
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 # CBV
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-# from django.views.generic.detail import SingleObjectMixin
-# from django.urls import reverse_lazy, reverse
-# Client model import
 from .models import Client
 from .forms import ClientAddForm
 # import slugify function to transliterate slug
 from .apps import slugify
 
-# if many decorators
-# decorators = [permission_required, login_required]
 
-
-@method_decorator(login_required, name='dispatch')
-class ClientTableView(ListView):
+class ClientTableView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    permission_required = 'client.view_client'
     template_name = "client/clients.html"
     paginate_by = 10
     context_object_name = 'clients'
 
     def get_queryset(self):
-        return Client.objects.filter(created_by=
-                                     self.request.user.userprofile)
+        return Client.objects.all()
 
 
-@method_decorator(login_required, name='dispatch')
-class ClientDetailView(DetailView):
+class ClientDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+    permission_required = 'client.view_client'
     template_name = "client/clientdetail.html"
     model = Client
-    context_object_name = 'unit'
+    context_object_name = 'client'
 
     def get_object(self, queryset=None):
         object = super(ClientDetailView, self).get_object()
@@ -40,8 +31,8 @@ class ClientDetailView(DetailView):
         return object
 
 
-@method_decorator(login_required, name='dispatch')
-class ClientCreate(CreateView):
+class ClientCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'client.add_client'
     template_name = "client/addclient.html"
     form_class = ClientAddForm
     success_url = '/client'
@@ -56,18 +47,19 @@ class ClientCreate(CreateView):
         return response
 
 
-@method_decorator(login_required, name='dispatch')
-class ClientUpdate(UpdateView):
+class ClientUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Client
+    context_object_name = 'client'
+    permission_required = 'client.change_client'
     template_name = "client/addclient.html"
     fields = ('name', 'type', 'phone_number', 'origin', 'email')
     success_url = '/client'
 
 
-@method_decorator(login_required, name='dispatch')
-class ClientDelete(DeleteView):
+class ClientDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Client
-    context_object_name = 'unit'
+    permission_required = 'client.delete_client'
+    context_object_name = 'client'
     # success_url = reverse_lazy('client')
 
     def post(self, *args, **kwargs):

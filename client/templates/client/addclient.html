@@ -1,15 +1,23 @@
 {% extends "navstruct.html" %}
 
 {% block content %}
-    <p class="display-4 pb-5">{{ header_page }}</p>
-
-    <form method="POST" class="post-form">{% csrf_token %}
-        {{ form.as_p }}
-        <div class="row pt-2">
-            <div class="col-sm">
-              <button type="submit" class="btn btn-success">Сохранить</button>
-              <a href="/client/" class="btn btn-warning">Назад</a>
-            </div>
+    <div class="row">
+        <div class="col-sm-4">
+            {% if client %}
+                <p class="display-4 p-2">{{ client.name }}</p>
+            {% else %}
+                <p class="display-4 p-2">Добавить клиента</p>
+                <hr class="p-2">
+            {% endif %}
+            <form method="POST" class="post-form">{% csrf_token %}
+                {{ form.as_p }}
+                <div class="row pt-2">
+                    <div class="col-sm">
+                      <button type="submit" class="btn btn-success">Сохранить</button>
+                      <a href="/client/" class="btn btn-warning">Назад</a>
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 {% endblock %}
