@@ -46,5 +46,5 @@ class EditProfile(UpdateView):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            return render(request, template_name='account/dashboard.html',
-                          context={'page_title': 'Мой профиль'})
+            return render(request,
+                          template_name='account/dashboard.html')

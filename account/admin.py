@@ -7,7 +7,6 @@ class ProfileAdmin(admin.ModelAdmin):
                     'date_of_birth',
                     'phone_number',
                     'closed_sales',
-                    'role',
                     'sales_amount')
 
 

@@ -22,4 +22,3 @@ class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ('date_of_birth', 'phone_number', 'photo')
-
