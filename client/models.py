@@ -66,23 +66,21 @@ class Client(models.Model):
         verbose_name = "клиент"
         verbose_name_plural = "клиенты"
         db_table = "client"
-        index_together = (('id', 'slug'),)
 
-    name = models.CharField(max_length=32, blank=False, default=None,
+    name = models.CharField(max_length=32, blank=False, default=None, unique=True,
                             verbose_name="ФИО")
-    slug = models.SlugField(max_length=200, default='', db_index=True)
+    slug = models.SlugField(max_length=200, default='')
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,16}$',
                                  message="Телефон должен быть в формате: '+700112299'. Макс. длинна = 16 знаков")
     phone_number = models.CharField(max_length=16, validators=[phone_regex], blank=True,
+                                    unique=True,
                                     verbose_name="Телефон")
     type = models.CharField(choices=CLIENTTYPE, default=CLIENTTYPE[12], max_length=16, blank=True,
                             verbose_name="Тип")
     origin = models.CharField(choices=ORIGINS, default=ORIGINS[7], max_length=16, blank=True,
                               verbose_name="Источник")
     email = models.EmailField(blank=True, verbose_name="Email")
-    created = models.DateTimeField(auto_now_add=True, db_index=True,
-                                   verbose_name="Создан")
-    # когда будет создан app USERS - надо будет СВЯЗАТЬ с каждым товар\заказ\клиент создавшего USER
+    created = models.DateTimeField(auto_now_add=True, verbose_name="Создан")
     created_by = models.ForeignKey(UserProfile, on_delete=models.PROTECT, blank=True, default=1,
                                    verbose_name='Создавший')
     updated = models.DateTimeField(auto_now=True,

@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 # CBV
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Client
@@ -8,7 +8,8 @@ from .forms import ClientAddForm
 from .apps import slugify
 
 
-class ClientTableView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+# PermissionRequiredMixin returns false for AnonymousUser
+class ClientTableView(PermissionRequiredMixin, ListView):
     permission_required = 'client.view_client'
     template_name = "client/clients.html"
     paginate_by = 10
@@ -18,7 +19,7 @@ class ClientTableView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         return Client.objects.all()
 
 
-class ClientDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+class ClientDetailView(PermissionRequiredMixin, DetailView):
     permission_required = 'client.view_client'
     template_name = "client/clientdetail.html"
     model = Client
@@ -31,7 +32,7 @@ class ClientDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
         return object
 
 
-class ClientCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class ClientCreate(PermissionRequiredMixin, CreateView):
     permission_required = 'client.add_client'
     template_name = "client/addclient.html"
     form_class = ClientAddForm
@@ -47,7 +48,7 @@ class ClientCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         return response
 
 
-class ClientUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class ClientUpdate(PermissionRequiredMixin, UpdateView):
     model = Client
     context_object_name = 'client'
     permission_required = 'client.change_client'
@@ -56,11 +57,10 @@ class ClientUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     success_url = '/client'
 
 
-class ClientDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+class ClientDelete(PermissionRequiredMixin, DeleteView):
     model = Client
     permission_required = 'client.delete_client'
     context_object_name = 'client'
-    # success_url = reverse_lazy('client')
 
     def post(self, *args, **kwargs):
         self.object = self.get_object()
