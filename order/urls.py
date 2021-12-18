@@ -1,7 +1,5 @@
 from django.urls import path
-#CBV
-from .views import CreateForNew, OrderListAll
-#for static files
+from .views import CreateForNew, OrderListAll, CreateForExisting
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -14,4 +12,8 @@ urlpatterns = [
                                          {'page_title': 'Создание заказа',
                                           'page_header': 'Новый заказ'}),
          name='create'),
+    path('create_client/', CreateForExisting.as_view(extra_context=
+                                         {'page_title': 'Создание заказа',
+                                          'page_header': 'Новый заказ'}),
+         name='create_client'),
 ] + static(settings.STATIC_URL)

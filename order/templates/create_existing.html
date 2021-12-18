@@ -8,8 +8,8 @@
             <div class="alert alert-success font-weight-bold">Данные заказа:
             <hr>
             <p>Номер заказа: {{ order.pk }}</p>
-            <p>Имя клиента: {{ order.full_name }}</p>
-            <p>Телефон: {{ order.phone }}</p>
+            <p>Имя клиента: {{ order.this_order_client.name }}</p>
+            <p>Телефон: {{ order.this_order_client.phone_number }}</p>
             <p>Адрес: {{ order.address }}</p>
             <p>Время доставки: {{ order.delivery_time|date:'Y-m-d H:i' }}</p>
             <p>Самовывоз:
