@@ -39,7 +39,8 @@
                     {% if messages %}
                     <div class="alert alert-danger" role="alert">
                         {% for message in messages %}
-                            <div class="text-dark" {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+                            <br>
+                            <div class="text-dark">{{ message }}</div>
                         {% endfor %}
                     </div>
                     {% endif %}

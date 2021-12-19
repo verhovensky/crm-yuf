@@ -48,6 +48,7 @@ class CreateForNew(CreateView):
                            'order': this_order})
         else:
             messages.add_message(request, messages.WARNING, 'Убедитесь что все поля заполнены верно!')
+            messages.add_message(request, messages.WARNING, form.errors)
             return redirect(request.META['HTTP_REFERER'])
 
 
@@ -86,6 +87,7 @@ class CreateForExisting(CreateView):
                            'order': this_order})
         else:
             messages.add_message(request, messages.WARNING, 'Убедитесь что все поля заполнены верно!')
+            messages.add_message(request, messages.WARNING, form.errors)
             return redirect(request.META['HTTP_REFERER'])
 
 # class CompletePendingOrder

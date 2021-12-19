@@ -42,8 +42,13 @@ class Order(models.Model):
                                            verbose_name="Создавший", on_delete=models.SET_NULL)
     status = models.CharField(choices=STATUSORD, default=PENDING, max_length=16, blank=False,
                               verbose_name="Статус")
+    # TODO: unique = True, error "unique":""
     delivery_time = models.DateTimeField(validators=[MinValueValidator(limit_value=timezone.now())],
-                                         verbose_name="Время доставки")
+                                         verbose_name="Время доставки",
+                                         error_messages={"blank": "Выберите дату заказа",
+                                                         "null": "Выберите реальную дату заказа",
+                                                         "invalid_choice": "Нельзя создать заказ в прошлом!",
+                                                         "invalid": "Нельзя создать заказ в прошлом!"})
     self_pick = models.BooleanField(null=False, default=False, verbose_name="Самовывоз")
     cash_on_delivery = models.BooleanField(null=False, default=False, verbose_name="Оплата при получении")
     created = models.DateTimeField(auto_now_add=True, verbose_name="Дата оформления")
