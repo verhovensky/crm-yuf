@@ -3,21 +3,17 @@
 
 {% block content %}
     <p class="display-4 p-2">{{ header }}</p>
-    {% if message %}
-        <div class="d-flex">
+    <div class="col-4 p-0 m-0">
+        {% if messages %}
             <div class="alert alert-danger" role="alert">
-                {{ message }}
+                <ul class="messages m-0">
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
             </div>
-        </div>
-    {% elif no_notify == 1 %}
-        <div></div>
-    {% elif no_notify == 0 %}
-        <div class="col-4 p-0 m-0">
-            <div class="alert alert-warning" role="alert">
-                Добавьте товар в заказ из карточки товара
-            </div>
-        </div>
-    {% endif %}
+        {% endif %}
+    </div>
     <table class="client-table table table-responsive table-hover">
         <thead class="thead-light">
         <tr>
@@ -45,7 +41,12 @@
                     </td>
                     <td>{{ product.name }}</td>
                     <td>{{ item.quantity }}</td>
-                    <td><a href="{% url "cart:cart_remove" product.id%}">Удалить</a></td>
+                    <td>
+                    <form action={% url "cart:cart_remove" product.id %}  method="POST">
+                        {% csrf_token %}
+                        <input type="submit" value="Удалить" />
+                    </form>
+                    </td>
                     <td class="num">{{ item.price }}</td>
                     <td class="num">{{ item.total_price }}</td>
                 </tr>

@@ -15,9 +15,9 @@ class Cart(object):
         self.session = request.session
         cart = self.session.get(settings.CART_SESSION_ID)
         if not cart:
-            # save an empty cart in the session
             cart = self.session[settings.CART_SESSION_ID] = {}
         self.cart = cart
+        self._data_len = len(self.cart.items())
 
     def save(self):
         # Session refresh cart
@@ -28,71 +28,53 @@ class Cart(object):
         """
         Add product to cart
         """
-        product_id = str(product.id)
-        if product_id not in self.cart:
-            self.cart[product_id] = {'quantity': 0,
-                                     'price': str(product.price)}
-            # reduce from stock
+        if str(product.id) not in self.cart:
+            self.cart[str(product.id)] = {'quantity': 0,
+                                          'price': str(product.price)}
             product.stock = product.stock - quantity
             product.save()
         if update_quantity:
-            self.cart[product_id]['quantity'] = quantity
             product.stock = product.stock - quantity
             product.save()
-        else:
-            # implement correct quantity addition
-            in_cart_quantity = self.cart[product_id]['quantity']
-            self.cart[product_id]['quantity'] = decimal.Decimal(in_cart_quantity) + decimal.Decimal(quantity)
-            to_be_serialized = self.cart[product_id]['quantity']
-            ready_dec_q = to_be_serialized.quantize(Decimal('.01'), rounding=decimal.ROUND_DOWN)
-            self.cart[product_id]['quantity'] = json.dumps(ready_dec_q, cls=DjangoJSONEncoder).replace('"', '')
+        self.cart[str(product.id)]['quantity'] = decimal.Decimal(self.cart[str(product.id)]['quantity']) \
+                                            + decimal.Decimal(quantity)
+        self.cart[str(product.id)]['quantity'] = json.dumps(self.cart[str(product.id)]['quantity'].
+                                                            quantize(Decimal('.01'),
+                                                            rounding=decimal.ROUND_DOWN),
+                                                            cls=DjangoJSONEncoder).replace('"', '')
         self.save()
 
     def remove(self, product):
         """
         Remove products from cart
         """
-        product_id = str(product.id)
-        if product_id in self.cart:
-            # add quantity back to stock
-            product.stock = product.stock + Decimal(self.cart[product_id]['quantity'])
-            product.save()
-            del self.cart[product_id]
-            self.save()
+        product.stock = product.stock + Decimal(self.cart[str(product.id)]['quantity'])
+        product.save()
+        del self.cart[str(product.id)]
+        self.save()
 
     def __iter__(self):
         product_ids = self.cart.keys()
-        # получение объектов product и добавление их в корзину
         products = Product.objects.filter(id__in=product_ids)
         for product in products:
             self.cart[str(product.id)]['product'] = product
 
         for item in self.cart.values():
-            item['price'] = decimal.Decimal(item['price'])
-            correct_str = item['quantity'].replace('"', '')
-            rd_q = decimal.Decimal(correct_str)
-            item_total_price = item['price'] * rd_q
-            ready_dec = item_total_price.quantize(Decimal('.01'), rounding=decimal.ROUND_DOWN)
-            item['total_price'] = json.dumps(ready_dec, cls=DjangoJSONEncoder).replace('"', '')
+            item_total_price = decimal.Decimal(item['price']) * \
+                               decimal.Decimal(item['quantity'].replace('"', ''))
+            item['total_price'] = json.dumps(item_total_price.quantize(Decimal('.01'),
+                                             rounding=decimal.ROUND_DOWN),
+                                             cls=DjangoJSONEncoder).replace('"', '')
             yield item
 
     def __len__(self):
-        """
-        Total product TYPES in cart.
-        One product type = total + 1
-        """
-        total = 0
-        for item in self.cart.items():
-            total += 1
-        return total
+        return self._data_len
 
     def get_total_price(self):
-        all_totals = []
-        for item in self.cart.values():
-            ready_from_str = decimal.Decimal(item['total_price'])
-            all_totals.append(ready_from_str)
-        total_totals = sum(all_totals)
-        return total_totals
+        at = []
+        for i, x in enumerate(self.cart.values()):
+            at.append(decimal.Decimal(x['total_price']))
+        return sum(at)
 
     def clear(self):
         # удаление корзины из сессии
