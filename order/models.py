@@ -37,13 +37,17 @@ class Order(models.Model):
     status = models.CharField(choices=STATUSORD, default=PENDING, max_length=16, blank=False,
                               verbose_name="Статус")
     # TODO: unique = True, error "unique":""
-    delivery_time = models.DateTimeField(verbose_name="Время доставки", unique=True,
+    delivery_time = models.DateTimeField(verbose_name="Время доставки",
                                          error_messages={"blank": "Выберите дату заказа"})
     self_pick = models.BooleanField(null=False, default=False, verbose_name="Самовывоз")
     cash_on_delivery = models.BooleanField(null=False, default=False, verbose_name="Оплата при получении")
-    # TODO: total value of order, save from view (cart)
+    # TODO: order.total=sum (items from cart)
+    # TODO: order.status=expired (choice)
+    # TODO: table with changed statuses and UserProfiles maybe needed
     # total = models.DecimalField(max_digits=10, decimal_places=1, validators=[MinValueValidator(Decimal('300.0'))],
     #                                 verbose_name='Сумма заказа')
+    # updated_by = models.ForeignKey(UserProfile, related_name='user_orders', null=True,
+    #                                            verbose_name="Изменивший статус", on_delete=models.SET_NULL)
     created = models.DateTimeField(auto_now_add=True, verbose_name="Дата оформления")
     updated = models.DateTimeField(auto_now=True, verbose_name="Статус изменен")
     description = models.TextField(blank=True, max_length=500, verbose_name="Примечание")

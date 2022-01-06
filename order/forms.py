@@ -112,3 +112,19 @@ class OrderCreateFormForExistingCustomer(forms.ModelForm):
                                   (attrs={'class': 'form-control',
                                           'placeholder': 'Другие примечания / пожелания',
                                           'width': "50%", 'cols': "60", 'rows': "10", }))
+
+
+class OrderChangeForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['status', 'description', 'this_order_client', 'full_name']
+
+    full_name = forms.CharField(disabled=True)
+    this_order_client = forms.CharField(disabled=True)
+    status = forms.Select(choices=Order.STATUSORD,)
+    description = forms.CharField(max_length=500,
+                                  required=False,
+                                  error_messages=
+                                  {'invalid': 'Макс. длинна = 500 символов'},
+                                  widget=forms.Textarea
+                                  (attrs={'width': "50%", 'cols': "60", 'rows': "10", }))

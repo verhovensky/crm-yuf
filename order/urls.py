@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CreateForNew, OrderListAll, CreateForExisting
+from .views import OrderListAll, ChangeOrder, CreateOrder, OrderDetailView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -8,12 +8,16 @@ urlpatterns = [
                                       {'page_title': 'Заказы',
                                        'page_header': 'Все заказы'}),
          name='list'),
-    path('create/', CreateForNew.as_view(extra_context=
-                                         {'page_title': 'Создание заказа',
-                                          'page_header': 'Новый заказ'}),
+    path('detail/<int:pk>', OrderDetailView.as_view(extra_context=
+                                                    {'page_title': 'Детали заказа',
+                                                     'page_header': 'Детали заказа'}),
+         name='detail'),
+    path('create/<str:kind>', CreateOrder.as_view(extra_context=
+                                                {'page_title': 'Создание заказа',
+                                                 'page_header': 'Новый заказ'}),
          name='create'),
-    path('create_client/', CreateForExisting.as_view(extra_context=
-                                         {'page_title': 'Создание заказа',
-                                          'page_header': 'Новый заказ'}),
-         name='create_client'),
+    path('change/<int:pk>', ChangeOrder.as_view(extra_context=
+                                       {'page_title': 'Изменить статус',
+                                        'page_header': 'Изменить статус заказа'}),
+         name='order_change')
 ] + static(settings.STATIC_URL)
