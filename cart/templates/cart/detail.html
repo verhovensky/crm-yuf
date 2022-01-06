@@ -64,7 +64,7 @@
     <div class="container float-left">
         <div class="row">
             <div class="col-sm-auto p-0">
-                {% if no_notify == 0 %}
+                {% if messages %}
                     <a class="btn btn-primary" role="button" href="{% url "inventory:product_list" %}">Добавить товары</a>
                 {% else %}
                     <a class="btn btn-success m-2" role="button" data-toggle="modal" data-target="#OrderModalCenter">Оформить заказ</a>
