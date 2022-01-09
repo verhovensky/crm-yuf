@@ -40,7 +40,7 @@ class CreateOrder(LoginRequiredMixin,
         elif self.kwargs['kind'] == 'existing':
             return OrderCreateFormForExistingCustomer
         else:
-            return HttpResponse('Bad request', status=405)
+            return HttpResponse('Bad request', status=400)
 
 
     def post(self, request, *args, **kwargs):
