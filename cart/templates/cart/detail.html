@@ -88,10 +88,10 @@
                 Выбрать клиента или внести данные вручную?
               </div>
               <div class="modal-footer justify-content-center">
-                <form action="/order/create" method="GET">
+                <form action="{% url 'order:create' 'new' %}" method="GET">
                     <button type="submit" class="btn btn-success new_client_order">Новый клиент</button>
                 </form>
-                <form action="/order/create_client" method="GET">
+                <form action="{% url 'order:create' 'existing' %}" method="GET">
                     <button type="submit" class="btn btn-primary client_order">Выбрать клиента</button>
                 </form>
                 <button type="button" class="btn btn-danger clearLocalStorage" data-dismiss="modal">Отмена</button>
