@@ -1,17 +1,14 @@
 from django.http import HttpResponse
+from django.urls import reverse_lazy
 from django.contrib.auth.mixins import PermissionRequiredMixin
-# CBV
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Client
 from .forms import ClientAddForm
-# import slugify function to transliterate slug
 from .apps import slugify
 
 
-# PermissionRequiredMixin returns false for AnonymousUser
 class ClientTableView(PermissionRequiredMixin, ListView):
     permission_required = 'client.view_client'
-    template_name = "client/clients.html"
     paginate_by = 10
     context_object_name = 'clients'
 
@@ -21,7 +18,6 @@ class ClientTableView(PermissionRequiredMixin, ListView):
 
 class ClientDetailView(PermissionRequiredMixin, DetailView):
     permission_required = 'client.view_client'
-    template_name = "client/clientdetail.html"
     model = Client
     context_object_name = 'client'
 
@@ -33,10 +29,10 @@ class ClientDetailView(PermissionRequiredMixin, DetailView):
 
 
 class ClientCreate(PermissionRequiredMixin, CreateView):
+    model = Client
     permission_required = 'client.add_client'
-    template_name = "client/addclient.html"
     form_class = ClientAddForm
-    success_url = '/client'
+    success_url = reverse_lazy('client:client_main')
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user.userprofile
@@ -52,9 +48,8 @@ class ClientUpdate(PermissionRequiredMixin, UpdateView):
     model = Client
     context_object_name = 'client'
     permission_required = 'client.change_client'
-    template_name = "client/addclient.html"
     fields = ('name', 'type', 'phone_number', 'origin', 'email')
-    success_url = '/client'
+    success_url = reverse_lazy('client:client_main')
 
 
 class ClientDelete(PermissionRequiredMixin, DeleteView):

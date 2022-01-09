@@ -1,7 +1,6 @@
 from django.urls import path
-#CBV
-from .views import ClientTableView, ClientDetailView, ClientCreate, ClientUpdate, ClientDelete
-#for static files
+from .views import ClientTableView, ClientDetailView, \
+    ClientCreate, ClientUpdate, ClientDelete
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -12,7 +11,7 @@ urlpatterns = [
                                                     'header': 'Клиенты'}),
          name='client_main'),
     path('detail/<int:pk>/<str:slug>', ClientDetailView.as_view(extra_context=
-                                                                {'page_title': 'Информация о клиенте'}),
+                                                                {'page_title': 'Клиент'}),
          name='client_detail'),
     path('add/', ClientCreate.as_view(extra_context={'page_title': 'Добавить клиента',
                                                      'header_page': 'Добавить клиента'}),
