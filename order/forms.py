@@ -121,7 +121,7 @@ class OrderChangeForm(forms.ModelForm):
 
     full_name = forms.CharField(disabled=True)
     this_order_client = forms.CharField(disabled=True)
-    status = forms.Select(choices=Order.STATUSORD,)
+    status = forms.Select(choices=Order.STATUS,)
     description = forms.CharField(max_length=500,
                                   required=False,
                                   error_messages=

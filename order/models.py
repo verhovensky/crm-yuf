@@ -6,18 +6,18 @@ import decimal
 
 
 class Order(models.Model):
+    PROCESSING = 1
+    PAYED = 2
+    RETURNED = 3
+    BAD = 4
+    EXPIRED = 5
 
-    # Order Status choices
-    PENDING = 'Обработка'
-    DONE = 'Оплачено'
-    RET = 'Возврат'
-    BRAK = 'Брак'
-
-    STATUSORD = (
-        (PENDING, 'Обработка'),
-        (DONE, 'Оплачено'),
-        (RET, 'Возврат'),
-        (BRAK, 'Брак')
+    STATUS = (
+        (PROCESSING, 'Обработка'),
+        (PAYED, 'Оплачено'),
+        (RETURNED, 'Возврат'),
+        (BAD, 'Брак'),
+        (EXPIRED, 'Просрочено')
     )
 
     class Meta:
@@ -26,44 +26,75 @@ class Order(models.Model):
         db_table = "order"
         ordering = ['-created']
 
-    full_name = models.CharField(max_length=50, null=True, blank=True, verbose_name="ФИО заказчика")
-    phone = models.CharField(max_length=22, null=True, blank=True)
-    address = models.CharField(max_length=250, verbose_name="Адрес доставки")
-    postal_code = models.CharField(max_length=20, null=True, blank=True, verbose_name="Почтовый индекс")
-    this_order_client = models.ForeignKey(Client, related_name='client_orders', null=True, blank=True,
-                                          verbose_name="От клиента", on_delete=models.SET_NULL)
-    this_order_account = models.ForeignKey(UserProfile, related_name='user_orders', null=True,
-                                           verbose_name="Создавший", on_delete=models.SET_NULL)
-    status = models.CharField(choices=STATUSORD, default=PENDING, max_length=16, blank=False,
-                              verbose_name="Статус")
+    full_name = models.CharField(max_length=32,
+                                 verbose_name="ФИО заказчика",
+                                 blank=True,
+                                 default='',
+                                 unique_for_date='delivery_time')
+    phone = models.CharField(max_length=22)
+    address = models.CharField(max_length=250,
+                               verbose_name="Адрес доставки")
+    postal_code = models.CharField(max_length=20,
+                                   null=True,
+                                   blank=True,
+                                   verbose_name="Почтовый индекс")
+    this_order_client = models.ForeignKey(Client,
+                                          related_name='customer',
+                                          blank=True,
+                                          verbose_name="От клиента",
+                                          default='',
+                                          on_delete=models.SET_DEFAULT)
+    this_order_account = models.ForeignKey(UserProfile,
+                                           related_name='employee',
+                                           blank=True,
+                                           verbose_name="Создавший",
+                                           default='',
+                                           on_delete=models.SET_DEFAULT)
+    status = models.PositiveSmallIntegerField(choices=STATUS,
+                                              default=PROCESSING,
+                                              verbose_name='Статус')
     # TODO: unique = True, error "unique":""
-    delivery_time = models.DateTimeField(verbose_name="Время доставки",
-                                         error_messages={"blank": "Выберите дату заказа"})
-    self_pick = models.BooleanField(null=False, default=False, verbose_name="Самовывоз")
-    cash_on_delivery = models.BooleanField(null=False, default=False, verbose_name="Оплата при получении")
-    # TODO: order.total=sum (items from cart)
-    # TODO: order.status=expired (choice)
+    delivery_time = models.DateTimeField(verbose_name="Время доставки")
+    self_pick = models.BooleanField(null=False,
+                                    default=False,
+                                    verbose_name="Самовывоз")
+    cash_on_delivery = models.BooleanField(null=False,
+                                           default=False,
+                                           verbose_name="Оплата при получении")
+    total_sum = models.DecimalField(max_digits=10,
+                                    decimal_places=2,
+                                    default=0.0,
+                                    verbose_name='Сумма заказа')
     # TODO: table with changed statuses and UserProfiles maybe needed
-    # total = models.DecimalField(max_digits=10, decimal_places=1, validators=[MinValueValidator(Decimal('300.0'))],
-    #                                 verbose_name='Сумма заказа')
-    # updated_by = models.ForeignKey(UserProfile, related_name='user_orders', null=True,
-    #                                            verbose_name="Изменивший статус", on_delete=models.SET_NULL)
-    created = models.DateTimeField(auto_now_add=True, verbose_name="Дата оформления")
-    updated = models.DateTimeField(auto_now=True, verbose_name="Статус изменен")
-    description = models.TextField(blank=True, max_length=500, verbose_name="Примечание")
+    updated_by = models.ForeignKey(UserProfile,
+                                   related_name='user_changed_orders',
+                                   blank=True,
+                                   default='',
+                                   verbose_name="Изменивший статус",
+                                   on_delete=models.SET_DEFAULT)
+    created = models.DateTimeField(auto_now_add=True,
+                                   verbose_name="Дата оформления")
+    updated = models.DateTimeField(auto_now=True,
+                                   verbose_name="Статус изменен")
+    description = models.TextField(blank=True,
+                                   max_length=1200,
+                                   verbose_name="Примечание")
 
     def __str__(self):
         return 'Заказ {}'.format(self.pk)
 
-    def get_total_cost(self):
-        return sum([item.get_cost() for item in self.items.all()])
-
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
+    order = models.ForeignKey(Order,
+                              related_name='items',
+                              on_delete=models.DO_NOTHING)
     product = models.CharField(max_length=200)
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
-    quantity = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    price = models.DecimalField(max_digits=10,
+                                decimal_places=2,
+                                default=0.0)
+    quantity = models.DecimalField(max_digits=10,
+                                   decimal_places=2,
+                                   default=0.0)
 
     def __str__(self):
         return '{}'.format(self.pk)

@@ -4,13 +4,14 @@ from .models import Order, OrderItem
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
+    extra = 1
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'status', 'created', 'delivery_time', 'full_name',
-                    'address', 'phone', 'this_order_client', 'self_pick',
-                    'cash_on_delivery', 'description', 'status', 'created', 'updated']
-    list_filter = ['status', 'created', 'updated']
+    list_display = ['created', 'delivery_time', 'address', 'full_name',
+                    'phone', 'self_pick', 'cash_on_delivery', 'status']
+    raw_id_fields = ['this_order_client', 'this_order_account', 'updated_by']
+    list_filter = ['status']
     inlines = [OrderItemInline]
 
 
