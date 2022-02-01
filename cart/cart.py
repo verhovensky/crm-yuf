@@ -73,7 +73,9 @@ class Cart(object):
     def get_total_price(self):
         at = []
         for i, x in enumerate(self.cart.values()):
-            at.append(decimal.Decimal(x['total_price']))
+            tp = decimal.Decimal(x['price']) * \
+                               decimal.Decimal(x['quantity'])
+            at.append(tp)
         return sum(at)
 
     def clear(self):
