@@ -2,10 +2,8 @@ from .forms import OrderCreateFormForNewCustomer, OrderCreateFormForExistingCust
 from django.views.generic import CreateView, ListView, UpdateView, DetailView, DeleteView
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.http.response import HttpResponseRedirect, HttpResponse
-from django.contrib.messages.views import messages
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy, reverse
-from .models import Order, OrderItem
+from django.urls import reverse_lazy
+from order.models import Order, OrderItem
 from cart.cart import Cart
 
 
@@ -27,33 +25,18 @@ class OrderDetailView(LoginRequiredMixin,
     model = Order
 
 
-class CreateOrder(LoginRequiredMixin,
+class CreateNew(LoginRequiredMixin,
                   PermissionRequiredMixin,
                   CreateView):
 
     model = Order
     permission_required = 'order.add_order'
+    form_class = OrderCreateFormForNewCustomer
 
-    def get_form(self, form_class=None):
-        if self.kwargs['kind'] == 'new':
-            return OrderCreateFormForNewCustomer
-        elif self.kwargs['kind'] == 'existing':
-            return OrderCreateFormForExistingCustomer
-        else:
-            return HttpResponse('Bad request', status=400)
-
-    def post(self, request, *args, **kwargs):
-        cart = Cart(request)
-        if self.kwargs['kind'] == 'new' and len(cart) > 0:
-            form = OrderCreateFormForNewCustomer(request.POST)
-        elif self.kwargs['kind'] == 'existing' and len(cart) > 0:
-            form = OrderCreateFormForExistingCustomer(request.POST)
-            form.instance.phone = form.instance.this_order_client.phone_number
-            form.instance.full_name = form.instance.this_order_client.name
-        else:
-            return HttpResponse('Bad request', status=405)
-        if form.is_valid():
-            form.instance.this_order_account = self.request.user.userprofile
+    def form_valid(self, form):
+        cart = Cart(self.request)
+        if len(cart) > 0:
+            form.instance.created_by = self.request.user
             form.instance.total_sum = cart.get_total_price()
             this_order = form.save()
             for item in cart:
@@ -61,17 +44,37 @@ class CreateOrder(LoginRequiredMixin,
                                          product=item['product'],
                                          price=item['price'],
                                          quantity=item['quantity'])
-            # очистка корзины
             cart.clear()
-            return render(request, 'order/order_form.html',
-                          {'page_title': f'Заказ #{this_order.pk}',
-                           'page_header': 'Заказ создан',
-                           'order': this_order})
+            return super().form_valid(form)
         else:
-            messages.add_message(request, messages.WARNING, 'Убедитесь что все поля заполнены верно!')
-            messages.add_message(request, messages.WARNING, form.errors)
-            return HttpResponseRedirect(reverse_lazy('order:create',
-                                                     args=[self.kwargs['kind']]))
+            return reverse_lazy('cart:cart_detail')
+
+
+class CreateExists(LoginRequiredMixin,
+                  PermissionRequiredMixin,
+                  CreateView):
+
+    model = Order
+    form_class = OrderCreateFormForExistingCustomer
+    permission_required = 'order.add_order'
+
+    def form_valid(self, form):
+        cart = Cart(self.request)
+        if len(cart) > 0:
+            form.instance.created_by = self.request.user
+            form.instance.total_sum = cart.get_total_price()
+            form.instance.phone = form.instance.this_order_client.phone_number
+            form.instance.full_name = form.instance.this_order_client.name
+            this_order = form.save()
+            for item in cart:
+                OrderItem.objects.create(order=this_order,
+                                         product=item['product'],
+                                         price=item['price'],
+                                         quantity=item['quantity'])
+            cart.clear()
+            return super().form_valid(form)
+        else:
+            return reverse_lazy('cart:cart_detail')
 
 
 class ChangeOrder(LoginRequiredMixin,
@@ -85,25 +88,29 @@ class ChangeOrder(LoginRequiredMixin,
 
     def post(self, request, *args, **kwargs):
         order = Order.objects.get(pk=self.kwargs["pk"])
+        from_status = order.status
         order.updated_by = self.request.user.userprofile
-        if order.status == 1 and request.user.groups.filter(name="Sellers").exists() \
-                and int(request.POST['status']) in (1,2,3):
-                    # TODO: save last person who modified
-                    order.status = int(request.POST['status'])
-                    order.description = request.POST['description']
-                    order.save(update_fields=["status", "description", "updated_by"])
-                    return HttpResponseRedirect(reverse_lazy('order:detail',
-                                                             kwargs={'pk': self.kwargs["pk"]}))
-        elif request.user.groups.filter(name="Managers").exists() or \
-                request.user.groups.filter(name="Admins").exists():
-                    order.status = int(request.POST['status'])
-                    order.description = request.POST['description']
-                    order.save(update_fields=["status", "description", "updated_by"])
-                    return HttpResponseRedirect(reverse_lazy('order:detail',
-                                                     kwargs={'pk': self.kwargs["pk"]}))
-        else:
-            return HttpResponse(f'<h1> {self.permission_denied_message} </h>',
-                                status=403)
+        try:
+            if order.status == 1 and request.user.groups.filter(name="Sellers").exists() \
+                    and int(request.POST['status']) in (1,2,3):
+                        # TODO: save last person who modified
+                        order.status = int(request.POST['status'])
+                        order.description = request.POST['description']
+                        order.save(update_fields=["status", "description", "updated_by"])
+                        return HttpResponseRedirect(reverse_lazy('order:detail',
+                                                                 kwargs={'pk': self.kwargs["pk"]}))
+            elif request.user.groups.filter(name="Managers").exists() or \
+                    request.user.groups.filter(name="Admins").exists():
+                        order.status = int(request.POST['status'])
+                        order.description = request.POST['description']
+                        order.save(update_fields=["status", "description", "updated_by"])
+                        return HttpResponseRedirect(reverse_lazy('order:detail',
+                                                         kwargs={'pk': self.kwargs["pk"]}))
+            else:
+                return HttpResponse(f'<h1> {self.permission_denied_message} </h>',
+                                    status=403)
+        except Exception as e:
+            return HttpResponse(f'{e}', status=403)
 
 
 class DeleteOrder(LoginRequiredMixin,
@@ -116,6 +123,5 @@ class DeleteOrder(LoginRequiredMixin,
 
     def post(self, *args, **kwargs):
         self.object = self.get_object()
-        print(self.object.delete().explain())
         self.object.delete()
         return HttpResponse(status=200)
