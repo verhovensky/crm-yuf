@@ -47,7 +47,7 @@ class CreateNew(LoginRequiredMixin,
             cart.clear()
             return super().form_valid(form)
         else:
-            return reverse_lazy('cart:cart_detail')
+            return HttpResponseRedirect(reverse_lazy('cart:cart_detail'))
 
 
 class CreateExists(LoginRequiredMixin,
@@ -74,7 +74,7 @@ class CreateExists(LoginRequiredMixin,
             cart.clear()
             return super().form_valid(form)
         else:
-            return reverse_lazy('cart:cart_detail')
+            return HttpResponseRedirect(reverse_lazy('cart:cart_detail'))
 
 
 class ChangeOrder(LoginRequiredMixin,
