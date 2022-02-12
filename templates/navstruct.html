@@ -23,18 +23,17 @@
 <!-- Navigation -->
 <nav id="slide-menu">
 	<ul>
-		<p class="text-white"><strong> Привет, {{ user.get_username }} ! </strong></p>
-		<a href="/home"><li class="">Главная</li></a>
-        <a href="/client"><li class="">Клиенты</li></a>
-        <a href="/product/query"><li class="">Товары</li>
-		<a href="/order/all/"><li class="">Заказы</li>
-		<a href="/call"><li class="">Звонки</li>
-		<a href="/account"><li class="sep">Профиль</li></a>
-		<a href="/logout"><li class="">Выйти</li>
-		<li class="hr"></li>
-		<a href="/client/add" class="top-menu"><li class="">Добавить клиента</li></a>
-		<a href="/product/add" class="top-menu"><li class="">Добавить товар</li></a>
-		<a href="/cart" class="top-menu"><li class="">Добавить заказ</li></a>
+		<li><p class="text-white"><strong> Привет, {{ user.get_username }} ! </strong></p><li>
+		<!-- <li><a href="#">Главная</a></li> -->
+        <li><a class="text-white" href="{% url 'client:client_main' %}">Клиенты</a></li>
+        <li><a class="text-white" href="{% url 'product:product_list' %}">Товары</a></li>
+		<li><a class="text-white" href="{% url 'order:list' %}">Заказы</a></li>
+        <li><a class="text-white" href="{% url 'account:profile' %}">Профиль</a></li>
+        <li><a class="text-white" href="{% url 'user:logout' %}">Выйти</a></li>
+		<hr style="background-color: whitesmoke; height: 1px; border: 0;">
+        <li><a class="text-white" href="{% url 'client:client_add' %}">Добавить клиента</a></li>
+		<li><a class="text-white" href="{% url 'product:add_product' %}">Добавить товар</a></li>
+        <li><a class="text-white" href="{% url 'cart:cart_detail' %}">Добавить заказ</a></li>
 	</ul>
 </nav>
 
