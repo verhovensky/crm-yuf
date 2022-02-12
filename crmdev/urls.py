@@ -9,11 +9,12 @@ from django.conf.urls.static import static
 # include urlconf of apps:
 
 urlpatterns = [
-    path('client/', include('client.urls', namespace='client')),
-    path('account/', include('account.urls')),
     path('admin/', admin.site.urls),
+    path('user/', include(('django.contrib.auth.urls', 'django.contrib.auth'), namespace='user')),
+    path('account/', include('account.urls', namespace='account')),
+    path('client/', include('client.urls', namespace='client')),
     path('cart/', include('cart.urls', namespace='cart')),
-    path('product/', include(('product.urls', 'product'), namespace='inventory')),
+    path('product/', include(('product.urls', 'product'), namespace='product')),
     path('order/', include(('order.urls', 'order'), namespace='order'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

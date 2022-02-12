@@ -3,6 +3,8 @@ from .views import OrderListAll, ChangeOrder, CreateExists, CreateNew, OrderDeta
 from django.conf import settings
 from django.conf.urls.static import static
 
+app_name = 'order'
+
 urlpatterns = [
     path('', OrderListAll.as_view(extra_context=
                                       {'page_title': 'Заказы',

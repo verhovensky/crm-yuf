@@ -5,7 +5,7 @@
     <div id="sidebar">
         <ul>
             <li class="selected">
-                <a href="/product/query">Все категории</a>
+                <a href="{% url 'product:product_list' %}">Все категории</a>
             </li>
             {% for c in categories %}
                 <li class="selected">
@@ -35,8 +35,8 @@
     </form>
 
     <div class="pb-5 pt-1">
-        <a href=" {% url 'product:edit_product' pk=product.pk %} " class="btn btn-warning text-center">Изменить</a>
-        <a href=" {% url 'product:delete_product' pk=product.pk %} " class="btn btn-danger text-center">Удалить</a>
+        <a href="{% url 'product:edit_product' product.slug product.pk %}" class="btn btn-warning text-center">Изменить</a>
+        <a href="{% url 'product:delete_product' product.pk %}" class="btn btn-danger text-center">Удалить</a>
     </div>
 
 {% endblock %}
