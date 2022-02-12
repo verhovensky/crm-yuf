@@ -10,11 +10,11 @@
         <p class="display-4">{{ page_header }}</p>
         <ul>
             <li {% if not category %}class="selected"{% endif %}>
-                <a href="/product/query">Все категории</a>
+                <a href="{% url 'product:product_list' %}">Все категории</a>
             </li>
             {% for c in categories %}
                 <li {% if category.slug == c.slug %}class="selected"{% endif %}>
-                    <a href="{{ c.slug }}">{{ c.name }}</a>
+                    <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
                 </li>
             {% endfor %}
         </ul>

@@ -23,12 +23,16 @@ class ProductListView(LoginRequiredMixin, ListView):
 
 class CategoryListView(LoginRequiredMixin, ListView):
     paginate_by = 10
-    extra_context = {'page_title': 'Товары', 'page_header': 'Все товары'}
+    cart_product_form = CartAddProductForm()
+    extra_context = {'page_title': 'Товары',
+                     'page_header': 'Все товары',
+                     'cart_product_form': cart_product_form}
     context_object_name = 'products'
 
     def get_queryset(self):
         # https://docs.djangoproject.com/en/2.2/topics/db/queries/#lookups-that-span-relationships
-        return Product.objects.filter(category__slug=self.kwargs['slug'], available=True)
+        return Product.objects.filter(category__slug=self.kwargs['slug'],
+                                      available=True).order_by('-created')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -51,11 +55,12 @@ class SingleProductView(LoginRequiredMixin, DetailView):
 
 class ProductCreateView(PermissionRequiredMixin, CreateView):
     permission_required = 'product.add_product'
+    template_name = 'product/product_form.html'
     extra_context = {'page_title': 'Добавить товар',
                      'header_page': 'Добавить товар',
                      'categories': Category.objects.all()}
     form_class = ProductAddForm
-    success_url = 'product:product_detail'
+    success_url = 'product:single_product'
 
 
 class ProductDeleteView(PermissionRequiredMixin, DeleteView):
