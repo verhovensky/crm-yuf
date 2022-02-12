@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
-# from django.dispatch import receiver
 from django.core.validators import RegexValidator, MinValueValidator
 from decimal import Decimal
 
@@ -37,5 +36,4 @@ class UserProfile(models.Model):
     post_save.connect(create_profile, sender=User)
 
     def __str__(self):
-        # return 'Профиль пользователя {}'.format(self.user)
-        return f'Профиль пользователя {self.user}'
+        return f'Profile {self.user}'

@@ -2,19 +2,21 @@
 {% load staticfiles %}
 {% block content %}
     <div>
-        <p class="display-4">{{ user.userprofile }}</p>
+        <p class="display-4">Профиль пользователя {{ user }}</p>
         <img class="m-2 p-2" src="{{ MEDIA_URL }}{{ user.userprofile.photo.url }}" height="220">
         <p><strong>Имя:</strong> {{ user.first_name }}</p>
         <p><strong>Фамилия:</strong> {{ user.last_name }}</p>
         <p><strong>Дата роджения:</strong> {{ user.userprofile.date_of_birth }}</p>
         <p><strong>Роль:</strong>
         {% for group in request.user.groups.all %}
-            {% if group.name == 'Продавец' %}
+            {% if group.name == 'Sellers' %}
                 Продавец
-            {% elif group.name == 'Менеджер' %}
+            {% elif group.name == 'Manager' %}
                 Менеджер
+            {% elif group.name == 'Admins' %}
+                Администратор
             {% else %}
-                Никтоша
+                Без группы
             {% endif %}
         {% endfor %}
         </p>
@@ -24,6 +26,6 @@
         <p><strong>Email:</strong> {{ user.email }}</p>
         <p><strong>Создан:</strong> {{ user.userprofile.created }}</p>
     </div>
-    <a href="/account/edit"><button class="btn btn-success" onlick="return false;">Изменить</button></a>
-    <!-- <a href="/account"><button class="btn btn-secondary" onlick="return false;">Назад</button></a> -->
+    <a href="{% url 'account:edit_profile' %}"><button class="btn btn-success" onlick="return false;">Изменить</button></a>
+    <!-- <a href="{{ request.META.HTTP_REFERER|escape }}"><button class="btn btn-secondary" onlick="return false;">Назад</button></a> -->
 {% endblock %}

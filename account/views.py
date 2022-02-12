@@ -1,31 +1,21 @@
 from django.contrib.auth.models import User
 from .forms import UserEditForm, ProfileEditForm
-# login required mixin
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
-from django.views.generic import TemplateView, UpdateView
+from django.views.generic import DetailView, UpdateView
 
 
-@method_decorator(login_required, name='dispatch')
-class ProfileView(TemplateView):
-    template_name = 'account/dashboard.html'
+class ProfileView(LoginRequiredMixin, DetailView):
     title = 'Мой профиль'
+    template_name = 'account/account_detail.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['user'] = User.objects.get(pk=self.request.user.pk)
-        return context
-
-    def get(self, request, *args, **kwargs):
-        return render(request, template_name=self.template_name,
-                      context={'page_title': self.title})
+    def get_object(self, queryset=None):
+        return User.objects.get(pk=self.request.user.pk)
 
 
-@method_decorator(login_required, name='dispatch')
-class EditProfile(UpdateView):
-    template_name = 'account/editprofile.html'
+class EditProfile(LoginRequiredMixin, UpdateView):
     title = 'Изменить профиль'
+    template_name = 'account/account_form.html'
     success_url = '/'
 
     def get(self, request, *args, **kwargs):
@@ -47,4 +37,4 @@ class EditProfile(UpdateView):
             user_form.save()
             profile_form.save()
             return render(request,
-                          template_name='account/dashboard.html')
+                          template_name='account/account_detail.html')
