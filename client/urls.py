@@ -16,7 +16,7 @@ urlpatterns = [
     path('add/', ClientCreate.as_view(extra_context={'page_title': 'Добавить клиента',
                                                      'header_page': 'Добавить клиента'}),
          name="client_add"),
-    path('edit/<int:id>/<str:slug>', ClientUpdate.as_view(extra_context=
+    path('edit/<int:pk>/<str:slug>', ClientUpdate.as_view(extra_context=
                                                           {'page_title': 'Изменить клиента',
                                                            'header': 'Изменить клиента'}),
          name="client_edit"),
