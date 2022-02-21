@@ -2,8 +2,9 @@ from .forms import OrderCreateFormForNewCustomer, OrderCreateFormForExistingCust
 from django.views.generic import CreateView, ListView, UpdateView, DetailView, DeleteView
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.http.response import HttpResponseRedirect, HttpResponse
-from django.urls import reverse_lazy
 from order.models import Order, OrderItem
+from .signals import order_change_signal
+from django.urls import reverse_lazy
 from cart.cart import Cart
 
 
@@ -90,27 +91,32 @@ class ChangeOrder(LoginRequiredMixin,
         order = Order.objects.get(pk=self.kwargs["pk"])
         from_status = order.status
         order.updated_by = self.request.user.userprofile
-        try:
-            if order.status == 1 and request.user.groups.filter(name="Sellers").exists() \
-                    and int(request.POST['status']) in (1,2,3):
-                        # TODO: save last person who modified
-                        order.status = int(request.POST['status'])
-                        order.description = request.POST['description']
-                        order.save(update_fields=["status", "description", "updated_by"])
-                        return HttpResponseRedirect(reverse_lazy('order:detail',
-                                                                 kwargs={'pk': self.kwargs["pk"]}))
-            elif request.user.groups.filter(name="Managers").exists() or \
-                    request.user.groups.filter(name="Admins").exists():
-                        order.status = int(request.POST['status'])
-                        order.description = request.POST['description']
-                        order.save(update_fields=["status", "description", "updated_by"])
-                        return HttpResponseRedirect(reverse_lazy('order:detail',
-                                                         kwargs={'pk': self.kwargs["pk"]}))
-            else:
-                return HttpResponse(f'<h1> {self.permission_denied_message} </h>',
-                                    status=403)
-        except Exception as e:
-            return HttpResponse(f'{e}', status=403)
+        if order.status == 1 and request.user.groups.filter(name="Sellers").exists() \
+                and int(request.POST['status']) in (1,2,3):
+                    # TODO: save last person who modified
+                    order.status = int(request.POST['status'])
+                    order.description = request.POST['description']
+                    order.save(update_fields=["status", "description", "updated_by"])
+                    order_change_signal.send(sender=Order, kwargs={'from_status': from_status,
+                                                                   'to_status': int(request.POST['status']),
+                                                                   'order_sum': order.total_sum,
+                                                                   'user': request.user.userprofile})
+                    return HttpResponseRedirect(reverse_lazy('order:detail',
+                                                             kwargs={'pk': self.kwargs["pk"]}))
+        elif request.user.groups.filter(name="Managers").exists() or \
+                request.user.groups.filter(name="Admins").exists():
+                    order.status = int(request.POST['status'])
+                    order.description = request.POST['description']
+                    order.save(update_fields=["status", "description", "updated_by"])
+                    order_change_signal.send(sender=Order, kwargs={'from_status': from_status,
+                                                                   'to_status': int(request.POST['status']),
+                                                                   'order_sum': order.total_sum,
+                                                                   'user': request.user.userprofile})
+                    return HttpResponseRedirect(reverse_lazy('order:detail',
+                                                     kwargs={'pk': self.kwargs["pk"]}))
+        else:
+            return HttpResponse(f'<h1> {self.permission_denied_message} </h>',
+                                status=403)
 
 
 class DeleteOrder(LoginRequiredMixin,

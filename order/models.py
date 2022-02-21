@@ -1,7 +1,5 @@
-from django.db.models.signals import post_save
 from django.urls import reverse_lazy
 from account.models import UserProfile
-from django.dispatch import receiver
 from product.models import Product
 from client.models import Client
 from django.db import models
@@ -108,12 +106,3 @@ class OrderItem(models.Model):
     def get_cost(self):
         return decimal.Decimal(self.price) * decimal.Decimal(self.quantity).\
             quantize(decimal.Decimal('.01'), rounding=decimal.ROUND_DOWN)
-
-
-@receiver(post_save, sender=Order, dispatch_uid="add_celery_task")
-def add_task(sender, instance, created, **kwargs):
-    if created:
-        print('created')
-        # add celery task here
-    else:
-        pass
