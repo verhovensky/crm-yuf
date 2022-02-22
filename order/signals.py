@@ -1,6 +1,6 @@
 from account.models import UserProfile
 from .models import Order
-from .tasks import expire_order
+#from .tasks import expire_order
 from datetime import timedelta
 from django.dispatch import Signal, receiver
 from django.db.models.signals import post_save
@@ -37,10 +37,10 @@ def add_task(sender, instance, created, **kwargs):
     If order status changed, do nothing"""
     if created:
         print('Created')
-        expire_order.apply_async(kwargs={'order_id': instance.pk},
-                                 eta=instance.delivery_time + timedelta(minutes=75),
-                                 queue='order',
-                                 serializer='json')
+        #expire_order.apply_async(kwargs={'order_id': instance.pk},
+        #                         eta=instance.delivery_time + timedelta(minutes=75),
+        #                         queue='order',
+        #                         serializer='json')
     else:
         pass
 
