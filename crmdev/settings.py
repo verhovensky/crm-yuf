@@ -57,7 +57,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'crmdev.urls'
 
-# add 'DIRS': ['templates'] - no navstruct.html if removed
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -110,16 +109,19 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'RU-ru'
 
-# Bishkek Time Zone
-TIME_ZONE = 'Asia/Bishkek'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
 USE_L10N = True
 
 USE_TZ = True
+
+LOGIN_URL = '/user/login/'
+
+LOGIN_REDIRECT_URL = '/account/'
 
 # key for cart in user session
 CART_SESSION_ID = 'cart'
@@ -139,3 +141,12 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/mediafiles/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+# Celery Settings
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Europe/Moscow'
