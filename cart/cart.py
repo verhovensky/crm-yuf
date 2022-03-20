@@ -29,15 +29,11 @@ class Cart(object):
         Add product to cart
         """
         if str(product.id) not in self.cart:
-            self.cart[str(product.id)] = {'quantity': 0,
+            self.cart[str(product.id)] = {'quantity': decimal.Decimal(quantity),
                                           'price': str(product.price)}
-            product.stock = product.stock - quantity
-            product.save()
         if update_quantity:
-            product.stock = product.stock - quantity
-            product.save()
-        self.cart[str(product.id)]['quantity'] = decimal.Decimal(self.cart[str(product.id)]['quantity']) \
-                                            + decimal.Decimal(quantity)
+            self.cart[str(product.id)]['quantity'] = decimal.Decimal(self.cart[str(product.id)]['quantity']) \
+                                                     + decimal.Decimal(quantity)
         self.cart[str(product.id)]['quantity'] = json.dumps(self.cart[str(product.id)]['quantity'].
                                                             quantize(Decimal('.01'),
                                                             rounding=decimal.ROUND_DOWN),
