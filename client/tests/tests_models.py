@@ -32,3 +32,7 @@ class ClientCreationTests(TestCase):
 
     def test_created_by(self):
         self.assertEqual(self.example_client.created_by_id, 1)
+
+    # def test_client_delete(self):
+
+    # def test_client_update(self):

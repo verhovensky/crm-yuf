@@ -39,3 +39,5 @@ class ClientCreationTests(TestCase):
         response = self.client.get(reverse('client:client_detail', kwargs={'pk': 4,
                                                                            'slug': 'gerasim'}))
         self.assertEqual(response.status_code, 302)
+
+    # def test_no_permission_client_view(self):
