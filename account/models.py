@@ -21,7 +21,7 @@ class UserProfile(models.Model):
     photo = models.ImageField(upload_to='users/%Y/%m/%d', default='users/no-user-photo.jpg',
                               blank=True, verbose_name="Фото")
     # for closed sales and amount records
-    closed_sales = models.PositiveIntegerField(default=0, verbose_name="Закрыто сделок")
+    closed_sales = models.IntegerField(default=0, verbose_name="Закрыто сделок")
     sales_amount = models.DecimalField(default=0.0, max_digits=20, decimal_places=1,
                                        validators=[MinValueValidator(Decimal('0.0'))],
                                        verbose_name='Продано на сумму')
