@@ -1,0 +1,120 @@
+{% extends 'navstruct.html' %}
+{% load staticfiles %}
+{% load order_tags %}
+
+{% block content %}
+
+        <p class="display-4 p-2">{{ page_header }}</p>
+
+        {% csrf_token %}
+        {% if orders.count > 0 %}
+        <div class="section">
+            <table class="order-table table table-responsive table-hover">
+                <thead class="thead-light"><tr><th>ФИО</th><th>Телефон</th><th>Адрес</th><th>Дата доставки</th><th>Самовывоз</th><th>Наличные</th><th>Поступил</th><th>Статус</th><th>Действия</th></tr></thead>
+                {% for order in orders %}
+                <tr class="ClientTableRow"><td>{{ order.full_name }}</td>
+                    <td>{{ order.phone }}</td>
+                    <td>{{ order.address }}</td>
+                    <td>{{ order.delivery_time }}</td>
+                    {% if order.self_pick is True %}
+                       <td class="text-center"><ion-icon name="radio-button-on-sharp" style="color:#28a745;"></ion-icon></td>
+                    {% else %}
+                        <td class="text-center"><ion-icon name="radio-button-off-sharp"></ion-icon></td>
+                    {% endif %}
+                    {% if order.cash_on_delivery is True %}
+                       <td class="text-center"><ion-icon name="radio-button-on-sharp" style="color:#28a745;"></ion-icon></td>
+                    {% else %}
+                        <td class="text-center"><ion-icon name="radio-button-off-sharp"></ion-icon></td>
+                    {% endif %}
+                    <td>{{ order.created }}</td>
+                    <td>{{ order.status | status_to_string }}</td>
+                    <td>
+                    <a href="{% url 'order:detail' order.pk %}" title="Детали"><ion-icon name="information-circle-outline" style="color:#4169E1;"></ion-icon></a>
+                    <a href="{% url 'order:order_change' order.pk %}" title="Изменить"><ion-icon name="create-outline" style="color:#4169E1;"></ion-icon></a>
+                    <!--- Order delete if admin/manager -->
+                    <button data-id="{{ order.id }}" class="btn btn-default btn-lg active p-0 get_delete_id" role="button"><ion-icon name="trash-outline" data-toggle="modal" data-target="#OrderModalCenter" title="Удалить"></ion-icon></button>
+                    </td></tr>
+                {% endfor %}
+            </table>
+        </div>
+            <div class="container">
+              <div class="row justify-content-center">
+                  <div class="col">
+                      <span class="current">
+                                Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+                        </span>
+
+                    <nav aria-label="Navigation">
+                        <ul class="pagination">
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}"> &laquo; Прев</a>
+                            </li>
+                            {% endif %}
+
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">След &raquo;</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                  </div>
+             </div>
+        </div>
+        {% else %}
+        <h3>Нет заказов :( </h3>
+        {% endif %}
+
+        <!-- OrderModalCenter -->
+        <div class="modal fade" id="OrderModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="false">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Подтвердите</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                Вы действительно хотите удалить эту запись?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary clearLocalStorage" data-dismiss="modal">Отмена</button>
+                  <script>
+                      $( ".clearLocalStorage" ).on( "click", function() {
+                        window.localStorage.removeItem('item');
+                      });
+                  </script>
+                <button type="button" class="btn btn-primary delete_button_id">Удалить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- deleteSuccessModal -->
+        <div class="modal fade" id="deleteSuccessModal" tabindex="-1" role="dialog" aria-labelledby="deleteSuccessModalTitle" aria-hidden="true" data-backdrop="false">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteSuccessModalLongTitle">Успешно</h5>
+                <button class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p class="text-center">Запись успешно удалена!</p>
+                  <div class="container text-center">
+                    <button class="btn btn-success" data-dismiss="modal" aria-label="Close">OK</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+{% endblock %}
+
+{% block additionaljs %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css" integrity="sha384-jLKHWM3JRmfMU0A5x5AkjWkw/EYfGUAGagvnfryNV3F9VqM98XiIH7VBGVoxVSc7" crossorigin="anonymous">
+    <script type="text/javascript" src="{% static "order_tasks.js" %}"></script>
+{% endblock additionaljs %}

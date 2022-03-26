@@ -1,0 +1,76 @@
+{% extends 'navstruct.html' %}
+{% load staticfiles %}
+{% load order_tags %}
+
+{% block content %}
+    <p class="display-4 p-2">{{ page_header }}</p>
+        {{ form.media }}
+        <div class="d-flex">
+            <div class="col-sm-auto">
+                <div class="container">
+                    <div class="col p-0 m-0">
+                        {% if messages %}
+                            <div class="alert alert-danger" role="alert">
+                                <ul class="messages m-0">
+                                    {% for message in messages %}
+                                        <li>{{ message }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <form method="POST" class="post-form">{% csrf_token %}
+                            {{ form.as_p }}
+                            <div class="container float-left">
+                                <button type="submit" class="btn btn-success">Оформить</button>
+                                <a href="{% url 'client:client_add' %}" target="_blank" class="btn btn-info">Добавить клиента</a>
+                                <a href="javascript:history.go(-1)" class="btn btn-danger">Отмена</a>
+                            </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-sm-auto">
+                <div class="container">
+                    <table class="client-table table table-responsive table-hover">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>Фото</th>
+                            <th>Товар</th>
+                            <th>Количество</th>
+                            <th>Цена за шт</th>
+                            <th>Сумма</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in cart %}
+                            {% with product=item.product %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ product.get_absolute_url }}">
+                                            <img style="max-width: 100px;" src="
+                                                {% if product.image %}
+                                                    {{ product.image.url }}
+                                                {% else %}
+                                                    {% static "img/no_image.png" %}
+                                                {% endif %}">
+                                        </a>
+                                    </td>
+                                    <td>{{ product.name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td class="num">{{ item.price }}</td>
+                                    <td class="num">{{ item.total_price }}</td>
+                                </tr>
+                            {% endwith %}
+                        {% endfor %}
+                        <tr class="total">
+                            <td><b>Итого</b></td>
+                            <td colspan="2"></td>
+                            <td class="num">Товаров: {{ cart|length }}</td>
+                            <td class="num"><b>{{ cart.get_total_price }}</b></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+{% endblock %}

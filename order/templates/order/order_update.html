@@ -1,0 +1,48 @@
+{% extends 'navstruct.html' %}
+{% load staticfiles %}
+{% load order_tags %}
+
+{% block content %}
+    <p class="display-4 p-2">{{ page_header }}</p>
+    {% if perms.order.change_order %}
+        <form method="POST" class="post-form">{% csrf_token %}
+
+            <div class="fieldWrapper m-2">
+                    {{ form.full_name.errors }}
+                    <label for="{{ form.full_name.id_for_full_name }}">Заказчик:</label>
+                    {{ form.full_name }}
+            </div>
+
+            <div class="fieldWrapper m-2">
+                {{ form.status.errors }}
+                <label for="{{ form.status.id_for_status }}">Статус:</label>
+                {{ form.status }}
+            </div>
+
+            <div class="fieldWrapper m-2">
+                {{ form.description.errors }}
+                <label for="{{ form.description.id_for_description }}">Описание:</label>
+                <br>
+                {{ form.description }}
+            </div>
+
+            <div class="buttons flex-column m-2">
+                <input type="hidden" name="next" value="{{ request.path }}">
+                <button type="submit" style="margin-right: 5px;" class="btn btn-success">Изменить</button>
+                <a href="javascript:history.go(-1)" class="btn btn-danger">Отмена</a>
+            </div>
+        </form>
+    {% else %}
+        <div class="d-flex">
+            <div class="col-sm-auto">
+                <div class="container m-0 pl-0">
+                    <div class="alert alert-danger" role="alert">
+                        <p>У вас недостаточно прав для изменения статуса заказа</p>
+                        <!-- Ссылка на список заказов -->
+                        <a href = "{% url 'order:list' %}">Заказы</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

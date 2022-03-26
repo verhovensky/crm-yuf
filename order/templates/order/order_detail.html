@@ -1,0 +1,85 @@
+{% extends 'navstruct.html' %}
+{% load staticfiles %}
+{% load order_tags %}
+
+{% block content %}
+    <p class="display-4 p-2">{{ page_header }}</p>
+    {% if order %}
+    <div class="row">
+        <div class="col-4 p-0 m-0">
+            <div class="container">
+            <hr>
+            <p>Номер заказа: {{ order.pk }}</p>
+            <p>Имя клиента: {{ order.full_name }}</p>
+            <p>Телефон: {{ order.phone }}</p>
+            <p>Адрес: {{ order.address }}</p>
+            <p>Время доставки: {{ order.delivery_time | date:'Y-m-d H:i' }}</p>
+            <p>Самовывоз:
+            {% if order.self_pick is True %}
+               Да
+            {% else %}
+               Нет
+            {% endif %}
+            </p>
+            <p>Оплата при получении:
+            {% if order.cash_on_delivery is True %}
+               Да
+            {% else %}
+               Нет
+            {% endif %}
+            </p>
+            <p>Примечание: {{ order.description }}</p>
+            <p>Статус: {{ order.status | status_to_string }}</p>
+            <hr class="p-2">
+            <a href="{% url 'order:order_change' order.pk %}"><button class="btn btn-success" onlick="return false;">Изменить статус</button></a>
+            <a href="javascript:history.go(-1)"><button class="btn btn-danger" onlick="return false;">Назад</button></a>
+            </div>
+        </div>
+        <div class="col-sm-auto">
+            <div class="container">
+                <table class="client-table table table-responsive table-hover">
+                    <thead class="thead-light">
+                    <tr>
+                        <th>Фото</th>
+                        <th>Товар</th>
+                        <th>Количество</th>
+                        <th>Цена за шт</th>
+                        <th>Сумма</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                            {% with product=item.product %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ product.get_absolute_url }}">
+                                            <img style="max-width: 100px;" src="
+                                                {% if product.image %}
+                                                    {{ product.image.url }}
+                                                {% else %}
+                                                    {% static "img/no_image.png" %}
+                                                {% endif %}">
+                                        </a>
+                                    </td>
+                                    <td>{{ product }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td class="num">{{ item.price }}</td>
+                                    <td class="num">{{ item.total_price }}</td>
+                                </tr>
+                            {% endwith %}
+                        {% endfor %}
+                        <tr class="total">
+                            <td><b>Итого</b></td>
+                            <td colspan="2"></td>
+                            <td class="num">Товаров: {{ order.items.all.count }}</td>
+                            <td class="num"><b>{{ order.total_sum }}</b></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+        <div class="alert alert-danger font-weight-bold">Заказ не найден</div>
+    {% endif %}
+{% endblock %}
