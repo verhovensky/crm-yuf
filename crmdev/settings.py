@@ -140,7 +140,7 @@ STATICFILES_DIRS = [
 # MEDIA Folder (dev only)
 
 MEDIA_URL = '/mediafiles/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles/')
 
 # Celery Settings
 
