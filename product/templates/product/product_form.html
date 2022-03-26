@@ -9,7 +9,7 @@
                 {{ form.as_p }}
                 <div class="buttons" style="display: flex">
                     <button type="submit" style="margin-right: 5px;" class="btn btn-success">Сохранить</button>
-                    <a href="{% url 'product:product_list' %}" class="btn btn-warning">Отмена</a>
+                    <a href="javascript:history.go(-1)" class="btn btn-warning">Отмена</a>
                 </div>
             </form>
         </div>
