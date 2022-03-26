@@ -2,6 +2,8 @@ from .forms import OrderCreateFormForNewCustomer, OrderCreateFormForExistingCust
 from django.views.generic import CreateView, ListView, UpdateView, DetailView, DeleteView
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.http.response import HttpResponseRedirect, HttpResponse
+from order.utils import check_out_of_stock, sub_product_quantity_of_order
+from django.contrib import messages
 from order.models import Order, OrderItem
 from .signals import order_change_signal
 from django.urls import reverse_lazy
@@ -26,54 +28,48 @@ class OrderDetailView(LoginRequiredMixin,
     model = Order
 
 
-class CreateNew(LoginRequiredMixin,
-                  PermissionRequiredMixin,
-                  CreateView):
-
-    model = Order
-    permission_required = 'order.add_order'
-    form_class = OrderCreateFormForNewCustomer
-
-    def form_valid(self, form):
-        cart = Cart(self.request)
-        if len(cart) > 0:
-            form.instance.created_by = self.request.user
-            form.instance.total_sum = cart.get_total_price()
-            this_order = form.save()
-            for item in cart:
-                OrderItem.objects.create(order=this_order,
-                                         product=item['product'],
-                                         price=item['price'],
-                                         quantity=item['quantity'])
-            cart.clear()
-            return super().form_valid(form)
-        else:
-            return HttpResponseRedirect(reverse_lazy('cart:cart_detail'))
-
-
 class CreateExists(LoginRequiredMixin,
-                  PermissionRequiredMixin,
-                  CreateView):
+                   PermissionRequiredMixin,
+                   CreateView):
 
     model = Order
     form_class = OrderCreateFormForExistingCustomer
     permission_required = 'order.add_order'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(CreateExists, self).get_context_data(**kwargs)
+        cart = Cart(self.request)
+        context["cart"] = cart
+        return context
+
     def form_valid(self, form):
         cart = Cart(self.request)
+        checked = check_out_of_stock(cart=cart)
         if len(cart) > 0:
-            form.instance.created_by = self.request.user
-            form.instance.total_sum = cart.get_total_price()
-            form.instance.phone = form.instance.this_order_client.phone_number
-            form.instance.full_name = form.instance.this_order_client.name
-            this_order = form.save()
-            for item in cart:
-                OrderItem.objects.create(order=this_order,
-                                         product=item['product'],
-                                         price=item['price'],
-                                         quantity=item['quantity'])
-            cart.clear()
-            return super().form_valid(form)
+            if checked['result'] is True:
+                form.instance.this_order_account = self.request.user.userprofile
+                form.instance.updated_by = self.request.user.userprofile
+                form.instance.total_sum = cart.get_total_price()
+                form.instance.phone = form.instance.this_order_client.phone_number
+                form.instance.full_name = form.instance.this_order_client.name
+                this_order = form.save()
+                for item in cart:
+                    OrderItem.objects.create(order=this_order,
+                                             product=item['product'].name,
+                                             price=item['price'],
+                                             quantity=item['quantity'],
+                                             product_id=item['product'],
+                                             total=item['total_price'])
+                    sub_product_quantity_of_order(product=item['product'],
+                                                  quantity=item['quantity'])
+                cart.clear()
+                return HttpResponseRedirect(reverse_lazy('order:detail',
+                                                         kwargs={'pk': this_order.pk}))
+            else:
+                for i in checked['errors'].items():
+                    messages.add_message(level=messages.WARNING, request=self.request,
+                                         message=f"Не хватает {i[1]} товара {i[0]}")
+                return HttpResponseRedirect(reverse_lazy('cart:cart_detail'))
         else:
             return HttpResponseRedirect(reverse_lazy('cart:cart_detail'))
 
@@ -97,10 +93,11 @@ class ChangeOrder(LoginRequiredMixin,
                     order.status = int(request.POST['status'])
                     order.description = request.POST['description']
                     order.save(update_fields=["status", "description", "updated_by"])
-                    order_change_signal.send(sender=Order, kwargs={'from_status': from_status,
-                                                                   'to_status': int(request.POST['status']),
-                                                                   'order_sum': order.total_sum,
-                                                                   'user': request.user.userprofile})
+                    order_change_signal.send(sender=Order,
+                                             from_status=from_status,
+                                             to_status=int(request.POST['status']),
+                                             order=order,
+                                             user=request.user.userprofile)
                     return HttpResponseRedirect(reverse_lazy('order:detail',
                                                              kwargs={'pk': self.kwargs["pk"]}))
         elif request.user.groups.filter(name="Managers").exists() or \
@@ -108,12 +105,13 @@ class ChangeOrder(LoginRequiredMixin,
                     order.status = int(request.POST['status'])
                     order.description = request.POST['description']
                     order.save(update_fields=["status", "description", "updated_by"])
-                    order_change_signal.send(sender=Order, kwargs={'from_status': from_status,
-                                                                   'to_status': int(request.POST['status']),
-                                                                   'order_sum': order.total_sum,
-                                                                   'user': request.user.userprofile})
+                    order_change_signal.send(sender=Order,
+                                             from_status=from_status,
+                                             to_status=int(request.POST['status']),
+                                             order=order,
+                                             user=request.user.userprofile)
                     return HttpResponseRedirect(reverse_lazy('order:detail',
-                                                     kwargs={'pk': self.kwargs["pk"]}))
+                                                             kwargs={'pk': self.kwargs["pk"]}))
         else:
             return HttpResponse(f'<h1> {self.permission_denied_message} </h>',
                                 status=403)

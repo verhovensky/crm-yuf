@@ -3,7 +3,6 @@ from account.models import UserProfile
 from product.models import Product
 from client.models import Client
 from django.db import models
-import decimal
 
 
 class Order(models.Model):
@@ -18,8 +17,7 @@ class Order(models.Model):
         (PAYED, 'Оплачено'),
         (RETURNED, 'Возврат'),
         (BAD, 'Брак'),
-        (EXPIRED, 'Просрочено')
-    )
+        (EXPIRED, 'Просрочено'))
 
     class Meta:
         verbose_name = "заказ"
@@ -36,7 +34,6 @@ class Order(models.Model):
     address = models.CharField(max_length=250,
                                verbose_name="Адрес доставки")
     postal_code = models.CharField(max_length=20,
-                                   null=True,
                                    blank=True,
                                    verbose_name="Почтовый индекс")
     this_order_client = models.ForeignKey(Client,
@@ -56,11 +53,9 @@ class Order(models.Model):
                                               verbose_name='Статус')
     # TODO: unique = True, error "unique":""
     delivery_time = models.DateTimeField(verbose_name="Время доставки")
-    self_pick = models.BooleanField(null=False,
-                                    default=False,
+    self_pick = models.BooleanField(default=False,
                                     verbose_name="Самовывоз")
-    cash_on_delivery = models.BooleanField(null=False,
-                                           default=False,
+    cash_on_delivery = models.BooleanField(default=False,
                                            verbose_name="Оплата при получении")
     total_sum = models.DecimalField(max_digits=10,
                                     decimal_places=2,
@@ -91,8 +86,18 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order,
                               related_name='items',
-                              on_delete=models.DO_NOTHING)
+                              on_delete=models.CASCADE)
+    # TODO: Product id for decreasing product with default field
+    #  if product instance get deleted
+    total = models.DecimalField(max_digits=10,
+                                decimal_places=2,
+                                default=0.0)
     product = models.CharField(max_length=200)
+    product_id = models.ForeignKey(Product,
+                                   related_name='product',
+                                   blank=True,
+                                   default='',
+                                   on_delete=models.SET_DEFAULT)
     price = models.DecimalField(max_digits=10,
                                 decimal_places=2,
                                 default=0.0)
@@ -102,7 +107,3 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return '{}'.format(self.pk)
-
-    def get_cost(self):
-        return decimal.Decimal(self.price) * decimal.Decimal(self.quantity).\
-            quantize(decimal.Decimal('.01'), rounding=decimal.ROUND_DOWN)
