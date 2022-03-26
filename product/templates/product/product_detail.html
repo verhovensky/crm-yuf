@@ -18,7 +18,7 @@
     <p class="display-4">{{ product.name }}</p>
     <div class="product-detail">
         <div class="container m-0 p-0">
-            <img class="img-thumbnail w-25" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no-img.jpg" %}{% endif %}">
+            <img class="img-thumbnail w-25" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no-image.jpg" %}{% endif %}">
             <h2><a href="{{ product.category.get_absolute_url }}">Категория: {{ product.category }}</a></h2>
             <p class="lead"><b>Цена:</b> {{ product.price }} сомов</p>
             <p class="lead"><b>Кол-во:</b> {{ product.stock }}</p>

@@ -27,7 +27,7 @@
                         <figure class="card card-product">
                             <div class="img-wrap">
                                 <a href="{{ product.get_absolute_url }}">
-                                    <img src="{% if product.image %}{{ MEDIA_URL }}{{ product.image.url }}{% else %}{% static "img/no-img.jpg" %}{% endif %}">
+                                    <img src="{% if product.image %}{{ MEDIA_URL }}{{ product.image.url }}{% else %}{% static "img/no-image.jpg" %}{% endif %}">
                                 </a>
                             </div>
                             <figcaption class="info-wrap">
