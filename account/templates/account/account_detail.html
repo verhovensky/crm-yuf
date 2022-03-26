@@ -27,5 +27,5 @@
         <p><strong>Создан:</strong> {{ user.userprofile.created }}</p>
     </div>
     <a href="{% url 'account:edit_profile' %}"><button class="btn btn-success" onlick="return false;">Изменить</button></a>
-    <!-- <a href="{{ request.META.HTTP_REFERER|escape }}"><button class="btn btn-secondary" onlick="return false;">Назад</button></a> -->
+    <a href="javascript:history.go(-1)"><button class="btn btn-secondary" onlick="return false;">Назад</button></a>
 {% endblock %}
