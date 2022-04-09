@@ -2,11 +2,17 @@
 {% load staticfiles %}
 {% block content %}
     <div>
-        <p class="display-4">Профиль пользователя {{ user }}</p>
+        <p class="display-4">{{ user }}</p>
         <img class="m-2 p-2" src="{{ MEDIA_URL }}{{ user.userprofile.photo.url }}" height="220">
         <p><strong>Имя:</strong> {{ user.first_name }}</p>
         <p><strong>Фамилия:</strong> {{ user.last_name }}</p>
-        <p><strong>Дата роджения:</strong> {{ user.userprofile.date_of_birth }}</p>
+        <p><strong>Дата роджения:</strong>
+            {% if user.userprofile.date_of_birth != None %}
+                {{ user.userprofile.date_of_birth }}
+            {% else %}
+                Отсутствует
+            {% endif %}
+        </p>
         <p><strong>Роль:</strong>
         {% for group in request.user.groups.all %}
             {% if group.name == 'Sellers' %}
