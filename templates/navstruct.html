@@ -29,7 +29,7 @@
         <li><a class="text-white" href="{% url 'product:product_list' %}">Товары</a></li>
 		<li><a class="text-white" href="{% url 'order:list' %}">Заказы</a></li>
         <li><a class="text-white" href="{% url 'account:profile' %}">Профиль</a></li>
-        <li><a class="text-white" href="{% url 'user:logout' %}">Выйти</a></li>
+        <li><a class="text-white" href="{% url 'account:logout' %}">Выйти</a></li>
 		<hr style="background-color: whitesmoke; height: 1px; border: 0;">
         <li><a class="text-white" href="{% url 'client:client_add' %}">Добавить клиента</a></li>
 		<li><a class="text-white" href="{% url 'product:add_product' %}">Добавить товар</a></li>
@@ -45,7 +45,8 @@
         {% block content%}
             <h1>{% block header %}{% endblock header %}</h1>
         {% endblock content %}
-    </body>
+        </body>
+
 </div>
 
 {% block additionaljs %}
