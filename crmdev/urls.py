@@ -6,8 +6,8 @@ from django.conf.urls.static import static
 # include urlconf of apps:
 
 urlpatterns = [
+    path('', include('home.urls', namespace='home')),
     path('admin/', admin.site.urls),
-    path('user/', include(('django.contrib.auth.urls', 'django.contrib.auth'), namespace='user')),
     path('account/', include('account.urls', namespace='account')),
     path('client/', include('client.urls', namespace='client')),
     path('cart/', include('cart.urls', namespace='cart')),
