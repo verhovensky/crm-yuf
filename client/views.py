@@ -1,14 +1,17 @@
 from django.http import HttpResponse
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Client
 from .forms import ClientAddForm
 from .apps import slugify
 
 
-class ClientTableView(PermissionRequiredMixin, ListView):
+class ClientTableView(LoginRequiredMixin,
+                      PermissionRequiredMixin,
+                      ListView):
     permission_required = 'client.view_client'
+    login_url = '/account/login/'
     paginate_by = 10
     context_object_name = 'clients'
 
@@ -16,8 +19,11 @@ class ClientTableView(PermissionRequiredMixin, ListView):
         return Client.objects.all()
 
 
-class ClientDetailView(PermissionRequiredMixin, DetailView):
+class ClientDetailView(LoginRequiredMixin,
+                       PermissionRequiredMixin,
+                       DetailView):
     permission_required = 'client.view_client'
+    login_url = '/account/login/'
     model = Client
     context_object_name = 'client'
 
@@ -28,8 +34,11 @@ class ClientDetailView(PermissionRequiredMixin, DetailView):
         return object
 
 
-class ClientCreate(PermissionRequiredMixin, CreateView):
+class ClientCreate(LoginRequiredMixin,
+                   PermissionRequiredMixin,
+                   CreateView):
     model = Client
+    login_url = '/account/login/'
     permission_required = 'client.add_client'
     form_class = ClientAddForm
     success_url = reverse_lazy('client:client_main')
@@ -44,16 +53,22 @@ class ClientCreate(PermissionRequiredMixin, CreateView):
         return response
 
 
-class ClientUpdate(PermissionRequiredMixin, UpdateView):
+class ClientUpdate(LoginRequiredMixin,
+                   PermissionRequiredMixin,
+                   UpdateView):
     model = Client
+    login_url = '/account/login/'
     context_object_name = 'client'
     permission_required = 'client.change_client'
     fields = ('name', 'type', 'phone_number', 'origin', 'email')
     success_url = reverse_lazy('client:client_main')
 
 
-class ClientDelete(PermissionRequiredMixin, DeleteView):
+class ClientDelete(LoginRequiredMixin,
+                   PermissionRequiredMixin,
+                   DeleteView):
     model = Client
+    login_url = '/account/login/'
     permission_required = 'client.delete_client'
     context_object_name = 'client'
 
