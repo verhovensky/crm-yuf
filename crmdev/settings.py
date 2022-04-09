@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -43,6 +46,7 @@ INSTALLED_APPS = [
     'product',
     'cart',
     'order',
+    'home',
 ]
 
 MIDDLEWARE = [
@@ -119,9 +123,9 @@ USE_L10N = True
 
 USE_TZ = True
 
-LOGIN_URL = '/user/login/'
+LOGIN_URL = 'account/login/'
 
-LOGIN_REDIRECT_URL = '/account/'
+LOGIN_REDIRECT_URL = 'homepage/'
 
 # key for cart in user session
 CART_SESSION_ID = 'cart'
@@ -141,6 +145,15 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/mediafiles/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles/')
+
+# SMTP settings
+
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_TLS = bool(os.getenv('EMAIL_USE_TLS'))
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 # Celery Settings
 
