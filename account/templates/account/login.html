@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <div class="container mt-5 pt-5">
+        <div class="row pt-5 m-0 d-flex justify-content-center ">
+            <div class="text-center">
+                <h1>Войти</h1>
+                <form method="POST" action="{% url 'account:login' %}">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <input type="text" class="form-control" name="username" placeholder="Имя пользователя">
+                  </div>
+                  <div class="form-group">
+                    <input type="password" class="form-control" name="password" placeholder="Пароль">
+                  </div>
+                  {% if messages %}
+                    <div class="alert alert-danger">
+                        {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                    </div>
+                  {% endif %}
+                  <button type="submit" class="btn btn-primary">Войти</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

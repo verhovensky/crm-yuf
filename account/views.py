@@ -1,10 +1,53 @@
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from .forms import UserEditForm, ProfileEditForm
+from .forms import UserEditForm, ProfileEditForm, RegisterUserForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect
 from django.views.generic import DetailView, TemplateView
+
+
+def user_login(request):
+    if request.method == 'POST':
+        u = request.POST.get('username')
+        p = request.POST.get('password')
+
+        user = authenticate(request, username=u, password=p)
+
+        if user is not None:
+            login(request, user)
+            return redirect('client:client_main')
+        else:
+            messages.info(request, 'Имя пользователя или пароль неверны!')
+
+    context = {}
+
+    return render(request, 'account/login.html', context)
+
+
+def user_logout(request):
+    logout(request)
+    return redirect('home:homepage')
+
+
+def user_register(request):
+    form_user = RegisterUserForm
+
+    if request.method == 'POST':
+        form_user = RegisterUserForm(request.POST)
+        if form_user.is_valid():
+            form_user.save()
+            user = form_user.cleaned_data.get('username')
+            messages.success(request, f'Пользователь {user} успешно создан')
+            # Redirect to dashboard
+            return redirect('home:homepage')
+        else:
+            messages.info(request, f'{form_user.errors}')
+
+    context = {'form_user': form_user}
+    return render(request, 'account/register.html', context)
 
 
 class ProfileView(LoginRequiredMixin, DetailView):

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+    <style>
+        ul{
+            list-style-type: none;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+          }
+    </style>
+
+    <div class="row pt-5 pb-5 m-0 d-flex justify-content-center ">
+        <div class="col-sm-12 col-md-4 text-center">
+            <h1>Регистрация</h1>
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <p>{{ form_user.username.label }}</p>
+                <p>{{ form_user.username }}</p>
+                <p>{{ form_user.email.label }}</p>
+                <p>{{ form_user.email }}</p>
+                <p>{{ form_user.password1.label }}</p>
+                <p>{{ form_user.password1 }}</p>
+                <p>{{ form_user.password2.label }}</p>
+                <p>{{ form_user.password2 }}</p>
+                {% for message in messages %}
+                <div class="container">
+                  <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert" >
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">×</span>
+                    </button>
+                    {{ message }}
+                  </div>
+                </div>
+                {% endfor %}
+                <div class="row pt-2">
+                    <div class="col-sm">
+                      <button type="submit" class="btn btn-success">Зарегистрироваться</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
