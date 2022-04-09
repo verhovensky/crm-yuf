@@ -16,13 +16,17 @@ def user_login(request):
 
         user = authenticate(request, username=u, password=p)
 
-        if user is not None:
+        if user is not None and user.is_active:
             login(request, user)
-            return redirect('client:client_main')
+            if request.POST['next'] is not None:
+                return redirect(request.POST['next'])
+            else:
+                return redirect('home:homepage')
         else:
             messages.info(request, 'Имя пользователя или пароль неверны!')
 
-    context = {}
+    next_page = request.GET.get('next')
+    context = {'next': next_page}
 
     return render(request, 'account/login.html', context)
 

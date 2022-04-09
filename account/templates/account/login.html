@@ -12,6 +12,8 @@
                   </div>
                   <div class="form-group">
                     <input type="password" class="form-control" name="password" placeholder="Пароль">
+                    <!-- Parameter for redirect -->
+                    <input type="hidden" name="next" value="{{ next }}"/>
                   </div>
                   {% if messages %}
                     <div class="alert alert-danger">
