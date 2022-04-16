@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib import messages
 from decimal import Decimal
 from product.models import Product
@@ -9,6 +9,7 @@ from .forms import CartAddProductForm
 
 
 @require_POST
+@login_required(login_url='account:login')
 @permission_required('order.order_add')
 def cart_add(request, product_id):
     cart = Cart(request)
@@ -31,6 +32,7 @@ def cart_add(request, product_id):
 
 
 @require_POST
+@login_required(login_url='account:login')
 @permission_required('order.order_remove')
 def cart_remove(request, product_id):
     cart = Cart(request)
@@ -39,6 +41,7 @@ def cart_remove(request, product_id):
     return redirect('cart:cart_detail')
 
 
+@login_required(login_url='account:login')
 @permission_required('order.order_view')
 def cart_detail(request):
     cart = Cart(request)
