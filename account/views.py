@@ -7,8 +7,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.views.generic import DetailView, TemplateView
+from .decorators import authenticated_user
 
 
+@authenticated_user
 def user_login(request):
     if request.method == 'POST':
         u = request.POST.get('username')
@@ -36,6 +38,7 @@ def user_logout(request):
     return redirect('home:homepage')
 
 
+@authenticated_user
 def user_register(request):
     form_user = RegisterUserForm
 
