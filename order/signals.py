@@ -69,5 +69,3 @@ def add_task(sender, instance, created, **kwargs):
                                  eta=instance.delivery_time,
                                  queue='order',
                                  serializer='json')
-    else:
-        pass

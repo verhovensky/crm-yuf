@@ -83,13 +83,13 @@ class ChangeOrder(LoginRequiredMixin,
     permission_denied_message = 'Недостаточно прав'
     template_name_suffix = '_update'
 
+    # TODO: remove user request.user checks, write decorator separately
     def post(self, request, *args, **kwargs):
         order = Order.objects.get(pk=self.kwargs["pk"])
         from_status = order.status
         order.updated_by = self.request.user.userprofile
         if order.status == 1 and request.user.groups.filter(name="Sellers").exists() \
                 and int(request.POST['status']) in (1,2,3):
-                    # TODO: save last person who modified
                     order.status = int(request.POST['status'])
                     order.description = request.POST['description']
                     order.save(update_fields=["status", "description", "updated_by"])
