@@ -9,10 +9,10 @@ from django.conf.urls.static import static
 app_name = "product"
 
 urlpatterns = [
-    path('list', ProductListView.as_view(), name='product_list'),
-    path('<str:slug>/<int:pk>', SingleProductView.as_view(), name='single_product'),
-    path('edit/<str:slug>/<int:pk>', ProductUpdateView.as_view(), name='edit_product'),
-    path('add', ProductCreateView.as_view(), name='add_product'),
-    path('category/<str:slug>', CategoryListView.as_view(), name='category_list'),
-    path('delete/<int:pk>', ProductDeleteView.as_view(), name='delete_product'),
+    path('list/', ProductListView.as_view(), name='product_list'),
+    path('<str:slug>/<int:pk>/', SingleProductView.as_view(), name='single_product'),
+    path('edit/<str:slug>/<int:pk>/', ProductUpdateView.as_view(), name='edit_product'),
+    path('add/', ProductCreateView.as_view(), name='add_product'),
+    path('category/<str:slug>/', CategoryListView.as_view(), name='category_list'),
+    path('delete/<int:pk>/', ProductDeleteView.as_view(), name='delete_product'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
