@@ -1,4 +1,5 @@
 from django.shortcuts import HttpResponse
+from crmdev.settings import LOGIN_URL
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import Category, Product
 from .forms import ProductAddForm
@@ -6,7 +7,11 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from cart.forms import CartAddProductForm
 
 
-class ProductListView(LoginRequiredMixin, ListView):
+class ProductListView(LoginRequiredMixin,
+                      PermissionRequiredMixin,
+                      ListView):
+    permission_required = 'product.view_product'
+    permission_denied_message = 'not authorized'
     paginate_by = 10
     cart_product_form = CartAddProductForm()
     extra_context = {'page_title': 'Товары',
@@ -21,8 +26,12 @@ class ProductListView(LoginRequiredMixin, ListView):
         return context
 
 
-class CategoryListView(LoginRequiredMixin, ListView):
+class CategoryListView(LoginRequiredMixin,
+                       PermissionRequiredMixin,
+                       ListView):
     paginate_by = 10
+    permission_required = 'category.view_category'
+    permission_denied_message = 'not authorized'
     cart_product_form = CartAddProductForm()
     extra_context = {'page_title': 'Товары',
                      'page_header': 'Все товары',
@@ -43,6 +52,8 @@ class CategoryListView(LoginRequiredMixin, ListView):
 # Single Product page
 class SingleProductView(LoginRequiredMixin, DetailView):
     model = Product
+    permission_required = 'category.view_category'
+    permission_denied_message = 'not authorized'
     cart_product_form = CartAddProductForm()
     extra_context = {'page_title': 'Товар',
                      'categories': Category.objects.all(),
@@ -53,8 +64,12 @@ class SingleProductView(LoginRequiredMixin, DetailView):
         return Product.objects.get(pk=self.kwargs.get('pk'))
 
 
-class ProductCreateView(PermissionRequiredMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin,
+                        PermissionRequiredMixin,
+                        CreateView):
+
     permission_required = 'product.add_product'
+    permission_denied_message = 'not authorized'
     template_name = 'product/product_form.html'
     extra_context = {'page_title': 'Добавить товар',
                      'header_page': 'Добавить товар',
@@ -63,9 +78,12 @@ class ProductCreateView(PermissionRequiredMixin, CreateView):
     success_url = 'product:single_product'
 
 
-class ProductDeleteView(PermissionRequiredMixin, DeleteView):
+class ProductDeleteView(LoginRequiredMixin,
+                        PermissionRequiredMixin,
+                        DeleteView):
     model = Product
     permission_required = 'product.delete_product'
+    permission_denied_message = 'not authorized'
     # success_url = reverse_lazy('product')
 
     def post(self, *args, **kwargs):
@@ -75,9 +93,12 @@ class ProductDeleteView(PermissionRequiredMixin, DeleteView):
         return HttpResponse(status=200)
 
 
-class ProductUpdateView(PermissionRequiredMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin,
+                        PermissionRequiredMixin,
+                        UpdateView):
     model = Product
     permission_required = 'product.change_product'
+    permission_denied_message = 'not authorized'
     form_class = ProductAddForm
     extra_context = {'page_title': 'Изменить товар',
                      'header_page': 'Изменить товар',
