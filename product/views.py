@@ -1,5 +1,4 @@
-from django.shortcuts import HttpResponse
-from crmdev.settings import LOGIN_URL
+from django.shortcuts import HttpResponse, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import Category, Product
 from .forms import ProductAddForm
@@ -61,7 +60,7 @@ class SingleProductView(LoginRequiredMixin, DetailView):
     context_object_name = 'product'
 
     def get_object(self, queryset=None):
-        return Product.objects.get(pk=self.kwargs.get('pk'))
+        return get_object_or_404(Product, pk=self.kwargs.get('pk'))
 
 
 class ProductCreateView(LoginRequiredMixin,
@@ -84,11 +83,11 @@ class ProductDeleteView(LoginRequiredMixin,
     model = Product
     permission_required = 'product.delete_product'
     permission_denied_message = 'not authorized'
-    # success_url = reverse_lazy('product')
+    # success_url = reverse_lazy('product:product_list')
 
     def post(self, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.delete()
+        object = get_object_or_404(Product, pk=self.kwargs.get('pk'))
+        object.delete()
         # no need for redirect, thanks to jQuery
         return HttpResponse(status=200)
 

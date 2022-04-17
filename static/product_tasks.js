@@ -42,7 +42,7 @@ $( ".delete_button_id" ).on( "click", function() {
 var productID = window.localStorage.getItem('item');
 // Check if (productID) exists
 $.ajax({
-  url: "delete/" + productID,
+  url: window.location.origin + "/product/delete/" + productID + "/",
   type: 'POST',
   success: function(data) {
     $("#exampleModalCenter").modal("hide");
