@@ -33,7 +33,7 @@
                             <figcaption class="info-wrap">
                                     <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
                                     <br>
-                                    <a href="{{ product.category.slug }}">Категория: {{ product.category }}</a>
+                                    <a href="{{ product.category.get_absolute_url }}">Категория: {{ product.category }}</a>
                             </figcaption>
                             <div class="bottom-wrap">
                                 <!-- Можно использовать под поля
