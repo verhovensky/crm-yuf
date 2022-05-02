@@ -16,11 +16,11 @@
                     <input type="hidden" name="next" value="{{ next }}"/>
                   </div>
                   {% if messages %}
-                    <div class="alert alert-danger">
-                        {% for message in messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.level_tag }}">
                             {{ message }}
-                        {% endfor %}
-                    </div>
+                        </div>
+                    {% endfor %}
                   {% endif %}
                   <button type="submit" class="btn btn-primary">Войти</button>
                 </form>

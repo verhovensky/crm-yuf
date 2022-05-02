@@ -26,7 +26,7 @@ def user_login(request):
             else:
                 return redirect('home:homepage')
         else:
-            messages.info(request, 'Имя пользователя или пароль неверны!')
+            messages.warning(request, 'Имя пользователя или пароль неверны!')
 
     next_page = request.GET.get('next')
     context = {'next': next_page}
