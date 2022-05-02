@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
@@ -46,9 +47,10 @@ def user_register(request):
         form_user = RegisterUserForm(request.POST)
         if form_user.is_valid():
             form_user.save()
+            sellers_group = Group.objects.get(name='Sellers')
+            sellers_group.user_set.add(User.objects.get(username=form_user.cleaned_data.get('username')))
             user = form_user.cleaned_data.get('username')
             messages.success(request, f'Пользователь {user} успешно создан')
-            # Redirect to dashboard
             return redirect('home:homepage')
         else:
             messages.info(request, f'{form_user.errors}')
