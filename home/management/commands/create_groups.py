@@ -1,3 +1,4 @@
+import sys
 from django.contrib.auth.models import Group, Permission
 from django.core.management.base import BaseCommand
 from product.models import Product
@@ -32,12 +33,17 @@ class Command(BaseCommand):
     def __init__(self, *args, **kwargs):
         super(Command, self).__init__(*args, **kwargs)
 
-    help = 'Creates default groups:' \
+    help = 'Creates default groups and permissions:' \
            'Admins' \
            'Sellers' \
            'Mangers'
 
     def handle(self, *args, **options):
+        if Group.objects.filter(name='Admins').exists() & \
+                Group.objects.filter(name='Managers').exists() & \
+                Group.objects.filter(name='Sellers').exists():
+            self.stdout.write('Groups already exist')
+            sys.exit(0)
         for group_name in GROUPS_PERMISSIONS:
             group, created = Group.objects.get_or_create(name=group_name)
             for model_cls in GROUPS_PERMISSIONS[group_name]:
@@ -47,6 +53,6 @@ class Command(BaseCommand):
                     try:
                         perm = Permission.objects.get(codename=codename)
                         group.permissions.add(perm)
-                        print(f"Adding {codename} to group {group.__str__()}")
+                        self.stdout.write(f"Adding {codename} to group {group.__str__()}")
                     except Permission.DoesNotExist:
-                        print(f"{codename} not found")
+                        self.stdout.write(f"{codename} not found")
