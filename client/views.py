@@ -52,6 +52,8 @@ class ClientCreate(LoginRequiredMixin,
         response = super(ClientCreate, self).form_invalid(form)
         return response
 
+# TODO: on permission denied add message and redirect to the same page
+
 
 class ClientUpdate(LoginRequiredMixin,
                    PermissionRequiredMixin,

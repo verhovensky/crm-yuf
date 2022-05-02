@@ -24,6 +24,8 @@ class ProductListView(LoginRequiredMixin,
         context['categories'] = Category.objects.all()
         return context
 
+# TODO: category views CRUD, with permissions
+
 
 class CategoryListView(LoginRequiredMixin,
                        PermissionRequiredMixin,
