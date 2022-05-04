@@ -11,7 +11,7 @@ Suitable for sale managers, directors and administrators of small-medium busines
 * Automatic expiration of Order by time
 * Order status partially change depending on user group
 * Responsive frontend design
-* Email notifications (on password restore)
+* Email password restore
 * Product quantity and price calculation in decimal
 * Product quantity check before order creation
 * Custom slugs for product
