@@ -1,8 +1,7 @@
-### YUF CRM (Customer Relationship Management)   
-YUF (Your Ultimate Friend) - is a responsive web application (operational CRM) for managing all your company's relationships and interactions with customers and potential customers.
-Suitable for sale managers, directors and administrators of small-medium businesses.
+## YUF CRM   
+YUF CRM - is a responsive web application (operational CRM) for managing company's relationships and interactions with customers, products and orders.
 
-# Features
+### Features
 
 * Custom user profile statistics (closed sales, total sales amount)
 * Three basic Groups Admins, Sellers, Managers
@@ -16,7 +15,7 @@ Suitable for sale managers, directors and administrators of small-medium busines
 * Product quantity check before order creation
 * Custom slugs for product
 
-# Installation
+### Installation
 
 Create .env file from template, fill all necessary variables<br>
 
