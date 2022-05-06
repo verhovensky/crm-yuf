@@ -33,11 +33,12 @@ to stop and remove application and its services <br>
 
 ### To Do:
 
+- CRUD Category, nested Categories
+- Category CRUD on frontend
 - Remove Celery (make use of DurationField and model methods for Order status updates) 
 - Display/hide action buttons depending on Group
 - Correct permission denied pages
 - Forms, buttons etc. fixes
-- CRUD Category, nested Categories
 - Home app (main page)
 - Update Django version and deps
 - Tests & demo data
