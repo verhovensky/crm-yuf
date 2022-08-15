@@ -23,7 +23,7 @@ docker-compose build<br>
 
 docker-compose up<br> 
 
-Application available at 127.0.0.1:800<br>
+Application available at 127.0.0.1:8000<br>
 
 BaseAdmin (administrator user) will be created automatically, credentials will be displayed in console.<br>
 
