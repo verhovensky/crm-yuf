@@ -2,7 +2,7 @@ from django import forms
 from .models import Order
 from client.models import Client
 from django.core.validators import RegexValidator, MinValueValidator
-from bootstrap_datepicker_plus import DateTimePickerInput
+from bootstrap_datepicker_plus.widgets import DateTimePickerInput
 from django.utils import timezone
 
 # Phone validation
