@@ -33,9 +33,8 @@ class Order(models.Model):
     phone = models.CharField(max_length=22)
     address = models.CharField(max_length=250,
                                verbose_name="Адрес доставки")
-    postal_code = models.CharField(max_length=20,
-                                   blank=True,
-                                   verbose_name="Почтовый индекс")
+    postal_code = models.PositiveBigIntegerField(blank=True,
+                                                 verbose_name="Почтовый индекс")
     this_order_client = models.ForeignKey(Client,
                                           related_name='customer',
                                           blank=True,
@@ -51,7 +50,6 @@ class Order(models.Model):
     status = models.PositiveSmallIntegerField(choices=STATUS,
                                               default=PROCESSING,
                                               verbose_name='Статус')
-    # TODO: unique = True, error "unique":""
     delivery_time = models.DateTimeField(verbose_name="Время доставки")
     self_pick = models.BooleanField(default=False,
                                     verbose_name="Самовывоз")
@@ -61,7 +59,6 @@ class Order(models.Model):
                                     decimal_places=2,
                                     default=0.0,
                                     verbose_name='Сумма заказа')
-    # TODO: table with changed statuses and UserProfiles maybe needed
     updated_by = models.ForeignKey(UserProfile,
                                    related_name='user_changed_orders',
                                    blank=True,
@@ -84,15 +81,14 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
+    """ Field product is needed to store product name, in case product gets deleted  """
     order = models.ForeignKey(Order,
                               related_name='items',
                               on_delete=models.CASCADE)
-    # TODO: Product id for decreasing product with default field
-    #  if product instance get deleted
     total = models.DecimalField(max_digits=10,
                                 decimal_places=2,
                                 default=0.0)
-    product = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
     product_id = models.ForeignKey(Product,
                                    related_name='product',
                                    blank=True,
