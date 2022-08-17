@@ -33,8 +33,6 @@ class Order(models.Model):
     phone = models.CharField(max_length=22)
     address = models.CharField(max_length=250,
                                verbose_name="Адрес доставки")
-    postal_code = models.PositiveBigIntegerField(blank=True,
-                                                 verbose_name="Почтовый индекс")
     this_order_client = models.ForeignKey(Client,
                                           related_name='customer',
                                           blank=True,
