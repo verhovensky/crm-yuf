@@ -30,6 +30,8 @@ DEBUG = False if int(os.getenv('DEBUG')) == 0 else True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1'] if DEBUG is False else []
 
+# DEFAULT_AUTO_FIELD for models pk
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Application definition
 
@@ -41,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrap_datepicker_plus',
+    'django_extensions',
     'client',
     'account',
     'product',
@@ -73,6 +76,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'staticfiles': 'django.templatetags.static',
+            },
         },
     },
 ]
@@ -87,6 +93,7 @@ DATABASES = {
     'default': {
         'ENGINE':  os.environ.get('DB_ENGINE'),
         'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
         'NAME': os.environ.get('DB_NAME'),
         'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASS'),
@@ -133,20 +140,32 @@ LOGIN_REDIRECT_URL = 'homepage/'
 CART_SESSION_ID = 'cart'
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
+# https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
-
-# STATIC FILES DIRS for better integrity
-STATICFILES_DIRS = [
-    BASE_DIR, "static",
-    '/var/www/static/',
-]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATIC_ROOT = os.path.join(BASE_DIR, "static_collect")
 
 # MEDIA Folder (dev only)
 
 MEDIA_URL = '/mediafiles/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles/')
+
+# LOGGING
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+}
 
 # SMTP settings
 
