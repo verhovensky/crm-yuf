@@ -9,14 +9,14 @@ GROUPS_PERMISSIONS = {
     'Sellers': {
         Product: ['add', 'view'],
         Client: ['add', 'view'],
-        Order: ['add', 'change', 'view'],
+        Order: ['add', 'view'],
         OrderItem: ['add', 'change', 'delete', 'view'],
     },
 
     'Managers': {
         Product: ['add', 'change', 'view'],
         Client: ['add', 'change', 'view'],
-        Order: ['add', 'change', 'delete', 'view'],
+        Order: ['add', 'change', 'view'],
         OrderItem: ['add', 'change', 'delete', 'view'],
     },
 
@@ -53,6 +53,5 @@ class Command(BaseCommand):
                     try:
                         perm = Permission.objects.get(codename=codename)
                         group.permissions.add(perm)
-                        self.stdout.write(f"Adding {codename} to group {group.__str__()}")
                     except Permission.DoesNotExist:
                         self.stdout.write(f"{codename} not found")
