@@ -21,7 +21,7 @@
                     </div>
                     <form method="POST" class="post-form">{% csrf_token %}
                             {{ form.as_p }}
-                            <div class="container float-left">
+                            <div class="float-left">
                                 <button type="submit" class="btn btn-success">Оформить</button>
                                 <a href="{% url 'client:client_add' %}" target="_blank" class="btn btn-info">Добавить клиента</a>
                                 <a href="javascript:history.go(-1)" class="btn btn-danger">Отмена</a>
@@ -51,7 +51,7 @@
                                                 {% if product.image %}
                                                     {{ product.image.url }}
                                                 {% else %}
-                                                    {% static "img/no_image.png" %}
+                                                    {% static "img/no-image.jpg" %}
                                                 {% endif %}">
                                         </a>
                                     </td>
