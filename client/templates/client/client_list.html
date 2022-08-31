@@ -1,5 +1,6 @@
 {% extends "navstruct.html" %}
 {% load static %}
+{% load client_tags %}
 
     <body>
         {% block content %}
@@ -13,9 +14,9 @@
                         {% for client in clients %}
                         <tr class="ClientTableRow"><td>{{ client.name }}</td>
                             <td>{{ client.phone_number }}</td>
-                            <td>{{ client.type }}</td>
+                            <td>{{ client.type | type_to_string }}</td>
                             <td>{{ client.email }}</td>
-                            <td>{{ client.origin }}</td>
+                            <td>{{ client.origin | origin_to_string }}</td>
                             <td>
                             <a href="{% url 'client:client_detail' client.pk client.slug %}" title="Детали"><ion-icon name="information-circle-outline" style="color:#4169E1;"></ion-icon></a>
                             <a href="{% url 'client:client_edit' client.pk client.slug %}" title="Изменить"><ion-icon name="create-outline" style="color:#4169E1;"></ion-icon></a>

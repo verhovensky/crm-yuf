@@ -1,12 +1,13 @@
 {% extends 'navstruct.html' %}
-{% load staticfiles %}
+{% load static %}
+{% load client_tags %}
 
 {% block content %}
     <p class="display-4 pb-2">{{ client.name }}</p>
     <div>
         <p><strong>Номер телефона:</strong> {{ client.phone_number }}</p>
-        <p><strong>Тип клиента:</strong> {{ client.type | linebreaksbr}}</p>
-        <p><strong>Откуда пришел:</strong> {{ client.origin }}</p>
+        <p><strong>Тип клиента:</strong> {{ client.type | type_to_string}}</p>
+        <p><strong>Откуда пришел:</strong> {{ client.origin | origin_to_string }}</p>
         <p><strong>Email:</strong> {{ client.email }}</p>
         <p><strong>Создан:</strong> {{ client.created }}</p>
     </div>
