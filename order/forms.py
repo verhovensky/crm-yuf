@@ -106,7 +106,7 @@ class OrderCreateForm(forms.ModelForm):
             self.required_fields(["full_name", "address", "phone"])
         if not cleaned_data["for_other"] \
                 and not cleaned_data["new_client"]:
-            self.required_fields(["this_order_client"])
+            self.required_fields(["this_order_client", "address"])
         return self.cleaned_data
 
     def required_fields(self, fields):
