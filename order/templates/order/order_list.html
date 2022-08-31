@@ -12,8 +12,17 @@
             <table class="order-table table table-responsive table-hover">
                 <thead class="thead-light"><tr><th>ФИО</th><th>Телефон</th><th>Адрес</th><th>Дата доставки</th><th>Самовывоз</th><th>Наличные</th><th>Поступил</th><th>Статус</th><th>Действия</th></tr></thead>
                 {% for order in orders %}
-                <tr class="ClientTableRow"><td>{{ order.full_name }}</td>
-                    <td>{{ order.phone }}</td>
+                <tr class="ClientTableRow">
+                    {% if order.full_name != "" %}
+                        <td>{{ order.full_name }}</td>
+                    {% else %}
+                        <td>{{ order.this_order_client.name }}</td>
+                    {% endif %}
+                    {% if order.phone != "" %}
+                        <td>{{ order.phone }}</td>
+                    {% else %}
+                        <td>{{ order.this_order_client.phone_number }}</td>
+                    {% endif %}
                     <td>{{ order.address }}</td>
                     <td>{{ order.delivery_time }}</td>
                     {% if order.self_pick is True %}
@@ -30,7 +39,7 @@
                     <td>{{ order.status | status_to_string }}</td>
                     <td>
                     <a href="{% url 'order:detail' order.pk %}" title="Детали"><ion-icon name="information-circle-outline" style="color:#4169E1;"></ion-icon></a>
-                    <a href="{% url 'order:order_change' order.pk %}" title="Изменить"><ion-icon name="create-outline" style="color:#4169E1;"></ion-icon></a>
+                    <a href="{% url 'order:change' order.pk %}" title="Изменить"><ion-icon name="create-outline" style="color:#4169E1;"></ion-icon></a>
                     <!--- Order delete if admin/manager -->
                     <button data-id="{{ order.id }}" class="btn btn-default btn-lg active p-0 get_delete_id" role="button"><ion-icon name="trash-outline" data-toggle="modal" data-target="#OrderModalCenter" title="Удалить"></ion-icon></button>
                     </td></tr>

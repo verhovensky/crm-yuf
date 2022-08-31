@@ -10,8 +10,16 @@
             <div class="container">
             <hr>
             <p>Номер заказа: {{ order.pk }}</p>
-            <p>Имя клиента: {{ order.full_name }}</p>
-            <p>Телефон: {{ order.phone }}</p>
+            {% if order.full_name != "" %}
+                <p>Имя клиента: {{ order.full_name }}</p>
+            {% else %}
+                <p>Имя клиента: {{ order.this_order_client.name }}</p>
+            {% endif %}
+            {% if order.phone != "" %}
+                <p>Телефон: {{ order.phone }}</p>
+            {% else %}
+                <p>Телефон: {{ order.this_order_client.phone_number }}</p>
+            {% endif %}
             <p>Адрес: {{ order.address }}</p>
             <p>Время доставки: {{ order.delivery_time | date:'Y-m-d H:i' }}</p>
             <p>Самовывоз:
@@ -31,7 +39,7 @@
             <p>Примечание: {{ order.description }}</p>
             <p>Статус: {{ order.status | status_to_string }}</p>
             <hr class="p-2">
-            <a href="{% url 'order:order_change' order.pk %}"><button class="btn btn-success" onlick="return false;">Изменить статус</button></a>
+            <a href="{% url 'order:change' order.pk %}"><button class="btn btn-success" onlick="return false;">Изменить статус</button></a>
             <a href="javascript:history.go(-1)"><button class="btn btn-danger" onlick="return false;">Назад</button></a>
             </div>
         </div>
@@ -57,7 +65,7 @@
                                                 {% if product.image %}
                                                     {{ product.image.url }}
                                                 {% else %}
-                                                    {% static "img/no_image.png" %}
+                                                    {% static "img/no-image.jpg" %}
                                                 {% endif %}">
                                         </a>
                                     </td>
