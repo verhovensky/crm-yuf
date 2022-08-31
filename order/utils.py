@@ -66,8 +66,8 @@ def create_order_item(order: Order, item: dict) -> None:
     OrderItem.objects.create(
         order=order,
         name=item[1]["product"].name,
-        price=item[1]["price"],
-        quantity=item[1]["quantity"],
+        price=decimal.Decimal(item[1]["price"]),
+        quantity=decimal.Decimal(item[1]["quantity"]),
         product_id=item[1]["product"],
         total=item[1]["total_price"])
 
