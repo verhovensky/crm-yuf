@@ -11,6 +11,9 @@ order_change_signal = Signal(
     ["from_status", "to_status",
      "order_sum", "user"])
 
+# TODO: check product not less then quantity to substract.
+#  More precise realisation of product add/sub requires new DB design.
+
 
 @receiver(order_change_signal,
           sender=Order,
@@ -28,6 +31,8 @@ def order_change_status(sender, from_status: int,
     :type user: User
     :returns: True if order status changed, False if remains the same
     """
+    if from_status == 1 and to_status == 2:
+        add_closed_sales(user=user, amount=order.total_sum)
     if from_status in (1, 2) and to_status not in (1, 2) or \
             from_status == 2 and to_status == 1:
         # add product back to inventory on statuses (3, 4, 5)
@@ -35,7 +40,7 @@ def order_change_status(sender, from_status: int,
             add_product_quantity_of_order(product=i.product_id,
                                           quantity=str(i.quantity))
         sub_closed_sales(user=user, amount=order.total_sum)
-    if from_status in (1, 3, 4, 5) and to_status == 2:
+    if from_status in (3, 4, 5) and to_status == 2:
         # sub product from inventory on PAYED (2) status
         for i in order.items.all().only("product_id", "quantity"):
             sub_product_quantity_of_order(product=i.product_id,
