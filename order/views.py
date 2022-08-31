@@ -76,6 +76,9 @@ class OrderCreateView(LoginRequiredMixin,
             this_order = form.save()
             for i in my_cart.cart.items():
                 utils.create_order_item(order=this_order, item=i)
+                utils.sub_product_quantity_of_order(
+                    product=i[1]["product"],
+                    quantity=i[1]["quantity"])
             my_cart.clear()
             tasks.expire_order.apply_async(
                 kwargs={"order_id": this_order.pk},
