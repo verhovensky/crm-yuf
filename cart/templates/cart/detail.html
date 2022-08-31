@@ -35,7 +35,7 @@
                                 {% if product.image %}
                                     {{ product.image.url }}
                                 {% else %}
-                                    {% static "img/no_image.png" %}
+                                    {% static "img/no-image.jpg" %}
                                 {% endif %}">
                         </a>
                     </td>
@@ -67,7 +67,7 @@
                 {% if messages %}
                     <a class="btn btn-primary" role="button" href="{% url "product:product_list" %}">Добавить товары</a>
                 {% else %}
-                    <a class="btn btn-success m-2" href="{% url 'order:create_exists' %}" role="button">Оформить заказ</a>
+                    <a class="btn btn-success m-2" href="{% url 'order:create' %}" role="button">Оформить заказ</a>
                     <a class="btn btn-primary m-2" role="button" href="{% url "product:product_list" %}">Добавить товары</a>
                 {% endif %}
             </div>
