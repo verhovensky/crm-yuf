@@ -10,7 +10,7 @@ GROUPS_PERMISSIONS = {
         Product: ['add', 'view'],
         Client: ['add', 'view'],
         Order: ['add', 'view'],
-        OrderItem: ['add', 'change', 'delete', 'view'],
+        OrderItem: ['add', 'view'],
     },
 
     'Managers': {
