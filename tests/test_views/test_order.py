@@ -14,6 +14,13 @@ from django.conf import settings
 tz = timezone(settings.TIME_ZONE)
 delivery_time = datetime.now(tz=tz) + timedelta(days=1)
 
+data = {"status": 2,
+        "full_name": "some name",
+        "address": "Some street 10",
+        "phone": "79287656457",
+        "delivery_time": delivery_time,
+        "description": "Just random string"}
+
 
 def setUpModule():
     call_command("create_groups")
@@ -30,6 +37,7 @@ class OrderCreateViewTests(TestCase):
         cls.product = ProductFactory.create()
         cls.create_url = reverse("order:create")
         cls.client = Client()
+        cls.order_form_data = data
         cls.cart = {"1": {"quantity": "1.00",
                           "price": "111.0",
                           "product": cls.product.id,
@@ -40,13 +48,8 @@ class OrderCreateViewTests(TestCase):
     def setUp(self) -> None:
         group_sellers = Group.objects.get(name="Sellers")
         self.user.groups.add(group_sellers)
-        self.order_form_data = {
-            "this_order_client": self.order_client.id,
-            "full_name": "",
-            "address": "Some street 10",
-            "phone": "",
-            "delivery_time": delivery_time,
-            "description": "Just random string"}
+        self.order_form_data.update({
+            "this_order_client": self.order_client.id})
         self.client.login(username=self.user,
                           password="12345")
         self.session = self.client.session
@@ -97,11 +100,7 @@ class OrderCreateViewTests(TestCase):
     def test_create_new_client(self, expire_order):
         expire_order.apply_async = Mock(return_value=True)
         self.order_form_data.pop("this_order_client")
-        self.order_form_data.update({
-            "new_client": True,
-            "full_name": "Che Guarana",
-            "address": "Data street, 18, 1",
-            "phone": "79874573851"})
+        self.order_form_data.update({"new_client": True})
         response = self.client.post(self.create_url,
                                     data=self.order_form_data,
                                     follow=True)
@@ -128,11 +127,7 @@ class OrderCreateViewTests(TestCase):
     @patch("order.tasks.expire_order")
     def test_create_for_other(self, expire_order):
         expire_order.apply_async = Mock(return_value=True)
-        self.order_form_data.update({
-            "for_other": True,
-            "full_name": "Che Guarana",
-            "address": "Data street, 18, 1",
-            "phone": "79874573851"})
+        self.order_form_data.update({"for_other": True})
         response = self.client.post(self.create_url,
                                     data=self.order_form_data,
                                     follow=True)
@@ -164,11 +159,7 @@ class OrderChanageViewTests(TestCase):
         cls.my_user = UserProfileFactory.create(
             user=cls.user)
         cls.order_client = ClientFactory.create()
-        cls.data = {"status": 2,
-                    "description": "random string",
-                    "full_name": "some name",
-                    "address": "Some street 10",
-                    "phone": "79287656457"}
+        cls.data = data
         cls.my_order = OrderFactory.create(
             this_order_client=cls.order_client,
             updated_by=cls.my_user)
