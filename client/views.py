@@ -44,7 +44,7 @@ class ClientCreate(LoginRequiredMixin,
     success_url = reverse_lazy('client:client_main')
 
     def form_valid(self, form):
-        form.instance.created_by = self.request.user.userprofile
+        form.instance.created_by = self.request.user
         form.instance.slug = slugify(form.instance.name)
         return super(ClientCreate, self).form_valid(form)
 
