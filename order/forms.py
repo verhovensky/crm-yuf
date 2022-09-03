@@ -30,15 +30,17 @@ class OrderCreateForm(forms.ModelForm):
 
     this_order_client = forms.ModelChoiceField(
         label="Выберите клиента:",
-        queryset=Client.objects.
-            only("name", "pk", "phone_number").
-            order_by("name"),
+        queryset=Client.objects
+        .only("name", "pk", "phone_number")
+        .order_by("name"),
         initial=0,
         required=False,
         help_text="",
         widget=forms.Select(
-            attrs={"class": "form-control selected-client",
-                   "placeholder": "Выберите заказчика"}))
+            attrs={"class":
+                   "form-control selected-client",
+                   "placeholder":
+                   "Выберите заказчика"}))
 
     address = forms.CharField(
         label="",
@@ -57,7 +59,7 @@ class OrderCreateForm(forms.ModelForm):
         validators=[
             RegexValidator(
                 regex=r"^\+?1?\d{9,16}$",
-                message="Телефон должен быть в формате: +700112299"
+                message="Телефон должен быть в формате: +7926783645"
                         " Макс. длинна = 16 знаков")],
         widget=forms.TextInput(
             attrs={"class": "form-control new-phone",
@@ -103,7 +105,8 @@ class OrderCreateForm(forms.ModelForm):
             self.required_fields(["full_name", "address",
                                   "phone", "this_order_client"])
         if cleaned_data["new_client"]:
-            self.required_fields(["full_name", "address", "phone"])
+            self.required_fields(
+                ["full_name", "address", "phone"])
         if not cleaned_data["for_other"] \
                 and not cleaned_data["new_client"]:
             self.required_fields(["this_order_client", "address"])
@@ -165,7 +168,8 @@ class OrderChangeForm(forms.ModelForm):
         required=False,
         widget=forms.Textarea(
             attrs={"class": "form-control",
-                   "placeholder": "Другие примечания / пожелания",
+                   "placeholder":
+                   "Другие примечания / пожелания",
                    "width": "50%", "cols": "60",
                    "rows": "10", }))
 
