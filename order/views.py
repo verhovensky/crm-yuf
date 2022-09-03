@@ -59,9 +59,9 @@ class OrderCreateView(LoginRequiredMixin,
         checked = utils.check_out_of_stock(cart=my_cart)
         if len(my_cart) > 0 and checked["result"]:
             form.instance.this_order_account = \
-                self.request.user.userprofile
+                self.request.user
             form.instance.updated_by = \
-                self.request.user.userprofile
+                self.request.user
             form.instance.total_sum = my_cart.get_total_price()
             if not form.cleaned_data["this_order_client"]:
                 client, created = Client.objects.get_or_create(
@@ -70,7 +70,7 @@ class OrderCreateView(LoginRequiredMixin,
                     client.name = form.cleaned_data["full_name"]
                     client.slug = \
                         slugify(form.cleaned_data["full_name"])
-                    client.created_by = self.request.user.userprofile
+                    client.created_by = self.request.user
                     client.save()
                 form.instance.this_order_client = client
             this_order = form.save()
@@ -119,13 +119,13 @@ class ChangeOrder(LoginRequiredMixin,
                     from_status=order.status,
                     to_status=int(request.POST["status"]),
                     order=order,
-                    user=request.user.userprofile)
+                    user=request.user)
         return super(ChangeOrder, self)\
             .post(request, *args, **kwargs)
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.updated_by = self.request.user.userprofile
+        self.object.updated_by = self.request.user
         self.object.save()
         return super(ChangeOrder, self).form_valid(form)
 
