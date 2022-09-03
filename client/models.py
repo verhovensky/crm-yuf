@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import RegexValidator
-from account.models import UserProfile
+from django.conf import settings
 
 TG = 1
 WA = 2
@@ -92,7 +92,7 @@ class Client(models.Model):
         auto_now_add=True,
         verbose_name="Создан")
     created_by = models.ForeignKey(
-        UserProfile,
+        settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
         blank=True,
         default=1,
