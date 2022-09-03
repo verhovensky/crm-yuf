@@ -2,7 +2,7 @@ from django.test import TestCase
 from datetime import datetime, timedelta
 from tests.factories.clients import ClientFactory
 from order.forms import OrderCreateForm, OrderChangeForm
-from tests.factories.users import UserFactory, UserProfileFactory
+from tests.factories.users import UserFactory
 
 
 class OrderCreateFormTests(TestCase):
@@ -10,10 +10,9 @@ class OrderCreateFormTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = UserFactory.create()
-        cls.my_user = UserProfileFactory.create(user=cls.user)
         cls.future_date = datetime.now() + \
                           timedelta(days=2, seconds=852)
-        cls.client = ClientFactory.create(created_by=cls.my_user)
+        cls.client = ClientFactory.create(created_by=cls.user)
         cls.data = {"this_order_client": cls.client.pk,
                     "full_name": "Che Guarana",
                     "address": "Data street, 18, 1",
@@ -38,7 +37,7 @@ class OrderCreateFormTests(TestCase):
                          ["Нельзя указать дату в прошлом!"])
 
     def test_for_client_wrong_phone(self):
-        phone_error = "Телефон должен быть в формате: +700112299 " \
+        phone_error = "Телефон должен быть в формате: +7926783645 " \
                       "Макс. длинна = 16 знаков"
         new_data = self.data.copy()
         new_data.update({"phone": "myphone"})
