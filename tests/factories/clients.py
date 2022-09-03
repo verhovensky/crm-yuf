@@ -1,7 +1,7 @@
 import factory
 from factory.django import DjangoModelFactory
 from faker import Factory
-from tests.factories.users import UserProfileFactory
+from tests.factories.users import UserFactory
 from client.models import Client, CLIENTTYPE, ORIGINS
 from django.template.defaultfilters import slugify as django_slugify
 
@@ -26,4 +26,4 @@ class ClientFactory(DjangoModelFactory):
     origin = faker.random_choices(
         elements=ORIGINS, length=1)[0][0]
     created_by = factory.SubFactory(
-        UserProfileFactory)
+        UserFactory)

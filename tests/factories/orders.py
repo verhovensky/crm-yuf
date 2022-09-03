@@ -6,7 +6,7 @@ from datetime import timedelta
 from factory.django import DjangoModelFactory, mute_signals
 from django.db.models.signals import post_save
 from faker import Factory
-from tests.factories.users import UserProfileFactory
+from tests.factories.users import UserFactory
 from tests.factories.products import ProductFactory
 from order.models import Order, OrderItem
 
@@ -29,7 +29,8 @@ class OrderFactory(DjangoModelFactory):
     self_pick = random.choice([True, False])
     cash_on_delivery = random.choice([True, False])
     this_order_account = SubFactory(
-        UserProfileFactory)
+        UserFactory)
+    status = 1
     this_order_client = " "
     total_sum = faker.random_int(min=1000, max=1200)
     description = faker.text()[:50]

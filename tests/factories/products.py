@@ -3,7 +3,7 @@ from factory.django import DjangoModelFactory
 from django.contrib.auth import get_user_model
 from faker import Factory
 from product.models import Category, Product
-from tests.factories.users import UserProfileFactory
+from tests.factories.users import UserFactory
 from client.apps import slugify
 
 
@@ -30,4 +30,4 @@ class ProductFactory(DjangoModelFactory):
     price = faker.random_digit_not_null()
     stock = faker.random_digit_not_null()
     available = True
-    created_by = SubFactory(UserProfileFactory)
+    created_by = SubFactory(UserFactory)
