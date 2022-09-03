@@ -1,7 +1,7 @@
 from django.test import TestCase
 from client.models import Client
 from tests.factories.clients import ClientFactory
-from tests.factories.users import UserProfileFactory, UserFactory
+from tests.factories.users import UserFactory
 from django.db.utils import IntegrityError
 
 
@@ -10,7 +10,7 @@ class ClientCreateTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = UserFactory.create()
-        cls.my_user = UserProfileFactory.create(
+        cls.my_user = UserFactory.create(
             user=cls.user)
 
     def test_create_client(self):
