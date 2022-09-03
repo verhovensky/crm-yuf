@@ -1,5 +1,5 @@
 from django.urls import reverse_lazy
-from account.models import UserProfile
+from django.conf import settings
 from product.models import Product
 from client.models import Client
 from django.db import models
@@ -42,7 +42,7 @@ class Order(models.Model):
         default="",
         on_delete=models.SET_DEFAULT)
     this_order_account = models.ForeignKey(
-        UserProfile,
+        settings.AUTH_USER_MODEL,
         related_name="employee",
         blank=True,
         verbose_name="Создавший",
@@ -73,7 +73,7 @@ class Order(models.Model):
         max_length=1200,
         verbose_name="Примечание")
     updated_by = models.ForeignKey(
-        UserProfile,
+        settings.AUTH_USER_MODEL,
         related_name="user_changed_orders",
         blank=True,
         default="",
