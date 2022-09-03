@@ -107,6 +107,7 @@ if 'test' in sys.argv:
         'NAME': 'test_db.sqlite3'
     }
 
+AUTH_USER_MODEL = 'account.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
