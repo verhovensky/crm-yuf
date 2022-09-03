@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from pytz import timezone
 from django.contrib.auth.models import Group
 from django.core.management import call_command
-from tests.factories.users import UserProfileFactory, UserFactory
+from tests.factories.users import UserFactory
 from tests.factories.clients import ClientFactory
 from tests.factories.products import ProductFactory
 from tests.factories.orders import OrderFactory
@@ -30,9 +30,7 @@ class OrderCreateViewTests(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        call_command("clear_cache")
         cls.user = UserFactory.create()
-        cls.my_user = UserProfileFactory.create(user=cls.user)
         cls.order_client = ClientFactory.create()
         cls.product = ProductFactory.create()
         cls.create_url = reverse("order:create")
@@ -150,28 +148,28 @@ class OrderCreateViewTests(TestCase):
                 serializer="json")
 
 
-class OrderChanageViewTests(TestCase):
+class OrderChangeViewTests(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        call_command("clear_cache")
         cls.user = UserFactory.create()
-        cls.my_user = UserProfileFactory.create(
-            user=cls.user)
         cls.order_client = ClientFactory.create()
         cls.data = data
         cls.my_order = OrderFactory.create(
             this_order_client=cls.order_client,
-            updated_by=cls.my_user)
+            updated_by=cls.user)
         cls.change_url = reverse("order:change",
                                  kwargs={"pk": cls.my_order.pk})
 
     def setUp(self) -> None:
+        group_managers = Group.objects.get(name="Managers")
+        self.user.groups.add(group_managers)
         self.client = Client()
         self.client.login(username=self.user,
                           password="12345")
 
     def test_sellers_can_not_change(self):
+        self.user.groups.clear()
         group_sellers = Group.objects.get(name="Sellers")
         self.user.groups.add(group_sellers)
         response = self.client.post(self.change_url,
@@ -179,15 +177,13 @@ class OrderChanageViewTests(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_managers_change(self):
-        group_managers = Group.objects.get(name="Managers")
-        self.user.groups.add(group_managers)
         response = self.client.post(self.change_url,
                                     data=self.data,
                                     follow=True)
         self.assertEqual(response.status_code, 200)
         # Refresh from DB so we got updated version of our objects
         self.my_order.refresh_from_db()
-        self.my_user.refresh_from_db()
+        self.user.refresh_from_db()
         self.assertEqual(self.my_order.description,
                          self.data["description"])
         self.assertEqual(self.my_order.status,
@@ -198,44 +194,11 @@ class OrderChanageViewTests(TestCase):
                          self.data["address"])
         self.assertEqual(self.my_order.phone,
                          self.data["phone"])
-        self.assertEqual(self.my_user.closed_sales, 2)
-        self.assertEqual(self.my_user.sales_amount,
+        self.assertEqual(self.user.closed_sales, 2)
+        self.assertEqual(self.user.sales_amount,
                          self.my_order.total_sum)
 
-    def test_decreases_on_bad_status_change(self):
-        group_managers = Group.objects.get(name="Managers")
-        self.user.groups.add(group_managers)
-        for i in range(3, 6):
-            self.my_order.status = 2
-            self.my_user.sales_amount = \
-                self.my_order.total_sum
-            self.my_user.closed_sales = 2
-            self.my_user.save()
-            self.my_order.save()
-            self.client.post(self.change_url,
-                             data={"status": i},
-                             follow=True)
-            self.my_user.refresh_from_db()
-            self.assertEqual(self.my_user.sales_amount, 0)
-            self.assertEqual(self.my_user.closed_sales, 1)
-
-    def test_not_decreases_on_bad_statuses_change(self):
-        group_managers = Group.objects.get(name="Managers")
-        self.user.groups.add(group_managers)
-        self.my_user.sales_amount = self.my_order.total_sum
-        self.my_user.closed_sales = 2
-        self.my_user.save()
-        for i in range(3, 6):
-            self.client.post(self.change_url,
-                             data={"status": i},
-                             follow=True)
-            self.my_user.refresh_from_db()
-            self.assertEqual(self.my_user.sales_amount, 0)
-            self.assertEqual(self.my_user.closed_sales, 1)
-
     def test_statuses_changed(self):
-        group_managers = Group.objects.get(name="Managers")
-        self.user.groups.add(group_managers)
         for i in range(1, 6):
             self.data.update({"status": i})
             response = self.client.post(self.change_url,
@@ -257,7 +220,7 @@ class OrderChanageViewTests(TestCase):
         self.assertEqual(self.my_order.status, 1)
 
 
-class OrderProductChanageTests(TestCase):
+class OrderProductChangeTests(TestCase):
 
     # TODO: tests for product stock
     #  decrease / increase in case of status change
@@ -266,3 +229,56 @@ class OrderProductChanageTests(TestCase):
 
     def test_product_increases_on_order_item_amount(self):
         pass
+
+
+class OrderUserStatsChange(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = UserFactory.create()
+        cls.order_client = ClientFactory.create()
+        cls.data = data
+        group_managers = Group.objects.get(name="Managers")
+        cls.user.groups.add(group_managers)
+        cls.my_order = OrderFactory.create(
+            this_order_client=cls.order_client,
+            updated_by=cls.user)
+        cls.change_url = reverse("order:change",
+                                 kwargs={"pk": cls.my_order.pk})
+        cls.client = Client()
+
+    def test_decreases_on_bad_status_change(self):
+        for i, j in enumerate(range(3, 6)):
+            self.my_order.status = 2
+            self.user.sales_amount = \
+                self.my_order.total_sum
+            self.user.closed_sales = i
+            self.user.save()
+            self.my_order.save()
+            self.client.login(username=self.user,
+                              password="12345")
+            self.client.post(self.change_url,
+                             data={"status": j},
+                             follow=True)
+            self.user.refresh_from_db()
+            self.my_order.refresh_from_db()
+            self.assertEqual(self.user.sales_amount, 0)
+            self.assertEqual(self.user.closed_sales, i-1)
+
+    def test_increases_on_bad_statuses_change_to_payed(self):
+        for i, j in enumerate(range(3, 6)):
+            self.my_order.status = j
+            self.user.sales_amount = 0
+            self.user.closed_sales = i
+            self.my_order.save()
+            self.user.save()
+            self.client.login(username=self.user,
+                              password="12345")
+            self.client.post(self.change_url,
+                             data={"status": 2},
+                             follow=True)
+            self.user.refresh_from_db()
+            self.my_order.refresh_from_db()
+            self.assertEqual(self.user.sales_amount,
+                             self.my_order.total_sum)
+            self.assertEqual(self.user.closed_sales, i+1)
