@@ -3,12 +3,12 @@
 {% block content %}
     <div>
         <p class="display-4">{{ user }}</p>
-        <img class="m-2 p-2" src="{{ MEDIA_URL }}{{ user.userprofile.photo.url }}" height="220">
+        <img class="m-2 p-2" src="{{ MEDIA_URL }}{{ user.photo.url }}" height="220">
         <p><strong>Имя:</strong> {{ user.first_name }}</p>
         <p><strong>Фамилия:</strong> {{ user.last_name }}</p>
         <p><strong>Дата роджения:</strong>
-            {% if user.userprofile.date_of_birth != None %}
-                {{ user.userprofile.date_of_birth }}
+            {% if user.date_of_birth != None %}
+                {{ user.date_of_birth }}
             {% else %}
                 Отсутствует
             {% endif %}
@@ -26,11 +26,11 @@
             {% endif %}
         {% endfor %}
         </p>
-        <p><strong>Закрыто сделок:</strong> {{ user.userprofile.closed_sales }}</p>
-        <p><strong>На сумму:</strong> {{ user.userprofile.sales_amount }}</p>
-        <p><strong>Телефон:</strong> {{ user.userprofile.phone_number }}</p>
+        <p><strong>Закрыто сделок:</strong> {{ user.closed_sales }}</p>
+        <p><strong>На сумму:</strong> {{ user.sales_amount }}</p>
+        <p><strong>Телефон:</strong> {{ user.phone_number }}</p>
         <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Создан:</strong> {{ user.userprofile.created }}</p>
+        <p><strong>Создан:</strong> {{ user.created }}</p>
     </div>
     <a href="{% url 'account:edit_profile' %}"><button class="btn btn-success" onlick="return false;">Изменить</button></a>
     <a href="javascript:history.go(-1)"><button class="btn btn-secondary" onlick="return false;">Назад</button></a>

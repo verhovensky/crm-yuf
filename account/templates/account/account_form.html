@@ -5,10 +5,9 @@
         <div class="d-flex">
           <div class="col-sm-auto p-0">
               <div class="container">
-                {{ profile_form.media }}
+                {{ user_form.media }}
                 <form action="" method="post" enctype="multipart/form-data">
                     {{ user_form.as_p }}
-                    {{ profile_form.as_p }}
                     {% csrf_token %}
                     <div class="row pt-2">
                         <div class="col-sm">
