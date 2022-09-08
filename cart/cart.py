@@ -2,6 +2,10 @@ import decimal
 from django.conf import settings
 from product.models import Product
 
+# TODO: substract product quantity method
+# TODO: update product quantity method
+# TODO: product serialized class, incapsulate it into cart
+
 
 class Cart(object):
 
@@ -14,7 +18,6 @@ class Cart(object):
         if not cart:
             cart = self.session[settings.CART_SESSION_ID] = {}
         self.cart = cart
-        self.id_to_product()
         self._data_len = len(self.cart.items())
 
     def __iter__(self):
@@ -39,6 +42,14 @@ class Cart(object):
         for product in products:
             self.cart[str(product.id)]["product"] = product
 
+    def product_to_id(self):
+        """ Convert products instances to ids
+        However, this may be redundant in DRF
+        with serializers (ex. queryset param) """
+        product_instances = self.cart.keys()
+        for product in product_instances:
+            self.cart[product]["product"] = str(product)
+
     def get_total_price(self):
         """ Sum up prices of all products in cart """
         at = []
@@ -54,12 +65,14 @@ class Cart(object):
         self.session.modified = True
 
     def add(self, product, quantity, update_quantity=False):
-        # TODO: update product quantity method
         """ Add product to cart """
         if str(product.id) not in self.cart:
             self.cart[str(product.id)] = {
+                "id": str(product.id),
                 "quantity": str(quantity),
-                "price": str(product.price)}
+                "price": str(product.price),
+                "name": str(product.name),
+                "img": str(product.image)}
         if update_quantity:
             upd = decimal.Decimal(
                 self.cart[str(product.id)]["quantity"]) \
@@ -68,7 +81,6 @@ class Cart(object):
         self.save()
 
     def remove(self, product):
-        # TODO: substract product quantity method
         """ Remove product from cart """
         del self.cart[str(product.id)]
         self.save()
