@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrap_datepicker_plus',
     'django_extensions',
+    'mptt',
+    'django_mptt_admin',
     'client',
     'account',
     'product',
