@@ -1,0 +1,17 @@
+{% extends "navstruct.html" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-4">
+            <p class="display-4 p-2">{{ header_page }}</p>
+            <hr class="p-2">
+            <form method="POST" enctype="multipart/form-data" class="post-form">{% csrf_token %}
+                {{ form.as_p }}
+                <div class="buttons" style="display: flex">
+                    <button type="submit" style="margin-right: 5px;" class="btn btn-success">Сохранить</button>
+                    <a href="javascript:history.go(-1)" class="btn btn-warning">Отмена</a>
+                </div>
+            </form>
+        </div>
+
+{% endblock %}
