@@ -54,8 +54,15 @@ class OrderCreateView(LoginRequiredMixin,
     permission_required = "order.add_order"
     template_name = "order/order_form.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        my_cart = cart.Cart(self.request)
+        context["cart"] = my_cart
+        return context
+
     def form_valid(self, form):
         my_cart = cart.Cart(self.request)
+        my_cart.id_to_product()
         checked = utils.check_out_of_stock(cart=my_cart)
         if len(my_cart) > 0 and checked["result"]:
             form.instance.this_order_account = \
@@ -89,6 +96,7 @@ class OrderCreateView(LoginRequiredMixin,
                 reverse_lazy("order:detail",
                              kwargs={"pk": this_order.pk}))
         else:
+            my_cart.product_to_id()
             messages.error(self.request,
                            "Недостаточно товара!")
             return super(OrderCreateView, self).form_invalid(form)
