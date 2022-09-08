@@ -1,4 +1,5 @@
 {% extends "navstruct.html" %}
+{% load mptt_tags %}
 
 {% block content %}
     <div class="row">
@@ -14,18 +15,23 @@
             </form>
         </div>
 
-        <div class="row align-items-center">
+        <div class="row">
             <div class="container">
-                <p class="lead">Быстрый переход</p>
+                <p class="lead">Категории</p>
                 <ul>
-                    <li class="selected">
-                        <a href="{% url 'product:product_list' %}">Все товары</a>
+                    <li {% if not category %}class="selected"{% endif %}>
+                        <a href="{% url 'product:product_list' %}">Все категории</a>
                     </li>
-                    {% for c in categories %}
-                        <li class="selected">
-                            <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+                    {% recursetree categories %}
+                        <li>
+                            <a href="{{ node.get_absolute_url }}">{{ node.name }}</a>
+                            {% if not node.is_leaf_node %}
+                                <ul class="children">
+                                    {{ children }}
+                                </ul>
+                            {% endif %}
                         </li>
-                    {% endfor %}
+                    {% endrecursetree %}
                 </ul>
             </div>
         </div>

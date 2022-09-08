@@ -1,5 +1,6 @@
 {% extends "navstruct.html" %}
 {% load static %}
+{% load mptt_tags %}
 
 {% block title %}
 {% endblock %}
@@ -8,90 +9,106 @@
 <link rel="stylesheet" type="text/css" href="{% static 'productstyle.css' %}">
     <div id="sidebar">
         <p class="display-4">{{ page_header }}</p>
+
         <ul>
             <li {% if not category %}class="selected"{% endif %}>
                 <a href="{% url 'product:product_list' %}">Все категории</a>
             </li>
-            {% for c in categories %}
-                <li {% if category.slug == c.slug %}class="selected"{% endif %}>
-                    <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+            {% recursetree categories %}
+                <li>
+                    <a href="{{ node.get_absolute_url }}">{{ node.name }}</a>
+                    {% if not node.is_leaf_node %}
+                        <ul class="children">
+                            {{ children }}
+                        </ul>
+                    {% endif %}
                 </li>
-            {% endfor %}
+            {% endrecursetree %}
         </ul>
     </div>
 
-    <div class="container">
-        <div class="row">
-                {% for product in products %}
-                <div class="col-sm-4 col-lg-3 m-2">
-                        <figure class="card card-product">
-                            <div class="img-wrap">
-                                <a href="{{ product.get_absolute_url }}">
-                                    <img src="{% if product.image %}{{ MEDIA_URL }}{{ product.image.url }}{% else %}{% static "img/no-image.jpg" %}{% endif %}">
-                                </a>
-                            </div>
-                            <figcaption class="info-wrap">
-                                    <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
-                                    <br>
-                                    <a href="{{ product.category.get_absolute_url }}">Категория: {{ product.category }}</a>
-                            </figcaption>
-                            <div class="bottom-wrap">
-                                <!-- Можно использовать под поля
-                                Продано товара/ Продано товара на сумму
-                                Для авторизованного пользователя!
-                                Поля модели User: closed_sales, sales_amount
-                                <div class="rating-wrap">
-                                    <div class="label-rating">132 reviews</div>
-                                    <div class="label-rating">154 orders </div>
-                                </div>
-                                -->
-                                <div class="price-and-quantity font-weight-bold">
-                                    <span>Цена: {{ product.price }} </span>
-                                    <br>
-                                    <span>Кол-во: {{ product.stock }}</span>
-                                </div> <!-- price-wrap.// -->
-                                <div class="text-center" style="display: grid;">
+    <div class="row m-1">
+        {% for product in products %}
+            <div class="col-sm-2 m-2">
+                <figure class="card card-product">
+                    <div class="img-wrap">
+                        <a href="{{ product.get_absolute_url }}">
+                            <img src="{% if product.image %}
+                                        {{ MEDIA_URL }}{{ product.image.url }}
+                                      {% else %}
+                                        {% static "img/no-image.jpg" %}
+                                      {% endif %}">
+                        </a>
+                    </div>
+                    <figcaption class="info-wrap">
+                            <a href="{{ product.get_absolute_url }}">
+                                {{ product.name }}</a>
+                            <br>
+                            <a href="{{ product.category.get_absolute_url }}">
+                                Категория: {{ product.category }}</a>
+                    </figcaption>
+                    <div class="bottom-wrap">
+                        <!-- Можно использовать под поля
+                        Продано товара/ Продано товара на сумму
+                        Для авторизованного пользователя
+                        Поля модели User: closed_sales, sales_amount
+                        <div class="rating-wrap">
+                            <div class="label-rating">132 total sold</div>
+                            <div class="label-rating">154 orders </div>
+                        </div>
+                        -->
+                        <div class="price-and-quantity font-weight-bold">
+                            <span>Цена: {{ product.price }} </span>
+                            <br>
+                            <span>Кол-во: {{ product.stock }}</span>
+                        </div> <!-- price-wrap.// -->
+                            <div class="row">
+                                <div class="col text-center">
                                     <form action="{% url "cart:cart_add" product.id %}" method="post">
                                         {{ cart_product_form }}
                                         {% csrf_token %}
-                                        <input type="submit" value="Добавить в заказ">
+                                        <input class="btn btn-success mt-2" type="submit" value="Добавить">
                                     </form>
-                                    <a href="{% url 'product:single_product' product.slug product.id %}" class="btn btn-info text-center m-2">Информация</a>
-                                    <a href="{% url 'product:edit_product' product.slug product.id %}" class="btn btn-warning text-center m-2">Изменить</a>
-                                    <button data-id="{{ product.id }}" class="btn btn-danger text-center m-2 get_delete_id" role="button" data-toggle="modal" data-target="#exampleModalCenter">Удалить</button>
+                                    <div class="container p-2">
+                                        <a class="btn btn-warning" href="{% url 'product:edit_product' product.slug product.id %}" >Изменить</a>
+                                        <button data-id="{{ product.id }}" class="btn btn-danger get_delete_id" role="button" data-toggle="modal" data-target="#exampleModalCenter">Удалить</button>
+                                    </div>
                                 </div>
-                            </div> <!-- bottom-wrap.// -->
-                        </figure>
-                </div>
-                {% endfor %}
+                            </div>
+                    </div> <!-- bottom-wrap.// -->
+                </figure>
             </div>
+        {% endfor %}
     </div>
 
-    <div class="container">
+    {% if page_obj.num_pages <= 1 %}
+        <div class="container m-0">
+            <div class="row justify-content-center">
+                <span class="current">
+                        Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+                </span>
+            </div>
 
-        <div class="row justify-content-center">
-            <span class="current">
-                    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
-            </span>
+            <nav aria-label="Navigation">
+                <ul class="pagination justify-content-center">
+
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}"> &laquo; Прев</a>
+                        </li>
+                    {% endif %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">След &raquo;</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
         </div>
-
-        <nav aria-label="Navigation">
-            <ul class="pagination justify-content-center">
-
-                {% if page_obj.has_previous %}
-                <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}"> &laquo; Прев</a>
-                </li>
-                {% endif %}
-
-                {% if page_obj.has_next %}
-                <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">След &raquo;</a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav>
-    </div>
+    {% else %}
+        <p></p>
+    {% endif %}
 
         <!-- exampleModalCenter -->
         <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="false">

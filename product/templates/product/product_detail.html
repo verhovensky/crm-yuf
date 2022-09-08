@@ -2,43 +2,50 @@
 {% load static %}
 {% block content %}
 
-    <div id="sidebar">
-        <ul>
-            <li class="selected">
-                <a href="{% url 'product:product_list' %}">Все товары</a>
-            </li>
-            {% for c in categories %}
-                <li class="selected">
-                    <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
+    <div class="container ml-0">
+        <div class="row">
+            <div class="col">
+                <p class="display-4">{{ product.name }}</p>
+                <div class="product-detail">
+                    <div class="container m-0 p-0">
+                        <img class="img-thumbnail w-25" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no-image.jpg" %}{% endif %}">
+                        <h2><a href="{{ product.category.get_absolute_url }}">Категория: {{ product.category }}</a></h2>
+                        <p><b>Цена:</b> {{ product.price }}</p>
+                        <p><b>Кол-во:</b> {{ product.stock }}</p>
+                        <p><b>Сумма:</b> {{ product.calc_total_product }}</p>
+                        <p><b>Создавший:</b> {{ product.created_by }}</p>
+                        <p><b>Дата создания:</b> {{ product.created }}</p>
+                    </div>
+                </div>
 
-    <p class="display-4">{{ product.name }}</p>
-    <div class="product-detail">
-        <div class="container m-0 p-0">
-            <img class="img-thumbnail w-25" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no-image.jpg" %}{% endif %}">
-            <h2><a href="{{ product.category.get_absolute_url }}">Категория: {{ product.category }}</a></h2>
-            <p><b>Цена:</b> {{ product.price }} сомов</p>
-            <p><b>Кол-во:</b> {{ product.stock }}</p>
-            <p><b>Сумма:</b> {{ product.calc_total_product }}</p>
-            <p><b>Создавший:</b> {{ product.created_by }}</p>
-            <p><b>Дата создания:</b> {{ product.created }}</p>
+                <form action="{% url "cart:cart_add" product.id %}" method="post">
+                    {{ cart_product_form }}
+                    {% csrf_token %}
+                    <input class="btn btn-success mt-2" type="submit" value="Добавить">
+                </form>
+
+                <div class="pb-5 pt-2">
+                    <a href="{% url 'product:edit_product' product.slug product.pk %}" class="btn btn-warning text-center">Изменить</a>
+                    <a href="{% url 'product:delete_product' product.pk %}" class="btn btn-danger text-center">Удалить</a>
+                    <a href="javascript:history.go(-1)"><button class="btn btn-secondary" onlick="return false;">Назад</button></a>
+                </div>
+            </div>
+
+            <div class="col">
+                    <p class="display-4">Категории</p>
+                    <ul>
+                        <li class="selected">
+                            <a href="{% url 'product:product_list' %}">Все товары</a>
+                        </li>
+                        {% for c in categories %}
+                            <li class="selected">
+                                <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+            </div>
         </div>
     </div>
-
-    <form action="{% url "cart:cart_add" product.id %}" method="post">
-        {{ cart_product_form }}
-        {% csrf_token %}
-        <input type="submit" value="Добавить в заказ">
-    </form>
-
-    <div class="pb-5 pt-1">
-        <a href="{% url 'product:edit_product' product.slug product.pk %}" class="btn btn-warning text-center">Изменить</a>
-        <a href="{% url 'product:delete_product' product.pk %}" class="btn btn-danger text-center">Удалить</a>
-        <a href="javascript:history.go(-1)"><button class="btn btn-secondary" onlick="return false;">Назад</button></a>
-    </div>
-
 {% endblock %}
 
