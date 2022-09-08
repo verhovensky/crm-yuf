@@ -43,24 +43,20 @@
                         </thead>
                         <tbody>
                         {% for item in cart %}
-                            {% with product=item.product %}
-                                <tr>
-                                    <td>
-                                        <a href="{{ product.get_absolute_url }}">
-                                            <img style="max-width: 100px;" src="
-                                                {% if product.image %}
-                                                    {{ product.image.url }}
-                                                {% else %}
-                                                    {% static "img/no-image.jpg" %}
-                                                {% endif %}">
-                                        </a>
-                                    </td>
-                                    <td>{{ product.name }}</td>
-                                    <td>{{ item.quantity }}</td>
-                                    <td class="num">{{ item.price }}</td>
-                                    <td class="num">{{ item.total_price }}</td>
-                                </tr>
-                            {% endwith %}
+                            <tr>
+                                <td>
+                                    <img style="max-width: 100px;" src="
+                                        {% if item.image %}
+                                            {{ item.image.url }}
+                                        {% else %}
+                                            {% static "img/no-image.jpg" %}
+                                        {% endif %}">
+                                </td>
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td class="num">{{ item.price }}</td>
+                                <td class="num">{{ item.total_price }}</td>
+                            </tr>
                         {% endfor %}
                         <tr class="total">
                             <td><b>Итого</b></td>
