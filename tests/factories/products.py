@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from faker import Factory
 from product.models import Category, Product
 from tests.factories.users import UserFactory
-from client.apps import slugify
 
 
 User = get_user_model()
@@ -16,7 +15,6 @@ class CategoryFactory(DjangoModelFactory):
         model = Category
 
     name = faker.name_male().replace(" ", "")
-    slug = slugify(name)
 
 
 class ProductFactory(DjangoModelFactory):
@@ -25,7 +23,6 @@ class ProductFactory(DjangoModelFactory):
 
     category = SubFactory(CategoryFactory)
     name = faker.name_female().replace(" ", "")
-    slug = slugify(name)
     image = ""
     price = faker.random_digit_not_null()
     stock = faker.random_digit_not_null()
