@@ -5,8 +5,6 @@ from django.core.validators import MinValueValidator
 
 class CartAddProductForm(forms.Form):
 
-    # TODO: not 0 quantity, not - quantity
-
     quantity = forms.DecimalField(
         validators=[MinValueValidator(Decimal('1.0'))],
         max_digits=10,
@@ -16,6 +14,7 @@ class CartAddProductForm(forms.Form):
                    "style": "max-width: 19em;",
                    "min": "1.0",
                    "placeholder": "Добавить в заказ"}))
+
     update = forms.BooleanField(
         required=False,
         initial=False,
